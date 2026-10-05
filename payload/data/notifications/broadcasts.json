@@ -1,0 +1,193 @@
+[
+  {
+    "id": "bc-1790310530484-q8nyq",
+    "title": "Ismail bhaiya has joined",
+    "message": "Ismail bhaiya has joinedIsmail bhaiya has joinedIsmail bhaiya has joined",
+    "priority": "announcement",
+    "target": "all",
+    "targetValue": "All Platform Users",
+    "channels": [
+      "email",
+      "in_app"
+    ],
+    "recipientCount": 4,
+    "status": "delivered",
+    "actionUrl": "/bhaiya",
+    "actionText": "Hi Ismail Bhaiya",
+    "sentAt": "2026-09-25T04:28:50.484Z",
+    "recipientEmails": [
+      "hyratic1122@gmail.com",
+      "ssnmggs@gmail.com",
+      "codemantrabangla@gmail.com",
+      "shatadhru@gmail.com"
+    ],
+    "readBy": [
+      "ssnmggs@gmail.com"
+    ],
+    "deletedBy": [
+      "ssnmggs@gmail.com"
+    ]
+  },
+  {
+    "id": "bc-1790310484149-h06gp",
+    "title": "Ismail bhaiya has joined",
+    "message": "Ismail bhaiya has joinedIsmail bhaiya has joinedIsmail bhaiya has joined",
+    "priority": "announcement",
+    "target": "all",
+    "targetValue": "All Platform Users",
+    "channels": [
+      "email",
+      "in_app"
+    ],
+    "recipientCount": 4,
+    "status": "delivered",
+    "actionText": "View Details",
+    "sentAt": "2026-09-25T04:28:04.149Z",
+    "recipientEmails": [
+      "hyratic1122@gmail.com",
+      "ssnmggs@gmail.com",
+      "codemantrabangla@gmail.com",
+      "shatadhru@gmail.com"
+    ],
+    "readBy": [
+      "ssnmggs@gmail.com"
+    ]
+  },
+  {
+    "id": "bc-1790266694158-zghuy",
+    "title": "adfasdf",
+    "message": "asdf",
+    "priority": "announcement",
+    "target": "all",
+    "targetValue": "All Platform Users",
+    "channels": [
+      "in_app",
+      "email"
+    ],
+    "recipientCount": 4,
+    "status": "delivered",
+    "actionText": "View Details",
+    "sentAt": "2026-09-24T16:18:14.158Z",
+    "recipientEmails": [
+      "hyratic1122@gmail.com",
+      "ssnmggs@gmail.com",
+      "codemantrabangla@gmail.com",
+      "shatadhru@gmail.com"
+    ],
+    "readBy": []
+  },
+  {
+    "id": "bc-1789972138531-befyo",
+    "title": "sdfg",
+    "message": "zdfg",
+    "priority": "announcement",
+    "target": "all",
+    "targetValue": "All Platform Users",
+    "channels": [
+      "in_app",
+      "email"
+    ],
+    "recipientCount": 4,
+    "status": "delivered",
+    "actionText": "View Details",
+    "sentAt": "2026-09-21T06:28:58.531Z",
+    "recipientEmails": [
+      "hyratic1122@gmail.com",
+      "ssnmggs@gmail.com",
+      "codemantrabangla@gmail.com",
+      "shatadhru@gmail.com"
+    ],
+    "readBy": [
+      "ssnmggs@gmail.com"
+    ],
+    "deletedBy": [
+      "hyratic1122@gmail.com"
+    ]
+  },
+  {
+    "id": "bc-1789887535447-1qnii",
+    "title": "Announchment",
+    "message": "Announchment Announchment Announchment Announchment Announchment Announchment",
+    "priority": "announcement",
+    "target": "all",
+    "targetValue": "All Platform Users",
+    "channels": [
+      "in_app",
+      "email"
+    ],
+    "recipientCount": 3,
+    "status": "delivered",
+    "actionUrl": "/sweet",
+    "actionText": "View Details",
+    "sentAt": "2026-09-20T06:58:55.447Z",
+    "recipientEmails": [
+      "ssnmggs@gmail.com",
+      "codemantrabangla@gmail.com",
+      "shatadhru@gmail.com"
+    ],
+    "readBy": [
+      "hyratic1122@gmail.com"
+    ],
+    "deletedBy": [
+      "ssnmggs@gmail.com"
+    ]
+  },
+  {
+    "id": "bc-1789886081309-snedo",
+    "title": "6aaf7bd94d8e9c2ca42ff241",
+    "message": "6aaf7bd94d8e9c2ca42ff241",
+    "priority": "info",
+    "target": "all",
+    "targetValue": "All Platform Users",
+    "channels": [
+      "in_app",
+      "email"
+    ],
+    "recipientCount": 3,
+    "status": "delivered",
+    "actionUrl": "/sweet",
+    "actionText": "View Details",
+    "imageUrl": "https://www.canto.com/cdn/en/2023/04/07185018/url-for-a-picture-feature-1.jpg",
+    "sentAt": "2026-09-20T06:34:41.309Z",
+    "recipientEmails": [
+      "ssnmggs@gmail.com",
+      "codemantrabangla@gmail.com",
+      "shatadhru@gmail.com"
+    ],
+    "readBy": [
+      "ssnmggs@gmail.com",
+      "hyratic1122@gmail.com"
+    ],
+    "deletedBy": [
+      "ssnmggs@gmail.com"
+    ]
+  },
+  {
+    "id": "bc-1789885039006-h8v9t",
+    "title": "Hello",
+    "message": "Sent from admin",
+    "priority": "announcement",
+    "target": "all",
+    "targetValue": "All Platform Users",
+    "channels": [
+      "in_app",
+      "email"
+    ],
+    "recipientCount": 2,
+    "status": "delivered",
+    "actionText": "View Details",
+    "sentAt": "2026-09-20T06:17:19.006Z",
+    "recipientEmails": [
+      "codemantrabangla@gmail.com",
+      "shatadhru@gmail.com"
+    ],
+    "readBy": [
+      "codemantrabangla@gmail.com",
+      "ssnmggs@gmail.com",
+      "hyratic1122@gmail.com"
+    ],
+    "deletedBy": [
+      "ssnmggs@gmail.com"
+    ]
+  }
+]

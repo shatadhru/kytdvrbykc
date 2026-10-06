@@ -1,0 +1,27 @@
+{
+  "organized_at": "2026-10-05T17:39:25.029Z",
+  "total_lessons": 2778,
+  "total_unique_videos": 260,
+  "subjects": {
+    "physics": {
+      "total_items": 914,
+      "unique_items": 78
+    },
+    "chemistry": {
+      "total_items": 643,
+      "unique_items": 78
+    },
+    "math": {
+      "total_items": 547,
+      "unique_items": 49
+    },
+    "higher_math": {
+      "total_items": 390,
+      "unique_items": 47
+    },
+    "other": {
+      "total_items": 284,
+      "unique_items": 32
+    }
+  }
+}

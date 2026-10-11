@@ -58,7 +58,7 @@ export const isDocumentOwner: Access = ({ req }) => {
  */
 export const publicAccess: Access = () => true
 
-import { ProductsCollection } from '../collections/Courses'
+import { ProductsCollection } from '../collections/ecommerch/Product'
 import { CurrencyNextLoad } from '@/config/Currency'
 import { currencyCode } from 'better-auth'
 

@@ -1,0 +1,586 @@
+[
+  {
+    "id": 42,
+    "count": 4,
+    "description": "",
+    "link": "https://utmeducation.com/course-category/combo-pack/?tutor-course-filter-category=42",
+    "name": "COMBO-PACK",
+    "slug": "combo-pack",
+    "taxonomy": "course-category",
+    "parent": 0,
+    "meta": [],
+    "aioseo_head": "\n\t\t<!-- All in One SEO 5.0.2.1 - aioseo.com -->\n\t<meta name=\"robots\" content=\"max-image-preview:large\" />\n\t<link rel=\"canonical\" href=\"https://utmeducation.com/course-category/combo-pack/?tutor-course-filter-category=42\" />\n\t<meta name=\"generator\" content=\"All in One SEO (AIOSEO) 5.0.2.1\" />\n\t\t<script type=\"application/ld+json\" class=\"aioseo-schema\">\n\t\t\t{\"@context\":\"https:\\/\\/schema.org\",\"@graph\":[{\"@type\":\"BreadcrumbList\",\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#breadcrumblist\",\"itemListElement\":[{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/#listItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https:\\/\\/utmeducation.com\\/\",\"nextItem\":{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/course-category\\/combo-pack\\/?tutor-course-filter-category=42#listItem\",\"name\":\"COMBO-PACK\"}},{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/course-category\\/combo-pack\\/?tutor-course-filter-category=42#listItem\",\"position\":2,\"name\":\"COMBO-PACK\",\"previousItem\":{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/#listItem\",\"name\":\"Home\"}}]},{\"@type\":\"CollectionPage\",\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#collectionpage\",\"url\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/\",\"name\":\"COMBO-PACK - Unique Teaching Method\",\"inLanguage\":\"en-US\",\"isPartOf\":{\"@id\":\"https:\\/\\/utmeducation.com\\/#website\"},\"breadcrumb\":{\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#breadcrumblist\"}},{\"@type\":\"Organization\",\"@id\":\"https:\\/\\/utmeducation.com\\/#organization\",\"name\":\"Unique Teaching Method\",\"description\":\"Basic is must!\",\"url\":\"https:\\/\\/utmeducation.com\\/\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https:\\/\\/utmeducation.com\\/wp-content\\/uploads\\/2026\\/02\\/IMG_9933-2.png\",\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#organizationLogo\",\"width\":2193,\"height\":796},\"image\":{\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#organizationLogo\"}},{\"@type\":\"WebSite\",\"@id\":\"https:\\/\\/utmeducation.com\\/#website\",\"url\":\"https:\\/\\/utmeducation.com\\/\",\"name\":\"Unique Teaching Method\",\"description\":\"Basic is must!\",\"inLanguage\":\"en-US\",\"publisher\":{\"@id\":\"https:\\/\\/utmeducation.com\\/#organization\"}}]}\n\t\t</script>\n\t\t<!-- All in One SEO -->\n\n",
+    "aioseo_head_json": {
+      "title": "COMBO-PACK - Unique Teaching Method",
+      "description": "",
+      "canonical_url": "https://utmeducation.com/course-category/combo-pack/?tutor-course-filter-category=42",
+      "robots": "max-image-preview:large",
+      "keywords": "",
+      "webmasterTools": {
+        "miscellaneous": ""
+      },
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#breadcrumblist",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "@id": "https://utmeducation.com/#listItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://utmeducation.com/",
+                "nextItem": {
+                  "@type": "ListItem",
+                  "@id": "https://utmeducation.com/course-category/combo-pack/?tutor-course-filter-category=42#listItem",
+                  "name": "COMBO-PACK"
+                }
+              },
+              {
+                "@type": "ListItem",
+                "@id": "https://utmeducation.com/course-category/combo-pack/?tutor-course-filter-category=42#listItem",
+                "position": 2,
+                "name": "COMBO-PACK",
+                "previousItem": {
+                  "@type": "ListItem",
+                  "@id": "https://utmeducation.com/#listItem",
+                  "name": "Home"
+                }
+              }
+            ]
+          },
+          {
+            "@type": "CollectionPage",
+            "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#collectionpage",
+            "url": "https://utmeducation.com/wp-json/wp/v2/course-category/",
+            "name": "COMBO-PACK - Unique Teaching Method",
+            "inLanguage": "en-US",
+            "isPartOf": {
+              "@id": "https://utmeducation.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#breadcrumblist"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://utmeducation.com/#organization",
+            "name": "Unique Teaching Method",
+            "description": "Basic is must!",
+            "url": "https://utmeducation.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://utmeducation.com/wp-content/uploads/2026/02/IMG_9933-2.png",
+              "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#organizationLogo",
+              "width": 2193,
+              "height": 796
+            },
+            "image": {
+              "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#organizationLogo"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://utmeducation.com/#website",
+            "url": "https://utmeducation.com/",
+            "name": "Unique Teaching Method",
+            "description": "Basic is must!",
+            "inLanguage": "en-US",
+            "publisher": {
+              "@id": "https://utmeducation.com/#organization"
+            }
+          }
+        ]
+      }
+    },
+    "aioseo_breadcrumb": "<div class=\"aioseo-breadcrumbs\"><span class=\"aioseo-breadcrumb\">\n\t\t\t<a href=\"https://utmeducation.com/\" title=\"Home\">Home</a>\n\t\t</span><span class=\"aioseo-breadcrumb-separator\">»</span><span class=\"aioseo-breadcrumb\">\n\t\t\tCOMBO-PACK\n\t\t</span></div>",
+    "aioseo_breadcrumb_json": [
+      {
+        "label": "Home",
+        "link": "https://utmeducation.com/"
+      },
+      {
+        "label": "COMBO-PACK",
+        "link": "https://utmeducation.com/course-category/combo-pack/?tutor-course-filter-category=42"
+      }
+    ],
+    "_links": {
+      "self": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/course-category/42",
+          "targetHints": {
+            "allow": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/course-category"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/taxonomies/course-category"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/courses?course-category=42"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 40,
+    "count": 7,
+    "description": "",
+    "link": "https://utmeducation.com/course-category/ssc-2027/?tutor-course-filter-category=40",
+    "name": "SSC-2027",
+    "slug": "ssc-2027",
+    "taxonomy": "course-category",
+    "parent": 0,
+    "meta": [],
+    "aioseo_head": "\n\t\t<!-- All in One SEO 5.0.2.1 - aioseo.com -->\n\t<meta name=\"robots\" content=\"max-image-preview:large\" />\n\t<link rel=\"canonical\" href=\"https://utmeducation.com/course-category/ssc-2027/?tutor-course-filter-category=40\" />\n\t<meta name=\"generator\" content=\"All in One SEO (AIOSEO) 5.0.2.1\" />\n\t\t<script type=\"application/ld+json\" class=\"aioseo-schema\">\n\t\t\t{\"@context\":\"https:\\/\\/schema.org\",\"@graph\":[{\"@type\":\"BreadcrumbList\",\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#breadcrumblist\",\"itemListElement\":[{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/#listItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https:\\/\\/utmeducation.com\\/\",\"nextItem\":{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/course-category\\/ssc-2027\\/?tutor-course-filter-category=40#listItem\",\"name\":\"SSC-2027\"}},{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/course-category\\/ssc-2027\\/?tutor-course-filter-category=40#listItem\",\"position\":2,\"name\":\"SSC-2027\",\"previousItem\":{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/#listItem\",\"name\":\"Home\"}}]},{\"@type\":\"CollectionPage\",\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#collectionpage\",\"url\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/\",\"name\":\"SSC-2027 - Unique Teaching Method\",\"inLanguage\":\"en-US\",\"isPartOf\":{\"@id\":\"https:\\/\\/utmeducation.com\\/#website\"},\"breadcrumb\":{\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#breadcrumblist\"}},{\"@type\":\"Organization\",\"@id\":\"https:\\/\\/utmeducation.com\\/#organization\",\"name\":\"Unique Teaching Method\",\"description\":\"Basic is must!\",\"url\":\"https:\\/\\/utmeducation.com\\/\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https:\\/\\/utmeducation.com\\/wp-content\\/uploads\\/2026\\/02\\/IMG_9933-2.png\",\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#organizationLogo\",\"width\":2193,\"height\":796},\"image\":{\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#organizationLogo\"}},{\"@type\":\"WebSite\",\"@id\":\"https:\\/\\/utmeducation.com\\/#website\",\"url\":\"https:\\/\\/utmeducation.com\\/\",\"name\":\"Unique Teaching Method\",\"description\":\"Basic is must!\",\"inLanguage\":\"en-US\",\"publisher\":{\"@id\":\"https:\\/\\/utmeducation.com\\/#organization\"}}]}\n\t\t</script>\n\t\t<!-- All in One SEO -->\n\n",
+    "aioseo_head_json": {
+      "title": "SSC-2027 - Unique Teaching Method",
+      "description": "",
+      "canonical_url": "https://utmeducation.com/course-category/ssc-2027/?tutor-course-filter-category=40",
+      "robots": "max-image-preview:large",
+      "keywords": "",
+      "webmasterTools": {
+        "miscellaneous": ""
+      },
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#breadcrumblist",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "@id": "https://utmeducation.com/#listItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://utmeducation.com/",
+                "nextItem": {
+                  "@type": "ListItem",
+                  "@id": "https://utmeducation.com/course-category/ssc-2027/?tutor-course-filter-category=40#listItem",
+                  "name": "SSC-2027"
+                }
+              },
+              {
+                "@type": "ListItem",
+                "@id": "https://utmeducation.com/course-category/ssc-2027/?tutor-course-filter-category=40#listItem",
+                "position": 2,
+                "name": "SSC-2027",
+                "previousItem": {
+                  "@type": "ListItem",
+                  "@id": "https://utmeducation.com/#listItem",
+                  "name": "Home"
+                }
+              }
+            ]
+          },
+          {
+            "@type": "CollectionPage",
+            "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#collectionpage",
+            "url": "https://utmeducation.com/wp-json/wp/v2/course-category/",
+            "name": "SSC-2027 - Unique Teaching Method",
+            "inLanguage": "en-US",
+            "isPartOf": {
+              "@id": "https://utmeducation.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#breadcrumblist"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://utmeducation.com/#organization",
+            "name": "Unique Teaching Method",
+            "description": "Basic is must!",
+            "url": "https://utmeducation.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://utmeducation.com/wp-content/uploads/2026/02/IMG_9933-2.png",
+              "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#organizationLogo",
+              "width": 2193,
+              "height": 796
+            },
+            "image": {
+              "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#organizationLogo"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://utmeducation.com/#website",
+            "url": "https://utmeducation.com/",
+            "name": "Unique Teaching Method",
+            "description": "Basic is must!",
+            "inLanguage": "en-US",
+            "publisher": {
+              "@id": "https://utmeducation.com/#organization"
+            }
+          }
+        ]
+      }
+    },
+    "aioseo_breadcrumb": "<div class=\"aioseo-breadcrumbs\"><span class=\"aioseo-breadcrumb\">\n\t\t\t<a href=\"https://utmeducation.com/\" title=\"Home\">Home</a>\n\t\t</span><span class=\"aioseo-breadcrumb-separator\">»</span><span class=\"aioseo-breadcrumb\">\n\t\t\tSSC-2027\n\t\t</span></div>",
+    "aioseo_breadcrumb_json": [
+      {
+        "label": "Home",
+        "link": "https://utmeducation.com/"
+      },
+      {
+        "label": "SSC-2027",
+        "link": "https://utmeducation.com/course-category/ssc-2027/?tutor-course-filter-category=40"
+      }
+    ],
+    "_links": {
+      "self": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/course-category/40",
+          "targetHints": {
+            "allow": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/course-category"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/taxonomies/course-category"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/courses?course-category=40"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 41,
+    "count": 7,
+    "description": "",
+    "link": "https://utmeducation.com/course-category/ssc-28/?tutor-course-filter-category=41",
+    "name": "SSC-2028",
+    "slug": "ssc-28",
+    "taxonomy": "course-category",
+    "parent": 0,
+    "meta": [],
+    "aioseo_head": "\n\t\t<!-- All in One SEO 5.0.2.1 - aioseo.com -->\n\t<meta name=\"robots\" content=\"max-image-preview:large\" />\n\t<link rel=\"canonical\" href=\"https://utmeducation.com/course-category/ssc-28/?tutor-course-filter-category=41\" />\n\t<meta name=\"generator\" content=\"All in One SEO (AIOSEO) 5.0.2.1\" />\n\t\t<script type=\"application/ld+json\" class=\"aioseo-schema\">\n\t\t\t{\"@context\":\"https:\\/\\/schema.org\",\"@graph\":[{\"@type\":\"BreadcrumbList\",\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#breadcrumblist\",\"itemListElement\":[{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/#listItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https:\\/\\/utmeducation.com\\/\",\"nextItem\":{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/course-category\\/ssc-28\\/?tutor-course-filter-category=41#listItem\",\"name\":\"SSC-2028\"}},{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/course-category\\/ssc-28\\/?tutor-course-filter-category=41#listItem\",\"position\":2,\"name\":\"SSC-2028\",\"previousItem\":{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/#listItem\",\"name\":\"Home\"}}]},{\"@type\":\"CollectionPage\",\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#collectionpage\",\"url\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/\",\"name\":\"SSC-2028 - Unique Teaching Method\",\"inLanguage\":\"en-US\",\"isPartOf\":{\"@id\":\"https:\\/\\/utmeducation.com\\/#website\"},\"breadcrumb\":{\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#breadcrumblist\"}},{\"@type\":\"Organization\",\"@id\":\"https:\\/\\/utmeducation.com\\/#organization\",\"name\":\"Unique Teaching Method\",\"description\":\"Basic is must!\",\"url\":\"https:\\/\\/utmeducation.com\\/\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https:\\/\\/utmeducation.com\\/wp-content\\/uploads\\/2026\\/02\\/IMG_9933-2.png\",\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#organizationLogo\",\"width\":2193,\"height\":796},\"image\":{\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#organizationLogo\"}},{\"@type\":\"WebSite\",\"@id\":\"https:\\/\\/utmeducation.com\\/#website\",\"url\":\"https:\\/\\/utmeducation.com\\/\",\"name\":\"Unique Teaching Method\",\"description\":\"Basic is must!\",\"inLanguage\":\"en-US\",\"publisher\":{\"@id\":\"https:\\/\\/utmeducation.com\\/#organization\"}}]}\n\t\t</script>\n\t\t<!-- All in One SEO -->\n\n",
+    "aioseo_head_json": {
+      "title": "SSC-2028 - Unique Teaching Method",
+      "description": "",
+      "canonical_url": "https://utmeducation.com/course-category/ssc-28/?tutor-course-filter-category=41",
+      "robots": "max-image-preview:large",
+      "keywords": "",
+      "webmasterTools": {
+        "miscellaneous": ""
+      },
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#breadcrumblist",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "@id": "https://utmeducation.com/#listItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://utmeducation.com/",
+                "nextItem": {
+                  "@type": "ListItem",
+                  "@id": "https://utmeducation.com/course-category/ssc-28/?tutor-course-filter-category=41#listItem",
+                  "name": "SSC-2028"
+                }
+              },
+              {
+                "@type": "ListItem",
+                "@id": "https://utmeducation.com/course-category/ssc-28/?tutor-course-filter-category=41#listItem",
+                "position": 2,
+                "name": "SSC-2028",
+                "previousItem": {
+                  "@type": "ListItem",
+                  "@id": "https://utmeducation.com/#listItem",
+                  "name": "Home"
+                }
+              }
+            ]
+          },
+          {
+            "@type": "CollectionPage",
+            "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#collectionpage",
+            "url": "https://utmeducation.com/wp-json/wp/v2/course-category/",
+            "name": "SSC-2028 - Unique Teaching Method",
+            "inLanguage": "en-US",
+            "isPartOf": {
+              "@id": "https://utmeducation.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#breadcrumblist"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://utmeducation.com/#organization",
+            "name": "Unique Teaching Method",
+            "description": "Basic is must!",
+            "url": "https://utmeducation.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://utmeducation.com/wp-content/uploads/2026/02/IMG_9933-2.png",
+              "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#organizationLogo",
+              "width": 2193,
+              "height": 796
+            },
+            "image": {
+              "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#organizationLogo"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://utmeducation.com/#website",
+            "url": "https://utmeducation.com/",
+            "name": "Unique Teaching Method",
+            "description": "Basic is must!",
+            "inLanguage": "en-US",
+            "publisher": {
+              "@id": "https://utmeducation.com/#organization"
+            }
+          }
+        ]
+      }
+    },
+    "aioseo_breadcrumb": "<div class=\"aioseo-breadcrumbs\"><span class=\"aioseo-breadcrumb\">\n\t\t\t<a href=\"https://utmeducation.com/\" title=\"Home\">Home</a>\n\t\t</span><span class=\"aioseo-breadcrumb-separator\">»</span><span class=\"aioseo-breadcrumb\">\n\t\t\tSSC-2028\n\t\t</span></div>",
+    "aioseo_breadcrumb_json": [
+      {
+        "label": "Home",
+        "link": "https://utmeducation.com/"
+      },
+      {
+        "label": "SSC-2028",
+        "link": "https://utmeducation.com/course-category/ssc-28/?tutor-course-filter-category=41"
+      }
+    ],
+    "_links": {
+      "self": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/course-category/41",
+          "targetHints": {
+            "allow": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/course-category"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/taxonomies/course-category"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/courses?course-category=41"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  },
+  {
+    "id": 48,
+    "count": 6,
+    "description": "",
+    "link": "https://utmeducation.com/course-category/ssc-26/?tutor-course-filter-category=48",
+    "name": "SSC-26",
+    "slug": "ssc-26",
+    "taxonomy": "course-category",
+    "parent": 0,
+    "meta": [],
+    "aioseo_head": "\n\t\t<!-- All in One SEO 5.0.2.1 - aioseo.com -->\n\t<meta name=\"robots\" content=\"max-image-preview:large\" />\n\t<link rel=\"canonical\" href=\"https://utmeducation.com/course-category/ssc-26/?tutor-course-filter-category=48\" />\n\t<meta name=\"generator\" content=\"All in One SEO (AIOSEO) 5.0.2.1\" />\n\t\t<script type=\"application/ld+json\" class=\"aioseo-schema\">\n\t\t\t{\"@context\":\"https:\\/\\/schema.org\",\"@graph\":[{\"@type\":\"BreadcrumbList\",\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#breadcrumblist\",\"itemListElement\":[{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/#listItem\",\"position\":1,\"name\":\"Home\",\"item\":\"https:\\/\\/utmeducation.com\\/\",\"nextItem\":{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/course-category\\/ssc-26\\/?tutor-course-filter-category=48#listItem\",\"name\":\"SSC-26\"}},{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/course-category\\/ssc-26\\/?tutor-course-filter-category=48#listItem\",\"position\":2,\"name\":\"SSC-26\",\"previousItem\":{\"@type\":\"ListItem\",\"@id\":\"https:\\/\\/utmeducation.com\\/#listItem\",\"name\":\"Home\"}}]},{\"@type\":\"CollectionPage\",\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#collectionpage\",\"url\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/\",\"name\":\"SSC-26 - Unique Teaching Method\",\"inLanguage\":\"en-US\",\"isPartOf\":{\"@id\":\"https:\\/\\/utmeducation.com\\/#website\"},\"breadcrumb\":{\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#breadcrumblist\"}},{\"@type\":\"Organization\",\"@id\":\"https:\\/\\/utmeducation.com\\/#organization\",\"name\":\"Unique Teaching Method\",\"description\":\"Basic is must!\",\"url\":\"https:\\/\\/utmeducation.com\\/\",\"logo\":{\"@type\":\"ImageObject\",\"url\":\"https:\\/\\/utmeducation.com\\/wp-content\\/uploads\\/2026\\/02\\/IMG_9933-2.png\",\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#organizationLogo\",\"width\":2193,\"height\":796},\"image\":{\"@id\":\"https:\\/\\/utmeducation.com\\/wp-json\\/wp\\/v2\\/course-category\\/#organizationLogo\"}},{\"@type\":\"WebSite\",\"@id\":\"https:\\/\\/utmeducation.com\\/#website\",\"url\":\"https:\\/\\/utmeducation.com\\/\",\"name\":\"Unique Teaching Method\",\"description\":\"Basic is must!\",\"inLanguage\":\"en-US\",\"publisher\":{\"@id\":\"https:\\/\\/utmeducation.com\\/#organization\"}}]}\n\t\t</script>\n\t\t<!-- All in One SEO -->\n\n",
+    "aioseo_head_json": {
+      "title": "SSC-26 - Unique Teaching Method",
+      "description": "",
+      "canonical_url": "https://utmeducation.com/course-category/ssc-26/?tutor-course-filter-category=48",
+      "robots": "max-image-preview:large",
+      "keywords": "",
+      "webmasterTools": {
+        "miscellaneous": ""
+      },
+      "schema": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#breadcrumblist",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "@id": "https://utmeducation.com/#listItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://utmeducation.com/",
+                "nextItem": {
+                  "@type": "ListItem",
+                  "@id": "https://utmeducation.com/course-category/ssc-26/?tutor-course-filter-category=48#listItem",
+                  "name": "SSC-26"
+                }
+              },
+              {
+                "@type": "ListItem",
+                "@id": "https://utmeducation.com/course-category/ssc-26/?tutor-course-filter-category=48#listItem",
+                "position": 2,
+                "name": "SSC-26",
+                "previousItem": {
+                  "@type": "ListItem",
+                  "@id": "https://utmeducation.com/#listItem",
+                  "name": "Home"
+                }
+              }
+            ]
+          },
+          {
+            "@type": "CollectionPage",
+            "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#collectionpage",
+            "url": "https://utmeducation.com/wp-json/wp/v2/course-category/",
+            "name": "SSC-26 - Unique Teaching Method",
+            "inLanguage": "en-US",
+            "isPartOf": {
+              "@id": "https://utmeducation.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#breadcrumblist"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://utmeducation.com/#organization",
+            "name": "Unique Teaching Method",
+            "description": "Basic is must!",
+            "url": "https://utmeducation.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://utmeducation.com/wp-content/uploads/2026/02/IMG_9933-2.png",
+              "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#organizationLogo",
+              "width": 2193,
+              "height": 796
+            },
+            "image": {
+              "@id": "https://utmeducation.com/wp-json/wp/v2/course-category/#organizationLogo"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://utmeducation.com/#website",
+            "url": "https://utmeducation.com/",
+            "name": "Unique Teaching Method",
+            "description": "Basic is must!",
+            "inLanguage": "en-US",
+            "publisher": {
+              "@id": "https://utmeducation.com/#organization"
+            }
+          }
+        ]
+      }
+    },
+    "aioseo_breadcrumb": "<div class=\"aioseo-breadcrumbs\"><span class=\"aioseo-breadcrumb\">\n\t\t\t<a href=\"https://utmeducation.com/\" title=\"Home\">Home</a>\n\t\t</span><span class=\"aioseo-breadcrumb-separator\">»</span><span class=\"aioseo-breadcrumb\">\n\t\t\tSSC-26\n\t\t</span></div>",
+    "aioseo_breadcrumb_json": [
+      {
+        "label": "Home",
+        "link": "https://utmeducation.com/"
+      },
+      {
+        "label": "SSC-26",
+        "link": "https://utmeducation.com/course-category/ssc-26/?tutor-course-filter-category=48"
+      }
+    ],
+    "_links": {
+      "self": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/course-category/48",
+          "targetHints": {
+            "allow": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ]
+          }
+        }
+      ],
+      "collection": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/course-category"
+        }
+      ],
+      "about": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/taxonomies/course-category"
+        }
+      ],
+      "wp:post_type": [
+        {
+          "href": "https://utmeducation.com/wp-json/wp/v2/courses?course-category=48"
+        }
+      ],
+      "curies": [
+        {
+          "name": "wp",
+          "href": "https://api.w.org/{rel}",
+          "templated": true
+        }
+      ]
+    }
+  }
+]

@@ -21,13 +21,6 @@ import { Posts } from './collections/blog/Posts'
 import { BlogCategories } from './collections/blog/Categories'
 import { BlogTags } from './collections/blog/Tags'
 import { Newsletter } from './collections/Newsletter'
-import {
-  Classes,
-  Coordinators,
-  Enrollment,
-  Subjects,
-  Teachers,
-} from './collections/Courses'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -80,11 +73,6 @@ export default buildConfig({
     BlogCategories,
     Newsletter,
     BlogTags,
-    Classes,
-    Coordinators,
-    Enrollment,
-    Subjects,
-    Teachers,
   ],
   globals: [SiteSettings, CookieConsent, ...generateAdminGlobals()],
   editor: lexicalEditor(),

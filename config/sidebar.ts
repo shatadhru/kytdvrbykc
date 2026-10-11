@@ -108,15 +108,6 @@ export const sidebarConfig: SidebarConfig = {
       isActive: true,
     },
     {
-      id: "courses",
-      label: "আমার কোর্সসমূহ",
-      href: "/dashboard/courses",
-      icon: Book2BoldDuotone,
-      color: "text-emerald-500",
-      hexColor: "#10b981",
-      bgColor: "bg-emerald-500/15 dark:bg-emerald-500/25",
-    },
-    {
       id: "classroom",
       label: "ভিডিও ক্লাসরুম",
       href: "/video",
@@ -125,15 +116,6 @@ export const sidebarConfig: SidebarConfig = {
       hexColor: "#f43f5e",
       bgColor: "bg-rose-500/15 dark:bg-rose-500/25",
       badge: "নতুন",
-    },
-    {
-      id: "payments",
-      label: "পেমেন্ট হিস্ট্রি",
-      href: "/dashboard/payments",
-      icon: WalletMoneyBoldDuotone,
-      color: "text-amber-500",
-      hexColor: "#f59e0b",
-      bgColor: "bg-amber-500/15 dark:bg-amber-500/25",
     },
     {
       id: "notifications",

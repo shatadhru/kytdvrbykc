@@ -34,6 +34,8 @@ export type BkashPayment = {
 export type BkashCreatePaymentResponse = {
   success: boolean
   payment?: BkashPayment
+  paymentID?: string
+  bkashURL?: string
   statusCode?: string
   statusMessage?: string
   errorMessage?: string
@@ -41,25 +43,22 @@ export type BkashCreatePaymentResponse = {
 
 export type BkashExecutePaymentResponse = {
   success: boolean
+  paymentID?: string
+  trxID?: string
+  transactionStatus?: string
   payment?: {
     paymentID: string
     trxID: string
-
-    transactionStatus: string
-
-    amount: string
-    currency: string
-    intent: string
-
-    merchantInvoiceNumber: string
-
+    transactionStatus?: string
+    amount?: string
+    currency?: string
+    intent?: string
+    merchantInvoiceNumber?: string
     paymentExecuteTime?: string
-
     statusCode?: string
     statusMessage?: string
     errorMessage?: string
   }
-
   statusCode?: string
   statusMessage?: string
   errorMessage?: string

@@ -82,11 +82,6 @@ export interface Config {
     'blog-categories': BlogCategory;
     newsletter: Newsletter;
     'blog-tags': BlogTag;
-    classes: Class;
-    coordinators: Coordinator;
-    enrollment: Enrollment;
-    subjects: Subject;
-    teachers: Teacher;
     sessions: Session;
     accounts: Account;
     verifications: Verification;
@@ -112,9 +107,6 @@ export interface Config {
     variantTypes: {
       options: 'variantOptions';
     };
-    products: {
-      variants: 'variants';
-    };
   };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
@@ -127,11 +119,6 @@ export interface Config {
     'blog-categories': BlogCategoriesSelect<false> | BlogCategoriesSelect<true>;
     newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
     'blog-tags': BlogTagsSelect<false> | BlogTagsSelect<true>;
-    classes: ClassesSelect<false> | ClassesSelect<true>;
-    coordinators: CoordinatorsSelect<false> | CoordinatorsSelect<true>;
-    enrollment: EnrollmentSelect<false> | EnrollmentSelect<true>;
-    subjects: SubjectsSelect<false> | SubjectsSelect<true>;
-    teachers: TeachersSelect<false> | TeachersSelect<true>;
     sessions: SessionsSelect<false> | SessionsSelect<true>;
     accounts: AccountsSelect<false> | AccountsSelect<true>;
     verifications: VerificationsSelect<false> | VerificationsSelect<true>;
@@ -281,6 +268,14 @@ export interface Order {
 export interface Product {
   id: string;
   title: string;
+  /**
+   * Main thumbnail image for course cards and banners
+   */
+  thumbnail: string | Media;
+  /**
+   * Public preview / trailer video URL (YouTube, Vimeo, etc.)
+   */
+  introductoryVideo?: string | null;
   description?: {
     root: {
       type: string;
@@ -296,14 +291,13 @@ export interface Product {
     };
     [k: string]: unknown;
   } | null;
+  gallery?:
+    | {
+        image: string | Media;
+        id?: string | null;
+      }[]
+    | null;
   inventory?: number | null;
-  enableVariants?: boolean | null;
-  variantTypes?: (string | VariantType)[] | null;
-  variants?: {
-    docs?: (string | Variant)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
   priceInBDTEnabled?: boolean | null;
   priceInBDT?: number | null;
   relatedProducts?: (string | Product)[] | null;
@@ -312,78 +306,12 @@ export interface Product {
     description?: string | null;
     image?: (string | null) | Media;
   };
-  /**
-   * Optional YouTube video URL. Example: https://www.youtube.com/watch?v=VIDEO_ID
-   */
-  backgroundVideo?: string | null;
-  backgroundImage: string | Media;
+  categories?: (string | Category)[] | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
   slug: string;
-  /**
-   * Free courses automatically use 0 price.
-   */
-  isfree: 'free' | 'paid';
-  categories?: (string | Category)[] | null;
-  subjects: (string | Subject)[];
-  teachers: (string | Teacher)[];
-  coordinators: (string | Coordinator)[];
-  updatedAt: string;
-  createdAt: string;
-  deletedAt?: string | null;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variantTypes".
- */
-export interface VariantType {
-  id: string;
-  label: string;
-  name: string;
-  options?: {
-    docs?: (string | VariantOption)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
-  updatedAt: string;
-  createdAt: string;
-  deletedAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variantOptions".
- */
-export interface VariantOption {
-  id: string;
-  _variantOptions_options_order?: string | null;
-  variantType: string | VariantType;
-  label: string;
-  /**
-   * should be defaulted or dynamic based on label
-   */
-  value: string;
-  updatedAt: string;
-  createdAt: string;
-  deletedAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variants".
- */
-export interface Variant {
-  id: string;
-  /**
-   * Used for administrative purposes, not shown to customers. This is populated by default.
-   */
-  title?: string | null;
-  product: string | Product;
-  options: (string | VariantOption)[];
-  inventory?: number | null;
-  priceInBDTEnabled?: boolean | null;
-  priceInBDT?: number | null;
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
@@ -486,187 +414,57 @@ export interface Category {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "subjects".
+ * via the `definition` "variants".
  */
-export interface Subject {
+export interface Variant {
   id: string;
   /**
-   * Enter the name of the subject.
+   * Used for administrative purposes, not shown to customers. This is populated by default.
    */
-  title: string;
-  /**
-   * Add a cover image for this subject.
-   */
-  image?: (string | null) | Media;
-  /**
-   * Control the current status of this subject.
-   */
-  status?: ('active' | 'draft' | 'archived') | null;
-  /**
-   * Add classes with descriptions, slides, YouTube videos, and resources.
-   */
-  classes?:
-    | {
-        /**
-         * Enter the title of this class.
-         */
-        title: string;
-        /**
-         * Write the description, learning objectives, or notes for this class.
-         */
-        description?: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        /**
-         * Add the Google Slides, Google Drive, or presentation link.
-         */
-        slideLink?: string | null;
-        /**
-         * Add the YouTube video URL for this class.
-         */
-        youtubeLink?: string | null;
-        /**
-         * Upload a PDF, document, or other downloadable class resource.
-         */
-        upload?: (string | null) | Media;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  title?: string | null;
+  product: string | Product;
+  options: (string | VariantOption)[];
+  inventory?: number | null;
+  priceInBDTEnabled?: boolean | null;
+  priceInBDT?: number | null;
   updatedAt: string;
   createdAt: string;
+  deletedAt?: string | null;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "teachers".
+ * via the `definition` "variantOptions".
  */
-export interface Teacher {
+export interface VariantOption {
   id: string;
+  _variantOptions_options_order?: string | null;
+  variantType: string | VariantType;
+  label: string;
   /**
-   * Enter the full name of the teacher.
+   * should be defaulted or dynamic based on label
    */
-  name: string;
-  /**
-   * Upload a professional profile photo.
-   */
-  image: string | Media;
-  /**
-   * Enter the teacher designation or role.
-   */
-  designation?: string | null;
-  /**
-   * A short introduction displayed on teacher cards.
-   */
-  shortBio?: string | null;
-  /**
-   * Add the teacher biography, experience, education, achievements, and other details.
-   */
-  bio?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * Select the subjects taught by this teacher.
-   */
-  subjects?: (string | Subject)[] | null;
-  /**
-   * Control whether this teacher is currently active.
-   */
-  status?: ('active' | 'inactive' | 'draft') | null;
-  facebook?: string | null;
-  youtube?: string | null;
-  linkedin?: string | null;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  value: string;
   updatedAt: string;
   createdAt: string;
+  deletedAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "coordinators".
+ * via the `definition` "variantTypes".
  */
-export interface Coordinator {
+export interface VariantType {
   id: string;
-  /**
-   * Enter the full name of the coordinator.
-   */
+  label: string;
   name: string;
-  /**
-   * Upload a professional profile photo.
-   */
-  image: string | Media;
-  /**
-   * Enter the coordinator designation or role.
-   */
-  designation?: string | null;
-  /**
-   * A short introduction displayed on coordinator cards.
-   */
-  shortBio?: string | null;
-  /**
-   * Add the coordinator biography, experience, responsibilities, and other details.
-   */
-  bio?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  phone?: string | null;
-  email?: string | null;
-  facebook?: string | null;
-  linkedin?: string | null;
-  youtube?: string | null;
-  /**
-   * Control the current status of this coordinator.
-   */
-  status?: ('active' | 'inactive' | 'draft') | null;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  options?: {
+    docs?: (string | VariantOption)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
+  deletedAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1081,44 +879,6 @@ export interface Newsletter {
   createdAt: string;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "classes".
- */
-export interface Class {
-  id: string;
-  title: string;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "enrollment".
- */
-export interface Enrollment {
-  id: string;
-  title?: string | null;
-  user: string | User;
-  courses: (string | Product)[];
-  status: 'active' | 'cancelled' | 'expired';
-  enrolledAt: string;
-  expiresAt?: string | null;
-  paymentStatus: 'free' | 'pending' | 'paid' | 'failed' | 'refunded';
-  transactionId?: string | null;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
-  deletedAt?: string | null;
-}
-/**
  * Auto-generated from Better Auth schema (session)
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1232,26 +992,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'blog-tags';
         value: string | BlogTag;
-      } | null)
-    | ({
-        relationTo: 'classes';
-        value: string | Class;
-      } | null)
-    | ({
-        relationTo: 'coordinators';
-        value: string | Coordinator;
-      } | null)
-    | ({
-        relationTo: 'enrollment';
-        value: string | Enrollment;
-      } | null)
-    | ({
-        relationTo: 'subjects';
-        value: string | Subject;
-      } | null)
-    | ({
-        relationTo: 'teachers';
-        value: string | Teacher;
       } | null)
     | ({
         relationTo: 'sessions';
@@ -1533,100 +1273,6 @@ export interface BlogTagsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "classes_select".
- */
-export interface ClassesSelect<T extends boolean = true> {
-  title?: T;
-  generateSlug?: T;
-  slug?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "coordinators_select".
- */
-export interface CoordinatorsSelect<T extends boolean = true> {
-  name?: T;
-  image?: T;
-  designation?: T;
-  shortBio?: T;
-  bio?: T;
-  phone?: T;
-  email?: T;
-  facebook?: T;
-  linkedin?: T;
-  youtube?: T;
-  status?: T;
-  generateSlug?: T;
-  slug?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "enrollment_select".
- */
-export interface EnrollmentSelect<T extends boolean = true> {
-  title?: T;
-  user?: T;
-  courses?: T;
-  status?: T;
-  enrolledAt?: T;
-  expiresAt?: T;
-  paymentStatus?: T;
-  transactionId?: T;
-  generateSlug?: T;
-  slug?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  deletedAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "subjects_select".
- */
-export interface SubjectsSelect<T extends boolean = true> {
-  title?: T;
-  image?: T;
-  status?: T;
-  classes?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        slideLink?: T;
-        youtubeLink?: T;
-        upload?: T;
-        id?: T;
-      };
-  generateSlug?: T;
-  slug?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "teachers_select".
- */
-export interface TeachersSelect<T extends boolean = true> {
-  name?: T;
-  image?: T;
-  designation?: T;
-  shortBio?: T;
-  bio?: T;
-  subjects?: T;
-  status?: T;
-  facebook?: T;
-  youtube?: T;
-  linkedin?: T;
-  generateSlug?: T;
-  slug?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sessions_select".
  */
 export interface SessionsSelect<T extends boolean = true> {
@@ -1734,11 +1380,16 @@ export interface VariantOptionsSelect<T extends boolean = true> {
  */
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
+  thumbnail?: T;
+  introductoryVideo?: T;
   description?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
   inventory?: T;
-  enableVariants?: T;
-  variantTypes?: T;
-  variants?: T;
   priceInBDTEnabled?: T;
   priceInBDT?: T;
   relatedProducts?: T;
@@ -1749,15 +1400,9 @@ export interface ProductsSelect<T extends boolean = true> {
         description?: T;
         image?: T;
       };
-  backgroundVideo?: T;
-  backgroundImage?: T;
+  categories?: T;
   generateSlug?: T;
   slug?: T;
-  isfree?: T;
-  categories?: T;
-  subjects?: T;
-  teachers?: T;
-  coordinators?: T;
   updatedAt?: T;
   createdAt?: T;
   deletedAt?: T;

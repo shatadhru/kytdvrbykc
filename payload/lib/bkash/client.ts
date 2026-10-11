@@ -34,6 +34,21 @@ function getConfig() {
   }
 }
 
+async function parseBkashJson<T>(response: Response, actionName: string): Promise<T> {
+  const text = await response.text()
+  try {
+    return JSON.parse(text) as T
+  } catch {
+    try {
+      // bKash Sandbox/Production APIs frequently contain unescaped newlines/tabs in statusMessage
+      const sanitized = text.replace(/[\r\n\t]/g, ' ')
+      return JSON.parse(sanitized) as T
+    } catch {
+      throw new Error(`Invalid response from bKash ${actionName} (HTTP ${response.status}): ${text.slice(0, 150)}`)
+    }
+  }
+}
+
 export async function getBkashToken(): Promise<string> {
   const config = getConfig()
 
@@ -55,18 +70,11 @@ export async function getBkashToken(): Promise<string> {
     },
   )
 
-  let result: BkashGrantTokenResponse
-
-  try {
-    result = await response.json()
-  } catch {
-    throw new Error('Invalid response from bKash token API')
-  }
+  const result = await parseBkashJson<BkashGrantTokenResponse>(response, 'token grant')
 
   if (!response.ok || !result.id_token) {
     throw new Error(
       result.statusMessage ||
-        
         'Unable to get bKash token',
     )
   }
@@ -112,13 +120,7 @@ export async function createBkashPayment({
     },
   )
 
-  let result: BkashCreatePaymentResponse
-
-  try {
-    result = await response.json()
-  } catch {
-    throw new Error('Invalid response from bKash create payment API')
-  }
+  const result = await parseBkashJson<any>(response, 'create payment')
 
   if (!response.ok || result.statusCode !== '0000') {
     throw new Error(
@@ -128,7 +130,17 @@ export async function createBkashPayment({
     )
   }
 
-  return result
+  return {
+    ...result,
+    success: true,
+    paymentID: result.paymentID,
+    bkashURL: result.bkashURL,
+    payment: {
+      ...result,
+      paymentID: result.paymentID,
+      bkashURL: result.bkashURL,
+    },
+  }
 }
 
 export async function executeBkashPayment(
@@ -154,13 +166,7 @@ export async function executeBkashPayment(
     },
   )
 
-  let result: BkashExecutePaymentResponse
-
-  try {
-    result = await response.json()
-  } catch {
-    throw new Error('Invalid response from bKash execute API')
-  }
+  const result = await parseBkashJson<any>(response, 'execute payment')
 
   if (!response.ok || result.statusCode !== '0000') {
     throw new Error(
@@ -170,5 +176,17 @@ export async function executeBkashPayment(
     )
   }
 
-  return result
+  return {
+    ...result,
+    success: true,
+    paymentID: result.paymentID || paymentID,
+    trxID: result.trxID,
+    transactionStatus: result.transactionStatus,
+    payment: {
+      ...result,
+      paymentID: result.paymentID || paymentID,
+      trxID: result.trxID,
+      transactionStatus: result.transactionStatus,
+    },
+  }
 }

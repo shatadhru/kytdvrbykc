@@ -72,12 +72,10 @@ export const headerConfig: HeaderConfig = {
       icon: Home,
     },
     {
-      id: 'classes',
-      title: 'কোর্সসমূহ',
-      href: '/video',
-      icon: Video,
-      badge: 'নতুন',
-      badgeVariant: 'teal',
+      id: 'store',
+      title: 'স্টোর',
+      href: '/store',
+      icon: BookOpen,
     },
     {
       id: 'blog',

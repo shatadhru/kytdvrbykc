@@ -58,11 +58,11 @@ export default function DashboardPage() {
               <span>ক্লাস শুরু</span>
             </Link>
             <Link
-              href="/dashboard/courses"
+              href="/store"
               className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 h-7 sm:h-9 px-2.5 sm:px-3.5 rounded-lg sm:rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-[11px] sm:text-xs border-b-2 border-sky-700 active:translate-y-0.5 shadow-xs transition-all"
             >
               <Book2BoldDuotone size={13} color="#fff" />
-              <span>আমার কোর্স</span>
+              <span>স্টোর</span>
             </Link>
           </div>
         </div>
@@ -71,13 +71,13 @@ export default function DashboardPage() {
       {/* 2. Stats Section (Desktop/Tablet Only) */}
       <div className="hidden sm:grid sm:grid-cols-3 sm:gap-4">
         <Link
-          href="/dashboard/courses"
+          href="/store"
           className="group flex items-center justify-between p-4 rounded-2xl border-2 border-emerald-500/25 border-b-4 border-b-emerald-500 bg-card hover:bg-emerald-500/5 transition-colors"
         >
           <div>
-            <span className="text-xs font-semibold text-muted-foreground block truncate">কোর্সসমূহ</span>
-            <div className="text-xl font-black text-foreground mt-0.5">৪ টি</div>
-            <span className="text-[10px] text-emerald-600 font-medium">এসএসসি ও এইচএসসি</span>
+            <span className="text-xs font-semibold text-muted-foreground block truncate">স্টোর</span>
+            <div className="text-xl font-black text-foreground mt-0.5">প্রোডাক্টস</div>
+            <span className="text-[10px] text-emerald-600 font-medium">সকল আইটেম দেখুন</span>
           </div>
           <div className="size-10 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-500 shrink-0">
             <Book2BoldDuotone size={20} color="#10b981" />
@@ -99,13 +99,13 @@ export default function DashboardPage() {
         </Link>
 
         <Link
-          href="/dashboard/payments"
+          href="/dashboard/notifications"
           className="group flex items-center justify-between p-4 rounded-2xl border-2 border-amber-500/25 border-b-4 border-b-amber-500 bg-card hover:bg-amber-500/5 transition-colors"
         >
           <div>
-            <span className="text-xs font-semibold text-muted-foreground block truncate">পেমেন্ট</span>
-            <div className="text-xl font-black text-foreground mt-0.5">পরিশোধিত</div>
-            <span className="text-[10px] text-amber-600 font-medium">ফি ক্লিয়ার আছে</span>
+            <span className="text-xs font-semibold text-muted-foreground block truncate">নোটিফিকেশন</span>
+            <div className="text-xl font-black text-foreground mt-0.5">আপডেট</div>
+            <span className="text-[10px] text-amber-600 font-medium">নতুন তথ্য ও ঘোষণা</span>
           </div>
           <div className="size-10 rounded-xl bg-amber-500/15 flex items-center justify-center text-amber-500 shrink-0">
             <WalletMoneyBoldDuotone size={20} color="#f59e0b" />
@@ -124,21 +124,21 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-2 sm:grid-cols-1 gap-1.5 sm:gap-2">
             <Link
-              href="/dashboard/courses"
-              className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 transition-colors"
+              href="/store"
+              className="flex-1 sm:flex-initial flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 transition-colors"
             >
               <div className="size-6 sm:size-7 rounded-md sm:rounded-lg bg-emerald-500/15 flex items-center justify-center shrink-0">
                 <Book2BoldDuotone size={13} color="#10b981" />
               </div>
               <div className="min-w-0">
-                <div className="text-[10.5px] sm:text-xs font-bold text-foreground truncate">আমার কোর্স</div>
-                <div className="text-[9px] sm:text-[10px] text-muted-foreground truncate">পাঠতালিকা</div>
+                <div className="text-[10.5px] sm:text-xs font-bold text-foreground truncate">স্টোর</div>
+                <div className="text-[9px] sm:text-[10px] text-muted-foreground truncate">প্রোডাক্টস</div>
               </div>
             </Link>
 
             <Link
               href="/video"
-              className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/10 transition-colors"
+              className="flex-1 sm:flex-initial flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/10 transition-colors"
             >
               <div className="size-6 sm:size-7 rounded-md sm:rounded-lg bg-rose-500/15 flex items-center justify-center shrink-0">
                 <VideocameraBoldDuotone size={13} color="#f43f5e" />
@@ -150,15 +150,15 @@ export default function DashboardPage() {
             </Link>
 
             <Link
-              href="/dashboard/payments"
-              className="flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 transition-colors"
+              href="/dashboard/settings"
+              className="flex-1 sm:flex-initial flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 transition-colors"
             >
               <div className="size-6 sm:size-7 rounded-md sm:rounded-lg bg-amber-500/15 flex items-center justify-center shrink-0">
                 <WalletMoneyBoldDuotone size={13} color="#f59e0b" />
               </div>
               <div className="min-w-0">
-                <div className="text-[10.5px] sm:text-xs font-bold text-foreground truncate">পেমেন্ট হিস্ট্রি</div>
-                <div className="text-[9px] sm:text-[10px] text-muted-foreground truncate">ফি ও রশিদ</div>
+                <div className="text-[10.5px] sm:text-xs font-bold text-foreground truncate">প্রোফাইল</div>
+                <div className="text-[9px] sm:text-[10px] text-muted-foreground truncate">সেটিংস</div>
               </div>
             </Link>
 

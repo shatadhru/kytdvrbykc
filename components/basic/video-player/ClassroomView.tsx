@@ -7,7 +7,7 @@ import {
   BookOpen,
   ShieldCheck,
   Clock,
-  Sparkles,
+  PlayCircle,
 } from 'lucide-react'
 
 export interface ClassroomClassItem {
@@ -170,7 +170,7 @@ export default function ClassroomView({
             {/* Quick Test Bar for Admin / Custom YouTube URL */}
             <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/30 p-4">
               <div className="flex items-center gap-2 mb-2.5">
-                <Sparkles className="size-4 text-teal-400" />
+                <PlayCircle className="size-4 text-teal-400" />
                 <h3 className="text-xs sm:text-sm font-semibold text-zinc-200">
                   Test Any YouTube URL Instantly
                 </h3>

@@ -13,7 +13,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { SocialIcon } from 'react-social-icons'
 import {
   GraduationCap,
-  Sparkles,
+  Lightbulb,
   BookOpen,
   Users,
   Award,
@@ -105,7 +105,7 @@ export default async function TeachersPage() {
                 variant="outline"
                 className="gap-1.5 rounded-full border-primary/30 bg-primary/10 px-3.5 py-1 text-xs sm:text-sm font-medium text-primary shadow-xs"
               >
-                <Sparkles className="size-3.5" />
+                <Lightbulb className="size-3.5" />
                 <span>আমাদের শিক্ষক মণ্ডলী</span>
               </Badge>
             </div>
@@ -364,7 +364,7 @@ export default async function TeachersPage() {
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
               <div className="rounded-2xl border border-border/60 bg-card p-5 sm:p-6 shadow-2xs">
                 <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <Sparkles className="size-5" />
+                  <Lightbulb className="size-5" />
                 </div>
                 <h3 className="mt-4 text-base font-semibold text-foreground">
                   সহজ ও প্রাণবন্ত উপস্থাপনা

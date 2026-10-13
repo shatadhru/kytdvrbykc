@@ -13,7 +13,6 @@ import { Card, CardContent } from '@/components/ui/card'
 import { SocialIcon } from 'react-social-icons'
 import {
   Headphones,
-  Sparkles,
   Users,
   Clock,
   MessageSquare,

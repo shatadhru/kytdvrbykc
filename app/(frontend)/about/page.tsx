@@ -9,7 +9,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
-  Sparkles,
   BookOpen,
   Users,
   Video,
@@ -73,7 +72,7 @@ export default function AboutPage() {
                 variant="outline"
                 className="gap-1.5 rounded-full border-primary/30 bg-primary/10 px-3.5 py-1 text-xs sm:text-sm font-medium text-primary shadow-xs"
               >
-                <Sparkles className="size-3.5" />
+                <Lightbulb className="size-3.5" />
                 <span>আমাদের পরিচিতি ও লক্ষ্য</span>
               </Badge>
             </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { ArrowUpRight, BookOpen } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -79,7 +79,7 @@ export function Learning() {
                 variant="outline"
                 className="gap-1.5 rounded-full border-primary/20 bg-primary/10 px-3.5 py-1 text-xs sm:text-sm font-medium text-primary shadow-xs"
               >
-                <Sparkles className="size-3.5" />
+                <BookOpen className="size-3.5" />
                 <span>সহজ শেখার পদ্ধতি</span>
               </Badge>
             </div>

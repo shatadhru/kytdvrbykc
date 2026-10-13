@@ -16,7 +16,6 @@ import {
   GraduationCap,
   Users,
   Headphones,
-  Sparkles,
 } from 'lucide-react'
 
 export interface FooterMenuItem {
@@ -60,7 +59,7 @@ export const footerConfig: FooterConfig = {
     {
       title: 'রিসোর্স ও পরিচিতি',
       items: [
-        { title: 'আমাদের সম্পর্কে', href: '/about', icon: Sparkles },
+        { title: 'আমাদের সম্পর্কে', href: '/about', icon: BookOpen },
         { title: 'ব্লগ ও শিক্ষা তথ্য', href: '/blog', icon: Newspaper, badge: 'নতুন' },
         { title: 'স্টাডি গাইডলাইন', href: '/blog', icon: BookOpen },
         { title: 'পরীক্ষা প্রস্তুতি টিপস', href: '/blog', icon: Zap },

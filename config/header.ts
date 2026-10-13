@@ -11,7 +11,6 @@ import {
   HelpCircle,
   Video,
   GraduationCap,
-  Sparkles,
   Users,
   Headphones,
   type LucideIcon,
@@ -78,7 +77,7 @@ export const headerConfig: HeaderConfig = {
       id: 'about',
       title: 'আমাদের সম্পর্কে',
       href: '/about',
-      icon: Sparkles,
+      icon: HelpCircle,
     },
     {
       id: 'teachers',

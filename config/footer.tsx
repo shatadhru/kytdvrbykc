@@ -14,6 +14,9 @@ import {
   Shield,
   Zap,
   GraduationCap,
+  Users,
+  Headphones,
+  Sparkles,
 } from 'lucide-react'
 
 export interface FooterMenuItem {
@@ -48,17 +51,20 @@ export const footerConfig: FooterConfig = {
       items: [
         { title: 'হোম পেজ', href: '/', icon: Globe },
         { title: 'ভিডিও ক্লাস', href: '/video', icon: Layers, badge: 'জনপ্রিয়' },
+        { title: 'আমাদের শিক্ষকবৃন্দ', href: '/teachers', icon: GraduationCap, badge: 'ফ্যাকাল্টি' },
+        { title: 'কো-অর্ডিনেটর টিম', href: '/coordinators', icon: Headphones },
         { title: 'শিক্ষার্থী ড্যাশবোর্ড', href: '/dashboard', icon: LayoutDashboard },
         { title: 'এডমিন পোর্টাল', href: '/admin', icon: Database, badge: 'CMS', external: true },
       ],
     },
     {
-      title: 'রিসোর্স ও নোটিশ',
+      title: 'রিসোর্স ও পরিচিতি',
       items: [
+        { title: 'আমাদের সম্পর্কে', href: '/about', icon: Sparkles },
         { title: 'ব্লগ ও শিক্ষা তথ্য', href: '/blog', icon: Newspaper, badge: 'নতুন' },
         { title: 'স্টাডি গাইডলাইন', href: '/blog', icon: BookOpen },
         { title: 'পরীক্ষা প্রস্তুতি টিপস', href: '/blog', icon: Zap },
-        { title: 'ইউনিক টিচিং মেথড', href: '/dashboard', icon: GraduationCap },
+        { title: 'ইউনিক টিচিং মেথড', href: '/about', icon: GraduationCap },
       ],
     },
     {

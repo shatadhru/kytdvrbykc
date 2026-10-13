@@ -28,6 +28,9 @@ export const SiteConfig = {
     login: "লগইন",
     signup: "রেজিস্ট্রেশন",
     forget: "পাসওয়ার্ড রিসেট",
+    teachers: "আমাদের শিক্ষকবৃন্দ",
+    coordinators: "আমাদের কো-অর্ডিনেটরবৃন্দ",
+    about: "আমাদের সম্পর্কে",
   },
 
   seo: {

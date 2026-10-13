@@ -21,6 +21,8 @@ import { Posts } from './collections/blog/Posts'
 import { BlogCategories } from './collections/blog/Categories'
 import { BlogTags } from './collections/blog/Tags'
 import { Newsletter } from './collections/Newsletter'
+import { Teachers } from './collections/Teachers'
+import { Coordinators } from './collections/Coordinators'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -66,6 +68,8 @@ export default buildConfig({
     Users,
     Media,
     Categories,
+    Teachers,
+    Coordinators,
     Banners,
     Reviews,
     Coupons,

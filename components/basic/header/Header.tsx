@@ -140,7 +140,7 @@ export function Header({
           </div>
         </div>
 
-        {/* Center Section: Desktop Navigation Links (Controlled from Config) */}
+        {/* Center Section: Desktop Navigation Links (Updated with Teachers, Coordinators, About) */}
         <nav
           className="hidden md:flex items-center gap-1 min-w-0"
           aria-label="Desktop Navigation"

@@ -11,6 +11,9 @@ import {
   HelpCircle,
   Video,
   GraduationCap,
+  Sparkles,
+  Users,
+  Headphones,
   type LucideIcon,
   MessageCircleCheckIcon,
 } from 'lucide-react'
@@ -72,6 +75,24 @@ export const headerConfig: HeaderConfig = {
       icon: Home,
     },
     {
+      id: 'about',
+      title: 'আমাদের সম্পর্কে',
+      href: '/about',
+      icon: Sparkles,
+    },
+    {
+      id: 'teachers',
+      title: 'শিক্ষকবৃন্দ',
+      href: '/teachers',
+      icon: GraduationCap,
+    },
+    {
+      id: 'coordinators',
+      title: 'কো-অর্ডিনেটর',
+      href: '/coordinators',
+      icon: Headphones,
+    },
+    {
       id: 'store',
       title: 'স্টোর',
       href: '/store',
@@ -87,7 +108,7 @@ export const headerConfig: HeaderConfig = {
       id: 'platform',
       title: 'একাডেমিক',
       href: '/dashboard',
-      icon: GraduationCap,
+      icon: Layers,
       children: [
         {
           id: 'dashboard',
@@ -104,6 +125,22 @@ export const headerConfig: HeaderConfig = {
           badge: 'নতুন',
           badgeVariant: 'teal',
           description: 'সকল বিষয়ভিত্তিক আকর্ষণীয় ভিডিও লেকচার।',
+        },
+        {
+          id: 'teachers-sub',
+          title: 'সকল শিক্ষক মণ্ডলী',
+          href: '/teachers',
+          icon: GraduationCap,
+          badge: 'ফ্যাকাল্টি',
+          badgeVariant: 'teal',
+          description: 'আমাদের অভিজ্ঞ শিক্ষক ও প্রশিক্ষকবৃন্দ।',
+        },
+        {
+          id: 'coordinators-sub',
+          title: 'কো-অর্ডিনেটর টিম',
+          href: '/coordinators',
+          icon: Headphones,
+          description: 'সার্বক্ষণিক ক্লাস রুটিন ও শিক্ষার্থী সহায়তা।',
         },
         {
           id: 'cms',

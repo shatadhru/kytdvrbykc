@@ -59,6 +59,7 @@ export const isDocumentOwner: Access = ({ req }) => {
 export const publicAccess: Access = () => true
 
 import { ProductsCollection } from '../collections/ecommerch/Product'
+import { OrdersCollection } from '../collections/ecommerch/Orders'
 import { CurrencyNextLoad } from '@/config/Currency'
 import { currencyCode } from 'better-auth'
 
@@ -81,5 +82,8 @@ export const ecommerceConnector = ecommercePlugin({
   },
   products: {
     productsCollectionOverride: ProductsCollection,
+  },
+  orders: {
+    ordersCollectionOverride: OrdersCollection,
   },
 })

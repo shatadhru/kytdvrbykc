@@ -8,6 +8,12 @@ import {
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
+import type { FieldAccess } from 'payload'
+
+const adminOnlyFieldAccess: FieldAccess = ({ req }) => {
+  return (req?.user as { role?: string })?.role === 'admin'
+}
+
 const generatePreviewPath = ({ slug }: { slug?: string | null }) => (slug ? `/store/${slug}` : '/store')
 
 export const ProductsCollection: CollectionOverride = ({ defaultCollection }) => {
@@ -44,6 +50,31 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
       priceInBDT: true,
       inventory: true,
       meta: true,
+      teachers: true,
+      coordinators: true,
+      lessons: true,
+    },
+
+    hooks: {
+      ...defaultCollection?.hooks,
+      beforeValidate: [
+        ...(defaultCollection?.hooks?.beforeValidate || []),
+        ({ data }) => {
+          if (data && (data as any).modules && !(data as any).lessons) {
+            ;(data as any).lessons = (data as any).modules
+          }
+          return data
+        },
+      ],
+      afterRead: [
+        ...(defaultCollection?.hooks?.afterRead || []),
+        ({ doc }) => {
+          if (doc?.lessons && !doc?.modules) {
+            doc.modules = doc.lessons
+          }
+          return doc
+        },
+      ],
     },
 
     fields: [
@@ -97,6 +128,125 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                     type: 'upload',
                     relationTo: 'media',
                     required: true,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            label: 'Curriculum & Faculty',
+            fields: [
+              {
+                type: 'row',
+                fields: [
+                  {
+                    name: 'teachers',
+                    type: 'relationship',
+                    relationTo: 'teachers',
+                    hasMany: true,
+                    label: 'Course Teachers / Instructors',
+                    admin: {
+                      width: '50%',
+                      description: 'Select assigned course teachers and instructors',
+                    },
+                  },
+                  {
+                    name: 'coordinators',
+                    type: 'relationship',
+                    relationTo: 'coordinators',
+                    hasMany: true,
+                    label: 'Course Coordinators',
+                    admin: {
+                      width: '50%',
+                      description: 'Select assigned course coordinators and mentors',
+                    },
+                  },
+                ],
+              },
+              {
+                name: 'lessons',
+                type: 'array',
+                label: 'Course Modules / Lessons',
+                labels: {
+                  singular: 'Lesson / Class',
+                  plural: 'Lessons / Classes',
+                },
+                admin: {
+                  description: 'Organize course curriculum, classes, durations, and protected video sources.',
+                  initCollapsed: false,
+                },
+                fields: [
+                  {
+                    type: 'row',
+                    fields: [
+                      {
+                        name: 'lessonTitle',
+                        type: 'text',
+                        required: true,
+                        label: 'Lesson Title',
+                        admin: {
+                          width: '50%',
+                          placeholder: 'e.g. Physics Chapter 1: Laws of Motion',
+                        },
+                      },
+                      {
+                        name: 'moduleName',
+                        type: 'text',
+                        label: 'Module / Chapter (Optional)',
+                        admin: {
+                          width: '50%',
+                          placeholder: 'e.g. Module 1: Mechanics',
+                        },
+                      },
+                    ],
+                  },
+                  {
+                    type: 'row',
+                    fields: [
+                      {
+                        name: 'duration',
+                        type: 'text',
+                        label: 'Duration',
+                        admin: {
+                          width: '33%',
+                          placeholder: 'e.g. 45m or 12:30',
+                        },
+                      },
+                      {
+                        name: 'order',
+                        type: 'number',
+                        label: 'Order',
+                        defaultValue: 1,
+                        admin: {
+                          width: '33%',
+                          description: 'Sequential order of the class',
+                        },
+                      },
+                      {
+                        name: 'isFreePreview',
+                        type: 'checkbox',
+                        label: 'Free Preview (Allow trial access)',
+                        defaultValue: false,
+                        admin: {
+                          width: '33%',
+                          description: 'Allow non-enrolled students to watch this lesson',
+                        },
+                      },
+                    ],
+                  },
+                  {
+                    name: 'youtubeVideoIdOrUrl',
+                    type: 'text',
+                    label: 'YouTube Video ID or URL (Admin Only Hidden)',
+                    access: {
+                      read: adminOnlyFieldAccess,
+                      update: adminOnlyFieldAccess,
+                    },
+                    admin: {
+                      description:
+                        'Admin-only hidden field for piracy protection. Hidden from public and non-admin queries.',
+                      placeholder: 'e.g. https://youtu.be/... or video ID',
+                    },
                   },
                 ],
               },

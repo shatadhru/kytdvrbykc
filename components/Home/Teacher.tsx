@@ -189,8 +189,8 @@ export function Teacher() {
                     size="lg"
                     className="h-10 w-full rounded-xl text-xs font-semibold sm:h-11 sm:w-auto sm:text-sm"
                   >
-                    <Link href="/dashboard">
-                      আরও জানুন
+                    <Link href="/teachers">
+                      সকল শিক্ষক দেখুন
                       <BookOpen className="ml-1 size-3.5 sm:size-4" />
                     </Link>
                   </Button>

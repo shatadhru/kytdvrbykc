@@ -57,6 +57,8 @@ export default function ClassroomView({
   )
   const [customInputUrl, setCustomInputUrl] = useState<string>('')
   const [selectedSubject, setSelectedSubject] = useState<string>('all')
+  const [fetchingToken, setFetchingToken] = useState<boolean>(false)
+  const [accessError, setAccessError] = useState<string | null>(null)
 
   const currentClass = classes.find((c) => c.id === activeClassId)
 
@@ -66,8 +68,35 @@ export default function ClassroomView({
     return c.subjectSlug.toLowerCase() === selectedSubject.toLowerCase()
   })
 
-  const handleSelectClass = (cls: ClassroomClassItem) => {
+  const handleSelectClass = async (cls: ClassroomClassItem) => {
     setActiveClassId(cls.id)
+    setAccessError(null)
+
+    // If we have a courseSlug, always fetch a fresh token from the access API.
+    // Enrollment is verified server-side on every lesson click.
+    if (course.slug && cls.id) {
+      setFetchingToken(true)
+      setActiveVideoHash(undefined)
+      setActiveVideoUrl('')
+      try {
+        const res = await fetch(`/api/courses/${course.slug}/lessons/${cls.id}/access`)
+        const data = await res.json()
+        if (data.success && data.token) {
+          setActiveVideoHash(data.token)
+          setActiveVideoUrl('')
+        } else {
+          setAccessError(data.error || 'Access denied.')
+          setActiveVideoHash(undefined)
+        }
+      } catch {
+        setAccessError('Failed to load video. Please try again.')
+      } finally {
+        setFetchingToken(false)
+      }
+      return
+    }
+
+    // Fallback: direct URL (dev / demo mode without a real course slug)
     if (cls.videoHash) {
       setActiveVideoHash(cls.videoHash)
       setActiveVideoUrl('')
@@ -120,11 +149,24 @@ export default function ClassroomView({
             {/* Sticky Player Container for mobile */}
             <div className="sticky top-0 z-20 -mx-3 sm:mx-0 sm:static sm:z-auto bg-zinc-950/90 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none p-1 sm:p-0">
               <div className="rounded-xl border border-zinc-800 bg-black overflow-hidden shadow-2xl">
-                <CustomVideoPlayer
-                  key={activeVideoHash || activeVideoUrl}
-                  url={activeVideoUrl}
-                  videoHash={activeVideoHash}
-                />
+                {fetchingToken ? (
+                  <div className="aspect-video flex w-full flex-col items-center justify-center gap-2 bg-zinc-950 text-zinc-400">
+                    <div className="size-8 animate-spin rounded-full border-2 border-zinc-600 border-t-teal-400" />
+                    <span className="text-xs font-medium tracking-wide">Verifying access...</span>
+                  </div>
+                ) : accessError ? (
+                  <div className="aspect-video flex w-full flex-col items-center justify-center gap-2 bg-zinc-950 p-6 text-center">
+                    <ShieldCheck className="size-8 text-red-400" />
+                    <span className="text-sm font-semibold text-red-400">{accessError}</span>
+                    <span className="text-xs text-zinc-500">Purchase this course to unlock access.</span>
+                  </div>
+                ) : (
+                  <CustomVideoPlayer
+                    key={activeVideoHash || activeVideoUrl}
+                    url={activeVideoUrl}
+                    videoHash={activeVideoHash}
+                  />
+                )}
               </div>
 
               {/* Protection Badge Underneath Player */}

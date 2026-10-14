@@ -80,54 +80,14 @@ export const headerConfig: HeaderConfig = {
       icon: HelpCircle,
     },
     {
-      id: 'teachers',
-      title: 'শিক্ষকবৃন্দ',
-      href: '/teachers',
-      icon: GraduationCap,
-    },
-    {
-      id: 'coordinators',
-      title: 'কো-অর্ডিনেটর',
-      href: '/coordinators',
-      icon: Headphones,
-    },
-    {
-      id: 'store',
-      title: 'স্টোর',
-      href: '/store',
-      icon: BookOpen,
-    },
-    {
-      id: 'blog',
-      title: 'ব্লগ ও নোটিশ',
-      href: '/blog',
-      icon: Newspaper,
-    },
-    {
       id: 'platform',
       title: 'একাডেমিক',
       href: '/dashboard',
       icon: Layers,
       children: [
         {
-          id: 'dashboard',
-          title: 'শিক্ষার্থী ড্যাশবোর্ড',
-          href: '/dashboard',
-          icon: LayoutDashboard,
-          description: 'ব্যক্তিগত অগ্রগতি, প্রোফাইল ও সংরক্ষিত ক্লাস।',
-        },
-        {
-          id: 'video-library',
-          title: 'বিষয়ভিত্তিক ভিডিও',
-          href: '/video',
-          icon: Layers,
-          badge: 'নতুন',
-          badgeVariant: 'teal',
-          description: 'সকল বিষয়ভিত্তিক আকর্ষণীয় ভিডিও লেকচার।',
-        },
-        {
           id: 'teachers-sub',
-          title: 'সকল শিক্ষক মণ্ডলী',
+          title: 'আমাদের শিক্ষকবৃন্দ',
           href: '/teachers',
           icon: GraduationCap,
           badge: 'ফ্যাকাল্টি',
@@ -142,6 +102,22 @@ export const headerConfig: HeaderConfig = {
           description: 'সার্বক্ষণিক ক্লাস রুটিন ও শিক্ষার্থী সহায়তা।',
         },
         {
+          id: 'video-library',
+          title: 'বিষয়ভিত্তিক ভিডিও',
+          href: '/video',
+          icon: Layers,
+          badge: 'নতুন',
+          badgeVariant: 'teal',
+          description: 'সকল বিষয়ভিত্তিক আকর্ষণীয় ভিডিও লেকচার।',
+        },
+        {
+          id: 'dashboard',
+          title: 'শিক্ষার্থী ড্যাশবোর্ড',
+          href: '/dashboard',
+          icon: LayoutDashboard,
+          description: 'ব্যক্তিগত অগ্রগতি, প্রোফাইল ও সংরক্ষিত ক্লাস।',
+        },
+        {
           id: 'cms',
           title: 'এডমিন পোর্টাল',
           href: '/admin',
@@ -152,6 +128,18 @@ export const headerConfig: HeaderConfig = {
           description: 'কন্টেন্ট, ক্লাস ও শিক্ষার্থী ব্যবস্থাপনা প্যানেল।',
         },
       ],
+    },
+    {
+      id: 'store',
+      title: 'স্টোর',
+      href: '/store',
+      icon: BookOpen,
+    },
+    {
+      id: 'blog',
+      title: 'ব্লগ ও নোটিশ',
+      href: '/blog',
+      icon: Newspaper,
     },
 
 

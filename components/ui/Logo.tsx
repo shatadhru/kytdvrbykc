@@ -196,9 +196,19 @@ export function Logo({
 
     if (href) {
       return (
-        <div className={cn("inline-flex items-center", alignClass, className)}>
-          {skeletonContent}
-        </div>
+        <Link
+          href={href}
+          aria-label={siteName}
+          className={cn(
+            "inline-flex items-center hover:opacity-90 transition-opacity focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md",
+            alignClass,
+            className,
+          )}
+        >
+          <div className={cn("inline-flex items-center shrink-0", alignClass)}>
+            {skeletonContent}
+          </div>
+        </Link>
       );
     }
     return (

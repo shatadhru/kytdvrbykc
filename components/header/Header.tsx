@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Logo } from '@/components/ui/Logo'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -68,6 +68,7 @@ export function Header({
   containerClassName,
 }: HeaderProps) {
   const pathname = usePathname()
+  const router = useRouter()
 
   const activeNav = navItems || config.nav
   const shouldShowCart = showCart ?? config.actions.showCart ?? true
@@ -206,14 +207,20 @@ export function Header({
                           <DropdownMenuItem
                             key={sub.id}
                             render={
-                              <Link
+                              <a
                                 href={sub.href}
                                 target={sub.external ? '_blank' : undefined}
                                 rel={sub.external ? 'noopener noreferrer' : undefined}
                               />
                             }
+                            onClick={(e) => {
+                              if (!sub.external) {
+                                e.preventDefault()
+                                router.push(sub.href)
+                              }
+                            }}
                             className={cn(
-                              'flex items-start gap-2.5 p-2 rounded-lg cursor-pointer transition-colors',
+                              'flex items-start gap-2.5 p-2 rounded-lg cursor-pointer transition-colors no-underline',
                               isSubActive
                                 ? 'bg-teal-500/10 text-teal-600 dark:text-teal-400'
                                 : 'hover:bg-muted/60'

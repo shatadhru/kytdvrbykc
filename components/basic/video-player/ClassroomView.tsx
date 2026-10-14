@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import CustomVideoPlayer from './VideoPlayer'
+import CourseVideoPlayer from '@/components/basic/video/CourseVideoPlayer'
 import {
   Play,
   BookOpen,
@@ -161,7 +161,7 @@ export default function ClassroomView({
                     <span className="text-xs text-zinc-500">Purchase this course to unlock access.</span>
                   </div>
                 ) : (
-                  <CustomVideoPlayer
+                  <CourseVideoPlayer
                     key={activeVideoHash || activeVideoUrl}
                     url={activeVideoUrl}
                     videoHash={activeVideoHash}

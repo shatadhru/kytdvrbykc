@@ -8,6 +8,7 @@ import { CastButton } from '@/components/videojs/ui/cast-button';
 import { FullscreenButton } from '@/components/videojs/ui/fullscreen-button';
 import { PiPButton } from '@/components/videojs/ui/pip-button';
 import { PlayButton } from '@/components/videojs/ui/play-button';
+import { SeekButton } from '@/components/videojs/ui/seek-button';
 import { TimeSlider } from '@/components/videojs/ui/time-slider';
 import { VolumePopover } from '@/components/videojs/ui/volume-popover';
 import { cn } from '@/payload/lib/utils';
@@ -60,8 +61,14 @@ export function DefaultVideoControls({ renderThumbnail }: DefaultVideoControlsPr
               'media-max-lg:group-[:not([data-visible])]/controls:translate-y-media-hidden-offset'
             )}
           >
+            <ButtonTooltip side="top" label="Rewind 10s (Left Arrow)">
+              <SeekButton direction="backward" seconds={10} />
+            </ButtonTooltip>
             <ButtonTooltip side="top">
               <PlayButton />
+            </ButtonTooltip>
+            <ButtonTooltip side="top" label="Forward 10s (Right Arrow)">
+              <SeekButton direction="forward" seconds={10} />
             </ButtonTooltip>
             <VolumePopover className={'ms-px'} />
 

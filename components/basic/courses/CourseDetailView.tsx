@@ -58,6 +58,11 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
     setActivePreviewLesson(lesson)
     if (!lesson.isFreePreview) return
 
+    if (lesson.demoUrl) {
+      setPreviewToken(null)
+      return
+    }
+
     setIsLoadingToken(true)
     try {
       const res = await fetch(`/api/courses/${course.slug}/lessons/${lesson.id}/access`)
@@ -177,7 +182,9 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
             <div className="sticky top-20 rounded-2xl border border-border/80 bg-card shadow-xl overflow-hidden">
               {/* Top Preview Video or Thumbnail */}
               <div className="relative aspect-video w-full bg-black">
-                {previewToken ? (
+                {activePreviewLesson?.demoUrl ? (
+                  <CourseVideoPlayer url={activePreviewLesson.demoUrl} className="size-full" />
+                ) : previewToken ? (
                   <CourseVideoPlayer videoHash={previewToken} className="size-full" />
                 ) : course.introductoryVideo ? (
                   <CourseVideoPlayer url={course.introductoryVideo} className="size-full" />

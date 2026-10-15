@@ -11,6 +11,8 @@ import ClassroomView, {
   type ClassroomClassItem,
   type ClassroomCourseItem,
 } from '@/components/basic/video-player/ClassroomView'
+import { encryptVideoUrl } from '@/utils/videoHash'
+import { extractCleanId } from '@/utils/extractId'
 import { SiteConfig, getPageTitle } from '@/config/site'
 
 interface Props {
@@ -30,6 +32,7 @@ async function getCourse(slug: string) {
     },
     depth: 2,
     limit: 1,
+    overrideAccess: true, // Server-side execution only
     select: {
       title: true,
       slug: true,
@@ -48,6 +51,7 @@ async function getCourse(slug: string) {
         order: true,
         isFreePreview: true,
         id: true,
+        youtubeVideoIdOrUrl: true,
       },
     },
   })
@@ -82,16 +86,18 @@ export default async function CoursePage({ params, searchParams }: Props) {
 
   if (!course) notFound()
 
-  // 1. Check user session & enrollment status via orders collection
+  // 1. Verify user session and enrollment status server-side
   let isEnrolled = false
+  let userId: string | undefined = undefined
+
   try {
     const payload = await getPayload({ config })
     const headersList = await headers()
     const session = await getServerSession(payload, headersList)
-    const userId = session?.user?.id
+    userId = session?.user?.id
 
     if (userId) {
-      const courseId = String(course.id)
+      const courseId = extractCleanId(course.id)
       const orders = await payload.find({
         collection: 'orders',
         where: {
@@ -105,25 +111,61 @@ export default async function CoursePage({ params, searchParams }: Props) {
       })
 
       isEnrolled = orders.docs.some((order: any) =>
-        (order.items ?? []).some((item: any) => {
-          const prodId = typeof item.product === 'object' && item.product ? item.product.id : item.product
-          return String(prodId) === courseId
-        }),
+        (order.items ?? []).some((item: any) => extractCleanId(item.product) === courseId),
       )
     }
   } catch (err) {
     console.error('Error checking course enrollment:', err)
   }
 
-  // 2. Map payload lessons safely without exposing youtube IDs or tokens
-  const lessons: ClassroomClassItem[] = (course.lessons ?? []).map((l: any) => ({
+  // 2. Anti-Piracy Data Protection:
+  // - Non-enrolled users: ONLY receive Demo URL (Live preview classes) and Chapter names (moduleName).
+  //   Paid classes never receive video URLs or hashes.
+  // - Enrolled users: Server sends tamper-proof AES-256-GCM encrypted Object Hashes (videoHash).
+  const lessons: ClassroomClassItem[] = (course.lessons ?? []).map((l: any) => {
+    const isFree = Boolean(l.isFreePreview)
+    let videoHash: string | undefined = undefined
+    let videoSource: string | undefined = undefined
+
+    if (isEnrolled && l.youtubeVideoIdOrUrl) {
+      // Enrolled: Server sends encrypted Object Hash (tied to classId and userId)
+      videoHash = encryptVideoUrl(l.youtubeVideoIdOrUrl, {
+        classId: l.id,
+        userId,
+        expiresInMs: 4 * 60 * 60 * 1000,
+      })
+    } else if (isFree && l.youtubeVideoIdOrUrl) {
+      // Non-enrolled: ONLY send Demo URL for live preview classes
+      videoSource = l.youtubeVideoIdOrUrl
+    }
+
+    return {
+      id: l.id,
+      title: l.lessonTitle,
+      subjectSlug: l.moduleName || 'General', // Chapter Name
+      order: l.order,
+      duration: l.duration,
+      isFreePreview: isFree,
+      videoHash,
+      videoSource,
+    }
+  })
+
+  // Sanitize course object for CourseDetailView to prevent leaking raw URLs
+  const safeLessons = (course.lessons ?? []).map((l: any) => ({
     id: l.id,
-    title: l.lessonTitle,
-    subjectSlug: l.moduleName || 'General',
-    order: l.order,
+    lessonTitle: l.lessonTitle,
+    moduleName: l.moduleName,
     duration: l.duration,
-    isFreePreview: l.isFreePreview,
+    order: l.order,
+    isFreePreview: Boolean(l.isFreePreview),
+    demoUrl: l.isFreePreview ? l.youtubeVideoIdOrUrl : undefined,
   }))
+
+  const safeCourse = {
+    ...course,
+    lessons: safeLessons,
+  }
 
   const courseItem: ClassroomCourseItem = {
     id: String(course.id),
@@ -138,15 +180,15 @@ export default async function CoursePage({ params, searchParams }: Props) {
   // - Explicit '?view=details' or non-enrolled visitors see CourseDetailView (overview, syllabus, pricing, AddToCart).
   const showClassroom = (isEnrolled && query.view !== 'details') || query.learn === '1'
 
-  if (showClassroom) {
-    return <ClassroomView course={courseItem} initialClasses={lessons} />
-  }
-
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-background">
-        <CourseDetailView course={course as any} isEnrolled={isEnrolled} />
+      <main className="min-h-screen bg-background text-foreground">
+        {showClassroom ? (
+          <ClassroomView course={courseItem} initialClasses={lessons} />
+        ) : (
+          <CourseDetailView course={safeCourse as any} isEnrolled={isEnrolled} />
+        )}
       </main>
       <Footer />
     </>

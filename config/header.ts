@@ -74,6 +74,14 @@ export const headerConfig: HeaderConfig = {
       icon: Home,
     },
     {
+      id: 'courses',
+      title: 'কোর্সসমূহ',
+      href: '/courses',
+      icon: GraduationCap,
+      badge: 'জনপ্রিয়',
+      badgeVariant: 'teal',
+    },
+    {
       id: 'about',
       title: 'আমাদের সম্পর্কে',
       href: '/about',

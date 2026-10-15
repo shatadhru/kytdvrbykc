@@ -49,6 +49,7 @@ export const footerConfig: FooterConfig = {
       title: 'শিক্ষা ও পাঠক্রম',
       items: [
         { title: 'হোম পেজ', href: '/', icon: Globe },
+        { title: 'কোর্সসমূহ', href: '/courses', icon: GraduationCap, badge: 'নতুন' },
         { title: 'ভিডিও ক্লাস', href: '/video', icon: Layers, badge: 'জনপ্রিয়' },
         { title: 'আমাদের শিক্ষকবৃন্দ', href: '/teachers', icon: GraduationCap, badge: 'ফ্যাকাল্টি' },
         { title: 'কো-অর্ডিনেটর টিম', href: '/coordinators', icon: Headphones },

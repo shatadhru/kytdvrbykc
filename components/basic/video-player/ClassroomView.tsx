@@ -8,7 +8,13 @@ import {
   ShieldCheck,
   Clock,
   PlayCircle,
+  ArrowLeft,
+  CheckCircle2,
+  Lock,
 } from 'lucide-react'
+import Link from 'next/link'
+import { Progress } from '@/components/ui/progress'
+import { Button } from '@/components/ui/button'
 
 export interface ClassroomClassItem {
   id: string
@@ -59,6 +65,24 @@ export default function ClassroomView({
   const [selectedSubject, setSelectedSubject] = useState<string>('all')
   const [fetchingToken, setFetchingToken] = useState<boolean>(false)
   const [accessError, setAccessError] = useState<string | null>(null)
+  const [completedLessonIds, setCompletedLessonIds] = useState<Set<string>>(() => new Set())
+
+  const toggleLessonComplete = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation()
+    setCompletedLessonIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }
+
+  const completionPercent = classes.length > 0
+    ? Math.round((completedLessonIds.size / classes.length) * 100)
+    : 0
 
   const currentClass = classes.find((c) => c.id === activeClassId)
 
@@ -133,6 +157,14 @@ export default function ClassroomView({
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            {course.slug && (
+              <Button asChild variant="outline" size="sm" className="h-7 text-xs bg-zinc-900 border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white">
+                <Link href={`/courses/${course.slug}?view=details`}>
+                  <ArrowLeft className="size-3.5 mr-1" />
+                  কোর্স বিবরণী
+                </Link>
+              </Button>
+            )}
             <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-500/30 bg-teal-500/10 px-2.5 py-1 text-[11px] font-medium text-teal-300">
               <ShieldCheck className="size-3.5" />
               <span className="hidden sm:inline">Anti-Piracy</span> Protected
@@ -281,6 +313,19 @@ export default function ClassroomView({
                 </span>
               </div>
 
+              {/* Progress Tracking Bar */}
+              <div className="mb-3 rounded-lg bg-zinc-950/60 border border-zinc-800/70 p-2.5">
+                <div className="flex items-center justify-between text-xs text-zinc-400 mb-1.5">
+                  <span className="flex items-center gap-1.5 text-zinc-300 font-medium">
+                    <CheckCircle2 className="size-3.5 text-teal-400" /> কোর্সের অগ্রগতি
+                  </span>
+                  <span className="font-semibold text-teal-400">
+                    {completedLessonIds.size}/{classes.length} ({completionPercent}%)
+                  </span>
+                </div>
+                <Progress value={completionPercent} className="h-1.5 bg-zinc-800" />
+              </div>
+
               {/* Subject Tabs Filter (Mobile / Desktop) */}
               {course.subjects && course.subjects.length > 0 && (
                 <div className="mb-3 flex flex-wrap gap-1.5">
@@ -326,10 +371,11 @@ export default function ClassroomView({
                 ) : (
                   filteredClasses.map((cls, idx) => {
                     const isActive = cls.id === activeClassId
+                    const isCompleted = completedLessonIds.has(cls.id)
+
                     return (
-                      <button
+                      <div
                         key={cls.id || idx}
-                        type="button"
                         onClick={() => handleSelectClass(cls)}
                         className={`group relative flex items-start gap-3 rounded-lg p-3 text-left transition-all cursor-pointer ${
                           isActive
@@ -355,7 +401,7 @@ export default function ClassroomView({
                         {/* Title & Metadata */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-semibold truncate leading-snug">
+                            <span className={`text-xs font-semibold truncate leading-snug ${isCompleted ? 'line-through text-zinc-400' : ''}`}>
                               {cls.title}
                             </span>
                           </div>
@@ -376,10 +422,24 @@ export default function ClassroomView({
                           </div>
                         </div>
 
+                        {/* Complete Checkbox Toggle */}
+                        <button
+                          type="button"
+                          onClick={(e) => toggleLessonComplete(e, cls.id)}
+                          title={isCompleted ? 'সম্পন্ন (আনমার্ক করতে ক্লিক করুন)' : 'সম্পন্ন হিসেবে মার্ক করুন'}
+                          className={`mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md transition-all cursor-pointer ${
+                            isCompleted
+                              ? 'bg-teal-500/20 text-teal-400 hover:bg-teal-500/30'
+                              : 'text-zinc-600 hover:text-zinc-300 hover:bg-zinc-800'
+                          }`}
+                        >
+                          <CheckCircle2 className={`size-4 ${isCompleted ? 'fill-teal-500/20 text-teal-400' : ''}`} />
+                        </button>
+
                         {isActive && (
                           <span className="flex size-2 rounded-full bg-teal-400 animate-ping self-center" />
                         )}
-                      </button>
+                      </div>
                     )
                   })
                 )}

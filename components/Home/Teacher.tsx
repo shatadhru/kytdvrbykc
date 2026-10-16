@@ -6,7 +6,7 @@ import {
   BookOpen,
   CheckCircle2,
   PlayCircle,
-  Sparkles,
+  GraduationCap,
   Users,
 } from "lucide-react";
 
@@ -35,7 +35,7 @@ export function Teacher() {
               variant="outline"
               className="gap-1.5 rounded-full border-primary/20 bg-primary/10 px-3.5 py-1 text-xs sm:text-sm font-medium text-primary shadow-xs"
             >
-              <Sparkles className="size-3.5" />
+              <GraduationCap className="size-3.5" />
               <span>আমাদের শিক্ষক</span>
             </Badge>
           </div>
@@ -189,8 +189,8 @@ export function Teacher() {
                     size="lg"
                     className="h-10 w-full rounded-xl text-xs font-semibold sm:h-11 sm:w-auto sm:text-sm"
                   >
-                    <Link href="/dashboard">
-                      আরও জানুন
+                    <Link href="/teachers">
+                      সকল শিক্ষক দেখুন
                       <BookOpen className="ml-1 size-3.5 sm:size-4" />
                     </Link>
                   </Button>

@@ -75,6 +75,8 @@ export interface Config {
     users: User;
     media: Media;
     categories: Category;
+    teachers: Teacher;
+    coordinators: Coordinator;
     banners: Banner;
     reviews: Review;
     coupons: Coupon;
@@ -112,6 +114,8 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    teachers: TeachersSelect<false> | TeachersSelect<true>;
+    coordinators: CoordinatorsSelect<false> | CoordinatorsSelect<true>;
     banners: BannersSelect<false> | BannersSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     coupons: CouponsSelect<false> | CouponsSelect<true>;
@@ -258,6 +262,44 @@ export interface Order {
   status?: OrderStatus;
   amount?: number | null;
   currency?: 'BDT' | null;
+  /**
+   * bKash = অটো ট্রানজেকশন। নগদ = ম্যানুয়াল সাবমিশন।
+   */
+  paymentMethod?: ('bkash' | 'nagad') | null;
+  /**
+   * নগদ ম্যানুয়াল যাচাইয়ের পরে এখানে "paid" করুন।
+   */
+  paymentStatus?: ('pending' | 'paid' | 'failed') | null;
+  /**
+   * bKash গেটওয়ে দ্বারা স্বয়ংক্রিয়ভাবে পূরণ করা হয়।
+   */
+  bkash?: {
+    /**
+     * bKash কর্তৃক প্রদত্ত Payment ID।
+     */
+    paymentID?: string | null;
+    /**
+     * সফল পেমেন্টের পরে bKash প্রদত্ত TrxID।
+     */
+    trxID?: string | null;
+  };
+  /**
+   * শিক্ষার্থী কর্তৃক সরবরাহকৃত নগদ তথ্য।
+   */
+  nagad?: {
+    /**
+     * শিক্ষার্থী প্রদত্ত নগদ ট্রানজেকশন নম্বর।
+     */
+    manualTrxId?: string | null;
+    /**
+     * যে নম্বর থেকে পেমেন্ট পাঠানো হয়েছে।
+     */
+    senderNumber?: string | null;
+    /**
+     * অ্যাডমিন কর্তৃক যাচাইকালীন নোট।
+     */
+    verificationNote?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -294,6 +336,37 @@ export interface Product {
   gallery?:
     | {
         image: string | Media;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Select assigned course teachers and instructors
+   */
+  teachers?: (string | Teacher)[] | null;
+  /**
+   * Select assigned course coordinators and mentors
+   */
+  coordinators?: (string | Coordinator)[] | null;
+  /**
+   * Organize course curriculum, classes, durations, and protected video sources.
+   */
+  lessons?:
+    | {
+        lessonTitle: string;
+        moduleName?: string | null;
+        duration?: string | null;
+        /**
+         * Sequential order of the class
+         */
+        order?: number | null;
+        /**
+         * Allow non-enrolled students to watch this lesson
+         */
+        isFreePreview?: boolean | null;
+        /**
+         * Admin-only hidden field for piracy protection. Hidden from public and non-admin queries.
+         */
+        youtubeVideoIdOrUrl?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -396,6 +469,200 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * Manage course teachers, instructors, and faculty members.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teachers".
+ */
+export interface Teacher {
+  id: string;
+  name: string;
+  designation?: string | null;
+  /**
+   * Upload teacher profile image or avatar
+   */
+  image?: (string | null) | Media;
+  /**
+   * Short introduction, credentials, and achievements of the teacher
+   */
+  bio?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  socialLinks?:
+    | {
+        platform:
+          | 'github'
+          | 'x'
+          | 'linkedin'
+          | 'youtube'
+          | 'facebook'
+          | 'instagram'
+          | 'tiktok'
+          | 'discord'
+          | 'telegram'
+          | 'whatsapp'
+          | 'reddit'
+          | 'threads'
+          | 'twitch'
+          | 'pinterest'
+          | 'snapchat'
+          | 'medium'
+          | 'spotify'
+          | 'dribbble'
+          | 'behance'
+          | 'slack'
+          | 'gitlab'
+          | 'stackoverflow'
+          | 'substack'
+          | 'mastodon'
+          | 'bsky.app'
+          | 'patreon'
+          | 'soundcloud'
+          | 'vimeo'
+          | 'codepen'
+          | 'dev.to'
+          | 'hashnode'
+          | 'leetcode'
+          | 'linktree'
+          | 'tumblr'
+          | 'wechat'
+          | 'line.me'
+          | 'upwork'
+          | 'goodreads'
+          | 'letterboxd'
+          | 'meetup'
+          | 'flickr'
+          | 'dropbox'
+          | 'google_play'
+          | 'itunes'
+          | 'vk'
+          | 'rss'
+          | 'mailto'
+          | 'itch.io'
+          | 'xing'
+          | 'yelp';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Link this instructor profile to their registered user account if they have one
+   */
+  user?: (string | null) | User;
+  /**
+   * Lower numbers display first in teacher lists
+   */
+  order?: number | null;
+  /**
+   * Visible on course cards and instructor directory when enabled
+   */
+  isActive?: boolean | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Manage course coordinators and academic support members.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "coordinators".
+ */
+export interface Coordinator {
+  id: string;
+  name: string;
+  designation?: string | null;
+  /**
+   * Upload coordinator profile image or avatar
+   */
+  image?: (string | null) | Media;
+  /**
+   * Short introduction and responsibilities of the coordinator
+   */
+  bio?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  socialLinks?:
+    | {
+        platform:
+          | 'github'
+          | 'x'
+          | 'linkedin'
+          | 'youtube'
+          | 'facebook'
+          | 'instagram'
+          | 'tiktok'
+          | 'discord'
+          | 'telegram'
+          | 'whatsapp'
+          | 'reddit'
+          | 'threads'
+          | 'twitch'
+          | 'pinterest'
+          | 'snapchat'
+          | 'medium'
+          | 'spotify'
+          | 'dribbble'
+          | 'behance'
+          | 'slack'
+          | 'gitlab'
+          | 'stackoverflow'
+          | 'substack'
+          | 'mastodon'
+          | 'bsky.app'
+          | 'patreon'
+          | 'soundcloud'
+          | 'vimeo'
+          | 'codepen'
+          | 'dev.to'
+          | 'hashnode'
+          | 'leetcode'
+          | 'linktree'
+          | 'tumblr'
+          | 'wechat'
+          | 'line.me'
+          | 'upwork'
+          | 'goodreads'
+          | 'letterboxd'
+          | 'meetup'
+          | 'flickr'
+          | 'dropbox'
+          | 'google_play'
+          | 'itunes'
+          | 'vk'
+          | 'rss'
+          | 'mailto'
+          | 'itch.io'
+          | 'xing'
+          | 'yelp';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Link this coordinator profile to their registered user account if they have one
+   */
+  user?: (string | null) | User;
+  /**
+   * Lower numbers display first in coordinator lists
+   */
+  order?: number | null;
+  /**
+   * Visible on course cards and support directory when enabled
+   */
+  isActive?: boolean | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -966,6 +1233,14 @@ export interface PayloadLockedDocument {
         value: string | Category;
       } | null)
     | ({
+        relationTo: 'teachers';
+        value: string | Teacher;
+      } | null)
+    | ({
+        relationTo: 'coordinators';
+        value: string | Coordinator;
+      } | null)
+    | ({
         relationTo: 'banners';
         value: string | Banner;
       } | null)
@@ -1137,6 +1412,58 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface CategoriesSelect<T extends boolean = true> {
   title?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "teachers_select".
+ */
+export interface TeachersSelect<T extends boolean = true> {
+  name?: T;
+  designation?: T;
+  image?: T;
+  bio?: T;
+  email?: T;
+  phone?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  user?: T;
+  order?: T;
+  isActive?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "coordinators_select".
+ */
+export interface CoordinatorsSelect<T extends boolean = true> {
+  name?: T;
+  designation?: T;
+  image?: T;
+  bio?: T;
+  email?: T;
+  phone?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  user?: T;
+  order?: T;
+  isActive?: T;
   generateSlug?: T;
   slug?: T;
   updatedAt?: T;
@@ -1389,6 +1716,19 @@ export interface ProductsSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
+  teachers?: T;
+  coordinators?: T;
+  lessons?:
+    | T
+    | {
+        lessonTitle?: T;
+        moduleName?: T;
+        duration?: T;
+        order?: T;
+        isFreePreview?: T;
+        youtubeVideoIdOrUrl?: T;
+        id?: T;
+      };
   inventory?: T;
   priceInBDTEnabled?: T;
   priceInBDT?: T;
@@ -1464,6 +1804,21 @@ export interface OrdersSelect<T extends boolean = true> {
   status?: T;
   amount?: T;
   currency?: T;
+  paymentMethod?: T;
+  paymentStatus?: T;
+  bkash?:
+    | T
+    | {
+        paymentID?: T;
+        trxID?: T;
+      };
+  nagad?:
+    | T
+    | {
+        manualTrxId?: T;
+        senderNumber?: T;
+        verificationNote?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

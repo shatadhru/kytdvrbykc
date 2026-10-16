@@ -90,7 +90,7 @@ export function Footer({ className = '' }: FooterProps) {
             </div>
           </div>
 
-          {/* Navigation Menu Columns */}
+          {/* Navigation Menu Columns (Updated with Teachers, Coordinators, About) */}
           <div className="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8">
             {footerConfig.columns.map((column, colIdx) => (
               <div key={colIdx} className="space-y-3.5">

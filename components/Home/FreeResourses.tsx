@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, BookOpen, Sparkles } from "lucide-react";
+import { ArrowUpRight, BookOpen, Gift } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -55,7 +55,7 @@ export function FreeResourses() {
               variant="outline"
               className="gap-1.5 rounded-full border-primary/20 bg-primary/10 px-3.5 py-1 text-xs sm:text-sm font-medium text-primary shadow-xs"
             >
-              <Sparkles className="size-3.5" />
+              <Gift className="size-3.5" />
               <span>বিনামূল্যের রিসোর্স</span>
             </Badge>
           </div>
@@ -97,7 +97,7 @@ export function FreeResourses() {
                       variant="secondary"
                       className="gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
                     >
-                      <Sparkles className="size-3" />
+                      <Gift className="size-3" />
                       বিনামূল্যে
                     </Badge>
                   </div>

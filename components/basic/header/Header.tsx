@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Logo } from '@/components/ui/Logo'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -72,6 +72,7 @@ export function Header({
   containerClassName,
 }: HeaderProps) {
   const pathname = usePathname()
+  const router = useRouter()
 
   const activeNav = navItems || config.nav
   const shouldShowNotifications = showNotifications ?? config.actions.showNotifications ?? true
@@ -140,7 +141,7 @@ export function Header({
           </div>
         </div>
 
-        {/* Center Section: Desktop Navigation Links (Controlled from Config) */}
+        {/* Center Section: Desktop Navigation Links (Updated with Teachers, Coordinators, About) */}
         <nav
           className="hidden md:flex items-center gap-1 min-w-0"
           aria-label="Desktop Navigation"
@@ -193,14 +194,20 @@ export function Header({
                           <DropdownMenuItem
                             key={sub.id}
                             render={
-                              <Link
+                              <a
                                 href={sub.href}
                                 target={sub.external ? '_blank' : undefined}
                                 rel={sub.external ? 'noopener noreferrer' : undefined}
                               />
                             }
+                            onClick={(e) => {
+                              if (!sub.external) {
+                                e.preventDefault()
+                                router.push(sub.href)
+                              }
+                            }}
                             className={cn(
-                              'flex items-start gap-2.5 p-2 rounded-lg cursor-pointer transition-colors',
+                              'flex items-start gap-2.5 p-2 rounded-lg cursor-pointer transition-colors no-underline',
                               isSubActive
                                 ? 'bg-primary/10 text-primary'
                                 : 'hover:bg-muted/60'

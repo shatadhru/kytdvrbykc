@@ -7,14 +7,14 @@ import type {
 } from './types'
 
 function getConfig() {
-  const baseURL = process.env.BKASH_BASE_URL
-  const username = process.env.BKASH_USERNAME
-  const password = process.env.BKASH_PASSWORD
-  const appKey = process.env.BKASH_APP_KEY
-  const appSecret = process.env.BKASH_APP_SECRET
-  const callbackURL = process.env.BKASH_CALLBACK_URL
+  const baseURL = process.env.BKASH_BASE_URL?.trim().replace(/\/+$/, '')
+  const username = process.env.BKASH_USERNAME?.trim()
+  const password = process.env.BKASH_PASSWORD?.trim()
+  const appKey = process.env.BKASH_APP_KEY?.trim()
+  const appSecret = process.env.BKASH_APP_SECRET?.trim()
+  const callbackURL = process.env.BKASH_CALLBACK_URL?.trim()
   const merchantAssociationInfo =
-    process.env.BKASH_MERCHANT_ASSOCIATION_INFO
+    process.env.BKASH_MERCHANT_ASSOCIATION_INFO?.trim()
 
   if (!baseURL) throw new Error('[BKASH ISSUE} : BKASH_BASE_URL is missing')
   if (!username) throw new Error('[BKASH ISSUE} : BKASH_USERNAME is missing')
@@ -168,7 +168,13 @@ export async function executeBkashPayment(
 
   const result = await parseBkashJson<any>(response, 'execute payment')
 
-  if (!response.ok || result.statusCode !== '0000') {
+  const isCompleted =
+    result.transactionStatus === 'Completed' ||
+    result.statusCode === '0000' ||
+    result.statusCode === '2029' ||
+    result.statusCode === '2062'
+
+  if (!response.ok || !isCompleted) {
     throw new Error(
       result.statusMessage ||
         result.errorMessage ||

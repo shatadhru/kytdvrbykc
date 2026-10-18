@@ -4,6 +4,7 @@ import config from '@payload-config'
 import { getServerSession } from '@delmaredigital/payload-better-auth'
 import { encryptVideoUrl } from '@/utils/videoHash'
 import { extractCleanId } from '@/utils/extractId'
+import { checkUserEnrollment } from '@/utils/enrollment'
 
 // shortcut: no rate-limit here; add one if abuse is detected in prod logs.
 export async function GET(
@@ -49,23 +50,9 @@ export async function GET(
       }
       userId = session.user.id
 
-      // Look for a paid order from this user that contains this product
+      // Check enrollment in enrollments collection (with fallback to paid orders)
       const courseId = extractCleanId(course.id)
-      const orders = await payload.find({
-        collection: 'orders',
-        where: {
-          and: [
-            { customer: { equals: userId } },
-            { paymentStatus: { equals: 'paid' } },
-          ],
-        },
-        limit: 50, // bounded to prevent memory exhaustion
-        depth: 1,
-      })
-
-      isEnrolled = orders.docs.some((order: any) =>
-        (order.items ?? []).some((item: any) => extractCleanId(item.product) === courseId),
-      )
+      isEnrolled = await checkUserEnrollment(payload, userId, courseId)
 
       if (!isEnrolled) {
         return NextResponse.json(

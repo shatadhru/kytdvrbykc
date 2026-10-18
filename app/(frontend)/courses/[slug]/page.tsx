@@ -13,6 +13,7 @@ import ClassroomView, {
 } from '@/components/basic/video-player/ClassroomView'
 import { encryptVideoUrl } from '@/utils/videoHash'
 import { extractCleanId } from '@/utils/extractId'
+import { checkUserEnrollment } from '@/utils/enrollment'
 import { SiteConfig, getPageTitle } from '@/config/site'
 
 interface Props {
@@ -98,21 +99,7 @@ export default async function CoursePage({ params, searchParams }: Props) {
 
     if (userId) {
       const courseId = extractCleanId(course.id)
-      const orders = await payload.find({
-        collection: 'orders',
-        where: {
-          and: [
-            { customer: { equals: userId } },
-            { paymentStatus: { equals: 'paid' } },
-          ],
-        },
-        limit: 50,
-        depth: 1,
-      })
-
-      isEnrolled = orders.docs.some((order: any) =>
-        (order.items ?? []).some((item: any) => extractCleanId(item.product) === courseId),
-      )
+      isEnrolled = await checkUserEnrollment(payload, userId, courseId)
     }
   } catch (err) {
     console.error('Error checking course enrollment:', err)

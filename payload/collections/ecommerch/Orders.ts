@@ -1,5 +1,6 @@
 import type { CollectionOverride } from '@payloadcms/plugin-ecommerce/types'
 import type { FieldAccess } from 'payload'
+import { createEnrollmentsForOrder } from '@/utils/enrollment'
 
 /**
  * Admin-only field access helper (same pattern as Product.ts).
@@ -11,6 +12,18 @@ const adminOnlyFieldAccess: FieldAccess = ({ req }) =>
 export const OrdersCollection: CollectionOverride = ({ defaultCollection }) => {
   return {
     ...defaultCollection,
+
+    hooks: {
+      ...(defaultCollection.hooks || {}),
+      afterChange: [
+        ...((defaultCollection.hooks && defaultCollection.hooks.afterChange) || []),
+        async ({ doc, req }) => {
+          if (doc?.paymentStatus === 'paid') {
+            await createEnrollmentsForOrder(req.payload, doc)
+          }
+        },
+      ],
+    },
 
     admin: {
       ...defaultCollection.admin,

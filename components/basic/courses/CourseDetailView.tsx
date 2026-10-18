@@ -1,8 +1,9 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 import {
   BookOpen,
   Clock,
@@ -39,7 +40,21 @@ export interface CourseDetailViewProps {
 }
 
 export function CourseDetailView({ course, isEnrolled = false }: CourseDetailViewProps) {
+  const { cart, removeItem } = useCart()
   const lessons = course.lessons || []
+
+  // If user is already enrolled, automatically remove this course from their cart
+  useEffect(() => {
+    if (isEnrolled && cart?.items?.length) {
+      const existingItem = (cart.items as any[]).find((i) => {
+        const pId = typeof i.product === 'object' ? i.product?.id : i.product
+        return String(pId) === String(course.id)
+      })
+      if (existingItem?.id) {
+        removeItem(existingItem.id).catch(() => {})
+      }
+    }
+  }, [isEnrolled, cart, course.id, removeItem])
   const firstFreeLesson = lessons.find((l: any) => l.isFreePreview)
   const [activePreviewLesson, setActivePreviewLesson] = useState<any>(firstFreeLesson || null)
   const [previewToken, setPreviewToken] = useState<string | null>(null)

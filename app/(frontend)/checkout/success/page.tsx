@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { formatPrice } from "@/components/basic/cart/cart-utils"
+import { CartClearer } from "@/components/basic/cart/CartClearer"
+import { createEnrollmentsForOrder } from "@/utils/enrollment"
 import {
   CheckCircle2,
   Clock,
@@ -37,6 +39,11 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
         id: orderId,
         depth: 2,
       })
+
+      // Ensure enrollments are active if order is paid
+      if (order?.paymentStatus === "paid") {
+        await createEnrollmentsForOrder(payload, order)
+      }
     } catch (e) {
       console.warn("Could not find order by ID:", orderId)
     }
@@ -47,6 +54,7 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <CartClearer />
       <Header />
 
       <main className="flex-1 container max-w-2xl mx-auto px-4 py-12 md:py-20 flex items-center justify-center">

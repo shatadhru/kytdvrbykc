@@ -84,6 +84,7 @@ export interface Config {
     'blog-categories': BlogCategory;
     newsletter: Newsletter;
     'blog-tags': BlogTag;
+    enrollments: Enrollment;
     sessions: Session;
     accounts: Account;
     verifications: Verification;
@@ -123,6 +124,7 @@ export interface Config {
     'blog-categories': BlogCategoriesSelect<false> | BlogCategoriesSelect<true>;
     newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
     'blog-tags': BlogTagsSelect<false> | BlogTagsSelect<true>;
+    enrollments: EnrollmentsSelect<false> | EnrollmentsSelect<true>;
     sessions: SessionsSelect<false> | SessionsSelect<true>;
     accounts: AccountsSelect<false> | AccountsSelect<true>;
     verifications: VerificationsSelect<false> | VerificationsSelect<true>;
@@ -1146,6 +1148,29 @@ export interface Newsletter {
   createdAt: string;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enrollments".
+ */
+export interface Enrollment {
+  id: string;
+  /**
+   * এনরোলকৃত শিক্ষার্থী।
+   */
+  student: string | User;
+  /**
+   * এনরোল করা কোর্স।
+   */
+  course: string | Product;
+  /**
+   * যে অর্ডারের মাধ্যমে এনরোলমেন্ট তৈরি হয়েছে।
+   */
+  order?: (string | null) | Order;
+  status?: ('active' | 'suspended' | 'revoked') | null;
+  enrolledAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Auto-generated from Better Auth schema (session)
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1267,6 +1292,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'blog-tags';
         value: string | BlogTag;
+      } | null)
+    | ({
+        relationTo: 'enrollments';
+        value: string | Enrollment;
       } | null)
     | ({
         relationTo: 'sessions';
@@ -1595,6 +1624,19 @@ export interface BlogTagsSelect<T extends boolean = true> {
   title?: T;
   generateSlug?: T;
   slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enrollments_select".
+ */
+export interface EnrollmentsSelect<T extends boolean = true> {
+  student?: T;
+  course?: T;
+  order?: T;
+  status?: T;
+  enrolledAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

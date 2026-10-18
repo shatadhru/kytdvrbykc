@@ -131,6 +131,33 @@ export async function POST(req: NextRequest) {
       },
     })
 
+    // 4. Clear user's active cart on server
+    if (session.user.id) {
+      try {
+        const activeCarts = await payload.find({
+          collection: "carts",
+          where: {
+            customer: { equals: session.user.id },
+          },
+          limit: 1,
+        })
+        if (activeCarts.docs.length > 0) {
+          await payload.update({
+            collection: "carts",
+            id: activeCarts.docs[0].id,
+            data: {
+              items: [],
+              subtotal: 0,
+              status: "purchased",
+              purchasedAt: new Date().toISOString(),
+            },
+          })
+        }
+      } catch (cartErr) {
+        console.warn("Could not clear server cart on Nagad checkout:", cartErr)
+      }
+    }
+
     return NextResponse.json({
       success: true,
       message: "আপনার নগদ পেমেন্ট রিকোয়েস্ট সফলভাবে জমা হয়েছে। অ্যাডমিন যাচাইয়ের পর কোর্সটি সক্রিয় করা হবে।",

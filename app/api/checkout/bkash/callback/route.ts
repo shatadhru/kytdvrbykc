@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getPayload } from "payload"
 import config from "@payload-config"
 import { executeBkashPayment } from "@/payload/lib/bkash/client"
+import { createEnrollmentsForOrder } from "@/utils/enrollment"
 
 async function handleBkashCallback(req: NextRequest) {
   const url = new URL(req.url)
@@ -123,7 +124,7 @@ async function handleBkashCallback(req: NextRequest) {
 
     // 5. Update Order to Paid & Completed Atomically
     const trxID = executeRes.trxID || executeRes.payment?.trxID || ""
-    await payload.update({
+    const updatedOrder = await payload.update({
       collection: "orders",
       id: order.id,
       data: {
@@ -135,6 +136,40 @@ async function handleBkashCallback(req: NextRequest) {
         },
       },
     })
+
+    // 6. Create enrollment records in dedicated enrollments collection
+    await createEnrollmentsForOrder(payload, updatedOrder)
+
+    // 7. Clear user's server-side active cart
+    if (order.customer) {
+      try {
+        const customerId =
+          typeof order.customer === "object" ? order.customer.id : order.customer
+        const activeCarts = await payload.find({
+          collection: "carts",
+          where: {
+            customer: {
+              equals: customerId,
+            },
+          },
+          limit: 1,
+        })
+        if (activeCarts.docs.length > 0) {
+          await payload.update({
+            collection: "carts",
+            id: activeCarts.docs[0].id,
+            data: {
+              items: [],
+              subtotal: 0,
+              status: "purchased",
+              purchasedAt: new Date().toISOString(),
+            },
+          })
+        }
+      } catch (cartErr) {
+        console.warn("[bKash Callback] Could not clear server cart:", cartErr)
+      }
+    }
 
     return NextResponse.redirect(
       `${safeOrigin}/checkout/success?orderId=${order.id}&method=bkash`

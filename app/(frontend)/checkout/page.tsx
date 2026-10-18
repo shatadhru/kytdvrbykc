@@ -28,8 +28,9 @@ import {
   Smartphone,
   Copy,
 } from "lucide-react"
+import { Suspense } from "react"
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const errorParam = searchParams.get("error")
@@ -461,6 +462,24 @@ export default function CheckoutPage() {
 
       <Footer />
     </div>
+  )
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex flex-col bg-background text-foreground">
+          <Header />
+          <div className="flex-1 flex items-center justify-center p-12">
+            <Loader2 className="size-8 animate-spin text-primary" />
+          </div>
+          <Footer />
+        </div>
+      }
+    >
+      <CheckoutContent />
+    </Suspense>
   )
 }
 

@@ -164,10 +164,6 @@ export default function ClassroomView({
                 </Link>
               </Button>
             )}
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary">
-              <ShieldCheck className="size-3.5" />
-              <span className="hidden sm:inline">Anti-Piracy</span> Protected
-            </span>
           </div>
         </div>
       </div>
@@ -200,15 +196,9 @@ export default function ClassroomView({
                 )}
               </div>
 
-              {/* Protection Badge Underneath Player */}
-              <div className="mt-2.5 flex items-center justify-between text-[11px] text-muted-foreground px-1">
-                <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
-                  <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  পাইরেসি প্রটেকশন শিল্ড সক্রিয়
-                </span>
-                <span className="hidden sm:inline text-muted-foreground">
-                  ফুলস্ক্রিন, সিকিং ও কীবোর্ড কন্ট্রোল উপলব্ধ
-                </span>
+              {/* Player Controls Info */}
+              <div className="mt-2 flex items-center justify-end text-[11px] text-muted-foreground px-1">
+                <span>ফুলস্ক্রিন, সিকিং ও কীবোর্ড কন্ট্রোল উপলব্ধ</span>
               </div>
             </div>
 

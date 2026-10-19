@@ -248,6 +248,56 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                       placeholder: 'e.g. https://youtu.be/... or video ID',
                     },
                   },
+                  {
+                    type: 'row',
+                    fields: [
+                      {
+                        name: 'classSlide',
+                        type: 'upload',
+                        relationTo: 'media',
+                        label: 'ক্লাস স্লাইড ফাইল (Class Slide - PPTX)',
+                        admin: {
+                          width: '50%',
+                          description: 'লেকচারের প্রেজেন্টেশন স্লাইড (.pptx) ফাইল আপলোড করুন।',
+                        },
+                      },
+                      {
+                        name: 'classNote',
+                        type: 'upload',
+                        relationTo: 'media',
+                        label: 'ক্লাস নোট ফাইল (Class Note - PDF, DOC, PPTX)',
+                        admin: {
+                          width: '50%',
+                          description: 'লেকচার নোট (PDF, DOCX, PPTX) ফাইল আপলোড করুন।',
+                        },
+                      },
+                    ],
+                  },
+                  {
+                    type: 'row',
+                    fields: [
+                      {
+                        name: 'classSlideUrl',
+                        type: 'text',
+                        label: 'স্লাইড ডিরেক্ট লিঙ্ক / Drive URL (Optional)',
+                        admin: {
+                          width: '50%',
+                          placeholder: 'https://...',
+                          description: 'স্লাইডের সরাসরি ডাউনলোড বা ড্রাইভ লিংক (যদি ক্লাউড স্টোরেজে থাকে)।',
+                        },
+                      },
+                      {
+                        name: 'classNoteUrl',
+                        type: 'text',
+                        label: 'নোট ডিরেক্ট লিঙ্ক / Drive URL (Optional)',
+                        admin: {
+                          width: '50%',
+                          placeholder: 'https://...',
+                          description: 'নোটের সরাসরি ডাউনলোড বা ভিউ লিংক (যদি ক্লাউড স্টোরেজে থাকে)।',
+                        },
+                      },
+                    ],
+                  },
                 ],
               },
             ],

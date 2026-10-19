@@ -10,10 +10,15 @@ import {
   ArrowLeft,
   CheckCircle2,
   Lock,
+  Download,
+  FileText,
+  Presentation,
+  ExternalLink,
 } from 'lucide-react'
 import Link from 'next/link'
 import { Progress } from '@/components/ui/progress'
 import { Button } from '@/components/ui/button'
+import { LessonCommentsSection } from './LessonCommentsSection'
 
 export interface ClassroomClassItem {
   id: string
@@ -24,6 +29,10 @@ export interface ClassroomClassItem {
   isFreePreview?: boolean | null
   videoSource?: string | null
   videoHash?: string | null
+  classSlideUrl?: string | null
+  classNoteUrl?: string | null
+  classSlideName?: string | null
+  classNoteName?: string | null
 }
 
 export interface ClassroomSubjectItem {
@@ -228,7 +237,64 @@ export default function ClassroomView({
               <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground leading-relaxed">
                 {course.description || 'ক্লাসরুমে স্বাগতম। সম্পূর্ণ লেকচারটি মনোযোগ সহকারে দেখুন।'}
               </p>
+
+              {/* Lecture Resources: Slide (pptx) & Note (pptx/pdf/doc) */}
+              {(currentClass?.classSlideUrl || currentClass?.classNoteUrl) && (
+                <div className="mt-4 pt-3 border-t border-border flex flex-wrap items-center gap-2.5">
+                  <span className="text-xs font-semibold text-foreground flex items-center gap-1.5 mr-1">
+                    <BookOpen className="size-3.5 text-primary" />
+                    লেকচার রিসোর্স:
+                  </span>
+                  {currentClass?.classSlideUrl && (
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="h-8 text-xs font-medium gap-1.5 border-orange-500/30 text-orange-600 dark:text-orange-400 hover:bg-orange-500/10 hover:border-orange-500/50"
+                    >
+                      <a
+                        href={currentClass.classSlideUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        download
+                      >
+                        <Presentation className="size-3.5 text-orange-500" />
+                        <span>ক্লাস স্লাইড (.pptx)</span>
+                        <Download className="size-3 ml-0.5 opacity-70" />
+                      </a>
+                    </Button>
+                  )}
+                  {currentClass?.classNoteUrl && (
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="h-8 text-xs font-medium gap-1.5 border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 hover:border-blue-500/50"
+                    >
+                      <a
+                        href={currentClass.classNoteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        download
+                      >
+                        <FileText className="size-3.5 text-blue-500" />
+                        <span>ক্লাস নোট (PDF/DOC)</span>
+                        <Download className="size-3 ml-0.5 opacity-70" />
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
+
+            {/* Lesson Comments & Discussion Section */}
+            {currentClass?.id && (
+              <LessonCommentsSection
+                courseSlug={course.slug || ''}
+                lessonId={currentClass.id}
+                lessonTitle={currentClass.title}
+              />
+            )}
           </div>
 
           {/* Right Column: Curriculum / Subject Navigation (4 Cols on Desktop) */}

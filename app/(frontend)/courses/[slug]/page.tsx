@@ -126,6 +126,29 @@ export default async function CoursePage({ params, searchParams }: Props) {
       videoSource = l.youtubeVideoIdOrUrl
     }
 
+    let classSlideUrl: string | undefined = undefined
+    let classNoteUrl: string | undefined = undefined
+    let classSlideName: string | undefined = undefined
+    let classNoteName: string | undefined = undefined
+
+    if (isEnrolled || isFree) {
+      if (l.classSlide && typeof l.classSlide === 'object') {
+        classSlideUrl = l.classSlide.url || l.classSlide.cloudinary?.secure_url
+        classSlideName = l.classSlide.filename || 'Class-Slide.pptx'
+      } else if (typeof l.classSlideUrl === 'string' && l.classSlideUrl) {
+        classSlideUrl = l.classSlideUrl
+        classSlideName = 'Class-Slide.pptx'
+      }
+
+      if (l.classNote && typeof l.classNote === 'object') {
+        classNoteUrl = l.classNote.url || l.classNote.cloudinary?.secure_url
+        classNoteName = l.classNote.filename || 'Class-Note'
+      } else if (typeof l.classNoteUrl === 'string' && l.classNoteUrl) {
+        classNoteUrl = l.classNoteUrl
+        classNoteName = 'Class-Note'
+      }
+    }
+
     return {
       id: l.id,
       title: l.lessonTitle,
@@ -135,6 +158,10 @@ export default async function CoursePage({ params, searchParams }: Props) {
       isFreePreview: isFree,
       videoHash,
       videoSource,
+      classSlideUrl,
+      classNoteUrl,
+      classSlideName,
+      classNoteName,
     }
   })
 

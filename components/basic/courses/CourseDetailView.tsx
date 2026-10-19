@@ -22,6 +22,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { AddToCartButton } from '@/components/basic/cart/AddToCartButton'
 import CourseVideoPlayer from '@/components/basic/video/CourseVideoPlayer'
 import { extractCloudinarySecureUrl } from '@/utils/cloudinary'
+import { CourseReviewsSection } from './CourseReviewsSection'
 
 export interface CourseDetailViewProps {
   course: {
@@ -364,6 +365,13 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
             })}
           </div>
         </div>
+
+        {/* Student Reviews & 5-Star Ratings Section */}
+        <CourseReviewsSection
+          courseSlug={course.slug}
+          courseTitle={course.title}
+          isEnrolled={isEnrolled}
+        />
       </div>
     </div>
   )

@@ -85,6 +85,7 @@ export interface Config {
     newsletter: Newsletter;
     'blog-tags': BlogTag;
     enrollments: Enrollment;
+    'lesson-comments': LessonComment;
     sessions: Session;
     accounts: Account;
     verifications: Verification;
@@ -125,6 +126,7 @@ export interface Config {
     newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
     'blog-tags': BlogTagsSelect<false> | BlogTagsSelect<true>;
     enrollments: EnrollmentsSelect<false> | EnrollmentsSelect<true>;
+    'lesson-comments': LessonCommentsSelect<false> | LessonCommentsSelect<true>;
     sessions: SessionsSelect<false> | SessionsSelect<true>;
     accounts: AccountsSelect<false> | AccountsSelect<true>;
     verifications: VerificationsSelect<false> | VerificationsSelect<true>;
@@ -369,6 +371,22 @@ export interface Product {
          * Admin-only hidden field for piracy protection. Hidden from public and non-admin queries.
          */
         youtubeVideoIdOrUrl?: string | null;
+        /**
+         * লেকচারের প্রেজেন্টেশন স্লাইড (.pptx) ফাইল আপলোড করুন।
+         */
+        classSlide?: (string | null) | Media;
+        /**
+         * লেকচার নোট (PDF, DOCX, PPTX) ফাইল আপলোড করুন।
+         */
+        classNote?: (string | null) | Media;
+        /**
+         * স্লাইডের সরাসরি ডাউনলোড বা ড্রাইভ লিংক (যদি ক্লাউড স্টোরেজে থাকে)।
+         */
+        classSlideUrl?: string | null;
+        /**
+         * নোটের সরাসরি ডাউনলোড বা ভিউ লিংক (যদি ক্লাউড স্টোরেজে থাকে)।
+         */
+        classNoteUrl?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -1171,6 +1189,33 @@ export interface Enrollment {
   createdAt: string;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lesson-comments".
+ */
+export interface LessonComment {
+  id: string;
+  /**
+   * যে কোর্সের লেকচারে কমেন্ট করা হয়েছে।
+   */
+  course: string | Product;
+  /**
+   * কোর্সের সংশ্লিষ্ট লেকচারের নির্দিষ্ট আইডি।
+   */
+  lessonId: string;
+  /**
+   * যে শিক্ষার্থী বা শিক্ষক মন্তব্য করেছেন।
+   */
+  author: string | User;
+  content: string;
+  /**
+   * যদি এটি কোনো কমেন্টের উত্তর বা রিপ্লাই হয়।
+   */
+  parent?: (string | null) | LessonComment;
+  status?: ('approved' | 'pending' | 'flagged') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Auto-generated from Better Auth schema (session)
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1296,6 +1341,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'enrollments';
         value: string | Enrollment;
+      } | null)
+    | ({
+        relationTo: 'lesson-comments';
+        value: string | LessonComment;
       } | null)
     | ({
         relationTo: 'sessions';
@@ -1642,6 +1691,20 @@ export interface EnrollmentsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lesson-comments_select".
+ */
+export interface LessonCommentsSelect<T extends boolean = true> {
+  course?: T;
+  lessonId?: T;
+  author?: T;
+  content?: T;
+  parent?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sessions_select".
  */
 export interface SessionsSelect<T extends boolean = true> {
@@ -1769,6 +1832,10 @@ export interface ProductsSelect<T extends boolean = true> {
         order?: T;
         isFreePreview?: T;
         youtubeVideoIdOrUrl?: T;
+        classSlide?: T;
+        classNote?: T;
+        classSlideUrl?: T;
+        classNoteUrl?: T;
         id?: T;
       };
   inventory?: T;

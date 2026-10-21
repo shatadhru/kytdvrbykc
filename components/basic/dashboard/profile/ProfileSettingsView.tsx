@@ -36,9 +36,11 @@ import {
   Save,
   Clock,
   IdCard,
+  GraduationCap,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { logActivity } from "@/lib/activity/activity-service"
+import { ExamPerformanceSection } from "./ExamPerformanceSection"
 
 export function ProfileSettingsView() {
   const router = useRouter()
@@ -790,6 +792,22 @@ export function ProfileSettingsView() {
             </Button>
           </CardFooter>
         </form>
+      </Card>
+
+      {/* Student Exam Performance & History */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <GraduationCap className="size-5 text-teal-600" />
+            পরীক্ষার পারফরম্যান্স রেকর্ড (Exam Performance History)
+          </CardTitle>
+          <CardDescription>
+            ফ্রি এক্সাম পোর্টালে আপনার দেওয়া সকল MCQ পরীক্ষার প্রাপ্ত নম্বর, সঠিক-ভুল বিশ্লেষণ ও ফলাফল ইতিহাস।
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ExamPerformanceSection />
+        </CardContent>
       </Card>
 
       {/* Account Details & Danger Zone */}

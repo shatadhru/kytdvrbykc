@@ -82,6 +82,14 @@ export const headerConfig: HeaderConfig = {
       badgeVariant: 'teal',
     },
     {
+      id: 'exams',
+      title: 'ফ্রি এক্সাম পোর্টাল',
+      href: '/exams',
+      icon: BookOpen,
+      badge: 'ফ্রি',
+      badgeVariant: 'teal',
+    },
+    {
       id: 'about',
       title: 'আমাদের সম্পর্কে',
       href: '/about',

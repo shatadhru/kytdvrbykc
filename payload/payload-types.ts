@@ -86,6 +86,7 @@ export interface Config {
     'blog-tags': BlogTag;
     enrollments: Enrollment;
     'lesson-comments': LessonComment;
+    'exam-submissions': ExamSubmission;
     sessions: Session;
     accounts: Account;
     verifications: Verification;
@@ -127,6 +128,7 @@ export interface Config {
     'blog-tags': BlogTagsSelect<false> | BlogTagsSelect<true>;
     enrollments: EnrollmentsSelect<false> | EnrollmentsSelect<true>;
     'lesson-comments': LessonCommentsSelect<false> | LessonCommentsSelect<true>;
+    'exam-submissions': ExamSubmissionsSelect<false> | ExamSubmissionsSelect<true>;
     sessions: SessionsSelect<false> | SessionsSelect<true>;
     accounts: AccountsSelect<false> | AccountsSelect<true>;
     verifications: VerificationsSelect<false> | VerificationsSelect<true>;
@@ -1216,6 +1218,45 @@ export interface LessonComment {
   createdAt: string;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exam-submissions".
+ */
+export interface ExamSubmission {
+  id: string;
+  examTitle: string;
+  /**
+   * পরীক্ষা দেওয়া শিক্ষার্থী (যদি লগইন করা থাকে)।
+   */
+  student?: (string | null) | User;
+  studentName?: string | null;
+  studentEmail?: string | null;
+  classLevel?: string | null;
+  subject: string;
+  chapter: string;
+  totalQuestions: number;
+  attempted: number;
+  correctAnswers: number;
+  incorrectAnswers: number;
+  score: number;
+  percentage: number;
+  timeTakenSeconds: number;
+  passed?: boolean | null;
+  /**
+   * শিক্ষার্থীর নির্বাচিত উত্তর এবং সঠিক উত্তরের বিবরণ।
+   */
+  answers?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Auto-generated from Better Auth schema (session)
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1345,6 +1386,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'lesson-comments';
         value: string | LessonComment;
+      } | null)
+    | ({
+        relationTo: 'exam-submissions';
+        value: string | ExamSubmission;
       } | null)
     | ({
         relationTo: 'sessions';
@@ -1700,6 +1745,30 @@ export interface LessonCommentsSelect<T extends boolean = true> {
   content?: T;
   parent?: T;
   status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exam-submissions_select".
+ */
+export interface ExamSubmissionsSelect<T extends boolean = true> {
+  examTitle?: T;
+  student?: T;
+  studentName?: T;
+  studentEmail?: T;
+  classLevel?: T;
+  subject?: T;
+  chapter?: T;
+  totalQuestions?: T;
+  attempted?: T;
+  correctAnswers?: T;
+  incorrectAnswers?: T;
+  score?: T;
+  percentage?: T;
+  timeTakenSeconds?: T;
+  passed?: T;
+  answers?: T;
   updatedAt?: T;
   createdAt?: T;
 }

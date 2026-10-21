@@ -118,6 +118,16 @@ export const sidebarConfig: SidebarConfig = {
       badge: "নতুন",
     },
     {
+      id: "exams",
+      label: "ফ্রি এক্সাম ও প্রশ্নব্যাংক",
+      href: "/exams",
+      icon: Book2BoldDuotone,
+      color: "text-emerald-500",
+      hexColor: "#10b981",
+      bgColor: "bg-emerald-500/15 dark:bg-emerald-500/25",
+      badge: "ফ্রি",
+    },
+    {
       id: "notifications",
       label: "নোটিফিকেশন",
       href: "/dashboard/notifications",

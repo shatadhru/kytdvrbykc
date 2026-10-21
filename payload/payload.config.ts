@@ -25,6 +25,7 @@ import { Teachers } from './collections/Teachers'
 import { Coordinators } from './collections/Coordinators'
 import { Enrollments } from './collections/Enrollments'
 import { LessonComments } from './collections/LessonComments'
+import { ExamSubmissions } from './collections/ExamSubmissions'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -81,6 +82,7 @@ export default buildConfig({
     BlogTags,
     Enrollments,
     LessonComments,
+    ExamSubmissions,
   ],
   globals: [SiteSettings, CookieConsent, ...generateAdminGlobals()],
   editor: lexicalEditor(),

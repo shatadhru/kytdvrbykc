@@ -3,6 +3,7 @@ import { getPayload } from "payload"
 import config from "@payload-config"
 import { getServerSession } from "@delmaredigital/payload-better-auth"
 import { sendBroadcastEmail } from "@/utils/sendEmail"
+import { enqueueNotificationBroadcast } from "@/payload/lib/queue/rabbitmq"
 import {
   saveBroadcastRecord,
   getBroadcastHistory,
@@ -248,34 +249,49 @@ export async function POST(req: NextRequest) {
 
     // Dispatch emails if email channel is selected
     if (channels.includes("email")) {
-      // In production / large lists, chunking is best. For now send in small batches:
-      const BATCH_SIZE = 5
-      for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
-        const batch = recipients.slice(i, i + BATCH_SIZE)
-        await Promise.all(
-          batch.map(async (r) => {
-            try {
-              const res = await sendBroadcastEmail({
-                to: r.email,
-                recipientName: r.name,
-                title,
-                message,
-                priority,
-                actionUrl,
-                actionText,
-                imageUrl,
-              })
-              if (res.success) {
-                emailDeliveredCount++
-              } else {
+      if (recipients.length > 5) {
+        // Enqueue to RabbitMQ queue to prevent HTTP timeout on large broadcasts
+        await enqueueNotificationBroadcast({
+          recipients,
+          title,
+          message,
+          priority,
+          channels,
+          actionUrl,
+          actionText,
+          imageUrl,
+        })
+        emailDeliveredCount = recipients.length
+      } else {
+        // Immediate dispatch for small batches / test sends
+        const BATCH_SIZE = 5
+        for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
+          const batch = recipients.slice(i, i + BATCH_SIZE)
+          await Promise.all(
+            batch.map(async (r) => {
+              try {
+                const res = await sendBroadcastEmail({
+                  to: r.email,
+                  recipientName: r.name,
+                  title,
+                  message,
+                  priority,
+                  actionUrl,
+                  actionText,
+                  imageUrl,
+                })
+                if (res.success) {
+                  emailDeliveredCount++
+                } else {
+                  emailFailedCount++
+                }
+              } catch (err) {
+                console.error(`Error sending email to ${r.email}:`, err)
                 emailFailedCount++
               }
-            } catch (err) {
-              console.error(`Error sending email to ${r.email}:`, err)
-              emailFailedCount++
-            }
-          })
-        )
+            })
+          )
+        }
       }
     }
 

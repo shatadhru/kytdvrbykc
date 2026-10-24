@@ -84,6 +84,9 @@ export interface Config {
     'blog-categories': BlogCategory;
     newsletter: Newsletter;
     'blog-tags': BlogTag;
+    enrollments: Enrollment;
+    'lesson-comments': LessonComment;
+    'exam-submissions': ExamSubmission;
     sessions: Session;
     accounts: Account;
     verifications: Verification;
@@ -123,6 +126,9 @@ export interface Config {
     'blog-categories': BlogCategoriesSelect<false> | BlogCategoriesSelect<true>;
     newsletter: NewsletterSelect<false> | NewsletterSelect<true>;
     'blog-tags': BlogTagsSelect<false> | BlogTagsSelect<true>;
+    enrollments: EnrollmentsSelect<false> | EnrollmentsSelect<true>;
+    'lesson-comments': LessonCommentsSelect<false> | LessonCommentsSelect<true>;
+    'exam-submissions': ExamSubmissionsSelect<false> | ExamSubmissionsSelect<true>;
     sessions: SessionsSelect<false> | SessionsSelect<true>;
     accounts: AccountsSelect<false> | AccountsSelect<true>;
     verifications: VerificationsSelect<false> | VerificationsSelect<true>;
@@ -209,6 +215,9 @@ export interface User {
   emailVerified?: boolean | null;
   name?: string | null;
   image?: string | null;
+  phone?: string | null;
+  sscBatch?: string | null;
+  hscBatch?: string | null;
   role?: ('user' | 'admin' | 'teacher' | 'coordinator') | null;
   orders?: {
     docs?: (string | Order)[];
@@ -270,6 +279,14 @@ export interface Order {
    * নগদ ম্যানুয়াল যাচাইয়ের পরে এখানে "paid" করুন।
    */
   paymentStatus?: ('pending' | 'paid' | 'failed') | null;
+  /**
+   * কোর্স ক্রয়ের কনফার্মেশন SMS শিক্ষার্থীকে পাঠানো হয়েছে কিনা।
+   */
+  confirmationSmsSent?: boolean | null;
+  /**
+   * কোর্স ক্রয়ের ইনভয়েস ইমেইল শিক্ষার্থীকে পাঠানো হয়েছে কিনা।
+   */
+  confirmationEmailSent?: boolean | null;
   /**
    * bKash গেটওয়ে দ্বারা স্বয়ংক্রিয়ভাবে পূরণ করা হয়।
    */
@@ -367,6 +384,22 @@ export interface Product {
          * Admin-only hidden field for piracy protection. Hidden from public and non-admin queries.
          */
         youtubeVideoIdOrUrl?: string | null;
+        /**
+         * লেকচারের প্রেজেন্টেশন স্লাইড (.pptx) ফাইল আপলোড করুন।
+         */
+        classSlide?: (string | null) | Media;
+        /**
+         * লেকচার নোট (PDF, DOCX, PPTX) ফাইল আপলোড করুন।
+         */
+        classNote?: (string | null) | Media;
+        /**
+         * স্লাইডের সরাসরি ডাউনলোড বা ড্রাইভ লিংক (যদি ক্লাউড স্টোরেজে থাকে)।
+         */
+        classSlideUrl?: string | null;
+        /**
+         * নোটের সরাসরি ডাউনলোড বা ভিউ লিংক (যদি ক্লাউড স্টোরেজে থাকে)।
+         */
+        classNoteUrl?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -1146,6 +1179,95 @@ export interface Newsletter {
   createdAt: string;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enrollments".
+ */
+export interface Enrollment {
+  id: string;
+  /**
+   * এনরোলকৃত শিক্ষার্থী।
+   */
+  student: string | User;
+  /**
+   * এনরোল করা কোর্স।
+   */
+  course: string | Product;
+  /**
+   * যে অর্ডারের মাধ্যমে এনরোলমেন্ট তৈরি হয়েছে।
+   */
+  order?: (string | null) | Order;
+  status?: ('active' | 'suspended' | 'revoked') | null;
+  enrolledAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lesson-comments".
+ */
+export interface LessonComment {
+  id: string;
+  /**
+   * যে কোর্সের লেকচারে কমেন্ট করা হয়েছে।
+   */
+  course: string | Product;
+  /**
+   * কোর্সের সংশ্লিষ্ট লেকচারের নির্দিষ্ট আইডি।
+   */
+  lessonId: string;
+  /**
+   * যে শিক্ষার্থী বা শিক্ষক মন্তব্য করেছেন।
+   */
+  author: string | User;
+  content: string;
+  /**
+   * যদি এটি কোনো কমেন্টের উত্তর বা রিপ্লাই হয়।
+   */
+  parent?: (string | null) | LessonComment;
+  status?: ('approved' | 'pending' | 'flagged') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exam-submissions".
+ */
+export interface ExamSubmission {
+  id: string;
+  examTitle: string;
+  /**
+   * পরীক্ষা দেওয়া শিক্ষার্থী (যদি লগইন করা থাকে)।
+   */
+  student?: (string | null) | User;
+  studentName?: string | null;
+  studentEmail?: string | null;
+  classLevel?: string | null;
+  subject: string;
+  chapter: string;
+  totalQuestions: number;
+  attempted: number;
+  correctAnswers: number;
+  incorrectAnswers: number;
+  score: number;
+  percentage: number;
+  timeTakenSeconds: number;
+  passed?: boolean | null;
+  /**
+   * শিক্ষার্থীর নির্বাচিত উত্তর এবং সঠিক উত্তরের বিবরণ।
+   */
+  answers?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Auto-generated from Better Auth schema (session)
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1269,6 +1391,18 @@ export interface PayloadLockedDocument {
         value: string | BlogTag;
       } | null)
     | ({
+        relationTo: 'enrollments';
+        value: string | Enrollment;
+      } | null)
+    | ({
+        relationTo: 'lesson-comments';
+        value: string | LessonComment;
+      } | null)
+    | ({
+        relationTo: 'exam-submissions';
+        value: string | ExamSubmission;
+      } | null)
+    | ({
         relationTo: 'sessions';
         value: string | Session;
       } | null)
@@ -1363,6 +1497,9 @@ export interface UsersSelect<T extends boolean = true> {
   emailVerified?: T;
   name?: T;
   image?: T;
+  phone?: T;
+  sscBatch?: T;
+  hscBatch?: T;
   role?: T;
   orders?: T;
   cart?: T;
@@ -1600,6 +1737,57 @@ export interface BlogTagsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enrollments_select".
+ */
+export interface EnrollmentsSelect<T extends boolean = true> {
+  student?: T;
+  course?: T;
+  order?: T;
+  status?: T;
+  enrolledAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lesson-comments_select".
+ */
+export interface LessonCommentsSelect<T extends boolean = true> {
+  course?: T;
+  lessonId?: T;
+  author?: T;
+  content?: T;
+  parent?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exam-submissions_select".
+ */
+export interface ExamSubmissionsSelect<T extends boolean = true> {
+  examTitle?: T;
+  student?: T;
+  studentName?: T;
+  studentEmail?: T;
+  classLevel?: T;
+  subject?: T;
+  chapter?: T;
+  totalQuestions?: T;
+  attempted?: T;
+  correctAnswers?: T;
+  incorrectAnswers?: T;
+  score?: T;
+  percentage?: T;
+  timeTakenSeconds?: T;
+  passed?: T;
+  answers?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sessions_select".
  */
 export interface SessionsSelect<T extends boolean = true> {
@@ -1727,6 +1915,10 @@ export interface ProductsSelect<T extends boolean = true> {
         order?: T;
         isFreePreview?: T;
         youtubeVideoIdOrUrl?: T;
+        classSlide?: T;
+        classNote?: T;
+        classSlideUrl?: T;
+        classNoteUrl?: T;
         id?: T;
       };
   inventory?: T;
@@ -1806,6 +1998,8 @@ export interface OrdersSelect<T extends boolean = true> {
   currency?: T;
   paymentMethod?: T;
   paymentStatus?: T;
+  confirmationSmsSent?: T;
+  confirmationEmailSent?: T;
   bkash?:
     | T
     | {

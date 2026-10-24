@@ -9,7 +9,6 @@ import {
   isCloudinarySrc,
   extractCloudinarySecureUrl,
 } from "@/components/ui/SafeCldImage";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export interface LogoProps {
   /** Visual variant */
@@ -63,7 +62,6 @@ export function Logo({
       logoDarkUrl: null,
     },
   );
-  const [isLoading, setIsLoading] = useState(!cachedSettings && !contextSettings);
   const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
@@ -83,7 +81,6 @@ export function Logo({
       };
       cachedSettings = newSettings;
       setSettings(newSettings);
-      setIsLoading(false);
       return;
     }
 
@@ -111,8 +108,7 @@ export function Logo({
         })
         .catch((err) =>
           console.warn("Failed to fetch site settings for Logo:", err),
-        )
-        .finally(() => setIsLoading(false));
+        );
     }
   }, [contextSettings]);
 
@@ -181,42 +177,6 @@ export function Logo({
       subtitle: "text-xs font-medium tracking-wider uppercase text-muted-foreground leading-none mt-0.5",
     },
   }[size];
-
-  // Render Skeleton effect while loading
-  if (isLoading) {
-    const skeletonContent = (
-      <Skeleton
-        className={cn(
-          "shrink-0",
-          variant === "icon" ? sizeMap.iconSkeleton : sizeMap.skeleton,
-          badgeClassName,
-        )}
-      />
-    );
-
-    if (href) {
-      return (
-        <Link
-          href={href}
-          aria-label={siteName}
-          className={cn(
-            "inline-flex items-center hover:opacity-90 transition-opacity focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md",
-            alignClass,
-            className,
-          )}
-        >
-          <div className={cn("inline-flex items-center shrink-0", alignClass)}>
-            {skeletonContent}
-          </div>
-        </Link>
-      );
-    }
-    return (
-      <div className={cn("inline-flex items-center", alignClass, className)}>
-        {skeletonContent}
-      </div>
-    );
-  }
 
   // Render the logo itself
   const renderLogo = () => {

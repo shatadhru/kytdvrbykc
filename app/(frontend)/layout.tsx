@@ -3,6 +3,7 @@ import '@/components/style/globals.css'
 import Providor from '@/payload/providors'
 import NoticeBannerSlot from '@/components/basic/banner/NoticeBannerSlot'
 import CookieConsentSlot from '@/components/basic/cookies/CookieConsentSlot'
+import { StudentOnboardingModal } from '@/components/basic/auth/StudentOnboardingModal'
 
 import type { Metadata } from 'next'
 import { Plus_Jakarta_Sans } from 'next/font/google'
@@ -53,6 +54,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
             <NoticeBannerSlot />
             {children}
             <CookieConsentSlot />
+            <StudentOnboardingModal />
           </Providor>
         </main>
       </body>

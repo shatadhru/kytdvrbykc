@@ -1,6 +1,7 @@
 import type { CollectionOverride } from '@payloadcms/plugin-ecommerce/types'
 import type { FieldAccess } from 'payload'
 import { createEnrollmentsForOrder } from '@/utils/enrollment'
+import { sendOrderPurchaseNotifications } from '@/payload/lib/sms/portaSms'
 
 /**
  * Admin-only field access helper (same pattern as Product.ts).
@@ -17,9 +18,12 @@ export const OrdersCollection: CollectionOverride = ({ defaultCollection }) => {
       ...(defaultCollection.hooks || {}),
       afterChange: [
         ...((defaultCollection.hooks && defaultCollection.hooks.afterChange) || []),
-        async ({ doc, req }) => {
+        async ({ doc, req, context }) => {
           if (doc?.paymentStatus === 'paid') {
             await createEnrollmentsForOrder(req.payload, doc)
+            if (!context?.skipNotifications) {
+              await sendOrderPurchaseNotifications(req.payload, doc)
+            }
           }
         },
       ],
@@ -77,6 +81,38 @@ export const OrdersCollection: CollectionOverride = ({ defaultCollection }) => {
           { label: '✅ পরিশোধিত (Paid)', value: 'paid' },
           { label: '❌ ব্যর্থ (Failed)', value: 'failed' },
         ],
+      },
+
+      // ─────────────────────────────────────────────────────────────────────────────
+      // SMS & EMAIL CONFIRMATION STATUS (sidebar) — exactly 1 trigger per order
+      // ─────────────────────────────────────────────────────────────────────────────
+      {
+        name: 'confirmationSmsSent',
+        type: 'checkbox',
+        label: 'কনফার্মেশন SMS পাঠানো হয়েছে',
+        defaultValue: false,
+        access: {
+          update: adminOnlyFieldAccess,
+        },
+        admin: {
+          position: 'sidebar',
+          readOnly: true,
+          description: 'কোর্স ক্রয়ের কনফার্মেশন SMS শিক্ষার্থীকে পাঠানো হয়েছে কিনা।',
+        },
+      },
+      {
+        name: 'confirmationEmailSent',
+        type: 'checkbox',
+        label: 'ইনভয়েস ইমেইল পাঠানো হয়েছে',
+        defaultValue: false,
+        access: {
+          update: adminOnlyFieldAccess,
+        },
+        admin: {
+          position: 'sidebar',
+          readOnly: true,
+          description: 'কোর্স ক্রয়ের ইনভয়েস ইমেইল শিক্ষার্থীকে পাঠানো হয়েছে কিনা।',
+        },
       },
 
       // ─────────────────────────────────────────────────────────────────────────────

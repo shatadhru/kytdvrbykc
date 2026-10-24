@@ -53,6 +53,10 @@ async function getCourse(slug: string) {
         isFreePreview: true,
         id: true,
         youtubeVideoIdOrUrl: true,
+        classSlide: true,
+        classNote: true,
+        classSlideUrl: true,
+        classNoteUrl: true,
       },
     },
   })
@@ -105,7 +109,46 @@ export default async function CoursePage({ params, searchParams }: Props) {
     console.error('Error checking course enrollment:', err)
   }
 
-  // 2. Anti-Piracy Data Protection:
+  function getDocId(val: any): string | null {
+    if (!val) return null
+    if (typeof val === 'string' && val.length > 5 && !val.startsWith('http') && !val.startsWith('/')) {
+      return val
+    }
+    if (typeof val === 'object' && val.id) {
+      return String(val.id)
+    }
+    return null
+  }
+
+  // 2. Resolve class slide and note files (whether populated object, media ID string, or direct URL)
+  const mediaIds: string[] = []
+  for (const l of (course.lessons ?? [])) {
+    const sId = getDocId(l.classSlide)
+    if (sId) mediaIds.push(sId)
+    const nId = getDocId(l.classNote)
+    if (nId) mediaIds.push(nId)
+  }
+
+  const mediaMap: Record<string, any> = {}
+  if (mediaIds.length > 0) {
+    try {
+      const payload = await getPayload({ config })
+      const mediaDocs = await payload.find({
+        collection: 'media',
+        where: { id: { in: Array.from(new Set(mediaIds)) } },
+        limit: mediaIds.length,
+        pagination: false,
+        overrideAccess: true,
+      })
+      for (const m of mediaDocs.docs) {
+        mediaMap[String(m.id)] = m
+      }
+    } catch (e) {
+      console.warn('Could not batch-resolve media for lessons:', e)
+    }
+  }
+
+  // 3. Anti-Piracy Data Protection & Lesson Resource Mapping:
   // - Non-enrolled users: ONLY receive Demo URL (Live preview classes) and Chapter names (moduleName).
   //   Paid classes never receive video URLs or hashes.
   // - Enrolled users: Server sends tamper-proof AES-256-GCM encrypted Object Hashes (videoHash).
@@ -114,39 +157,54 @@ export default async function CoursePage({ params, searchParams }: Props) {
     let videoHash: string | undefined = undefined
     let videoSource: string | undefined = undefined
 
-    if (isEnrolled && l.youtubeVideoIdOrUrl) {
-      // Enrolled: Server sends encrypted Object Hash (tied to classId and userId)
-      videoHash = encryptVideoUrl(l.youtubeVideoIdOrUrl, {
-        classId: l.id,
-        userId,
-        expiresInMs: 4 * 60 * 60 * 1000,
-      })
-    } else if (isFree && l.youtubeVideoIdOrUrl) {
-      // Non-enrolled: ONLY send Demo URL for live preview classes
-      videoSource = l.youtubeVideoIdOrUrl
+    if (l.youtubeVideoIdOrUrl) {
+      // 100% Anti-Piracy: Never expose raw YouTube URL to client side. Always encrypt with AES-256-GCM.
+      if (isEnrolled) {
+        videoHash = encryptVideoUrl(l.youtubeVideoIdOrUrl, {
+          classId: l.id,
+          userId,
+          expiresInMs: 4 * 60 * 60 * 1000,
+        })
+      } else if (isFree) {
+        videoHash = encryptVideoUrl(l.youtubeVideoIdOrUrl, {
+          classId: l.id,
+          expiresInMs: 4 * 60 * 60 * 1000,
+        })
+      }
     }
 
+    // Resolve Slide
     let classSlideUrl: string | undefined = undefined
+    let classSlideName: string = 'Class-Slide.pptx'
+
+    const slideId = getDocId(l.classSlide)
+    const slideDoc = (slideId && mediaMap[slideId]) || (typeof l.classSlide === 'object' ? l.classSlide : null)
+    if (slideDoc) {
+      classSlideUrl = slideDoc.url || slideDoc.cloudinary?.secure_url
+      classSlideName = slideDoc.filename || slideDoc.alt || 'Class-Slide.pptx'
+    } else if (typeof l.classSlideUrl === 'string' && l.classSlideUrl.trim()) {
+      classSlideUrl = l.classSlideUrl.trim()
+      classSlideName = 'Class-Slide.pptx'
+    } else if (typeof l.classSlide === 'string' && (l.classSlide.startsWith('http') || l.classSlide.startsWith('/'))) {
+      classSlideUrl = l.classSlide.trim()
+      classSlideName = 'Class-Slide.pptx'
+    }
+
+    // Resolve Note
     let classNoteUrl: string | undefined = undefined
-    let classSlideName: string | undefined = undefined
-    let classNoteName: string | undefined = undefined
+    let classNoteName: string = 'Class-Note.pdf'
 
-    if (isEnrolled || isFree) {
-      if (l.classSlide && typeof l.classSlide === 'object') {
-        classSlideUrl = l.classSlide.url || l.classSlide.cloudinary?.secure_url
-        classSlideName = l.classSlide.filename || 'Class-Slide.pptx'
-      } else if (typeof l.classSlideUrl === 'string' && l.classSlideUrl) {
-        classSlideUrl = l.classSlideUrl
-        classSlideName = 'Class-Slide.pptx'
-      }
-
-      if (l.classNote && typeof l.classNote === 'object') {
-        classNoteUrl = l.classNote.url || l.classNote.cloudinary?.secure_url
-        classNoteName = l.classNote.filename || 'Class-Note'
-      } else if (typeof l.classNoteUrl === 'string' && l.classNoteUrl) {
-        classNoteUrl = l.classNoteUrl
-        classNoteName = 'Class-Note'
-      }
+    const noteId = getDocId(l.classNote)
+    const noteDoc = (noteId && mediaMap[noteId]) || (typeof l.classNote === 'object' ? l.classNote : null)
+    if (noteDoc) {
+      classNoteUrl = noteDoc.url || noteDoc.cloudinary?.secure_url
+      classNoteName = noteDoc.filename || noteDoc.alt || 'Class-Note.pdf'
+    } else if (typeof l.classNoteUrl === 'string' && l.classNoteUrl.trim()) {
+      classNoteUrl = l.classNoteUrl.trim()
+      classNoteName = 'Class-Note.pdf'
+    } else if (typeof l.classNote === 'string' && (l.classNote.startsWith('http') || l.classNote.startsWith('/'))) {
+      classNoteUrl = l.classNote.trim()
+      classNoteName = 'Class-Note.pdf'
     }
 
     return {
@@ -166,18 +224,33 @@ export default async function CoursePage({ params, searchParams }: Props) {
   })
 
   // Sanitize course object for CourseDetailView to prevent leaking raw URLs
-  const safeLessons = (course.lessons ?? []).map((l: any) => ({
-    id: l.id,
-    lessonTitle: l.lessonTitle,
-    moduleName: l.moduleName,
-    duration: l.duration,
-    order: l.order,
-    isFreePreview: Boolean(l.isFreePreview),
-    demoUrl: l.isFreePreview ? l.youtubeVideoIdOrUrl : undefined,
-  }))
+  const safeLessons = (course.lessons ?? []).map((l: any, idx: number) => {
+    const resolvedLesson = lessons[idx]
+    return {
+      id: l.id,
+      lessonTitle: l.lessonTitle,
+      moduleName: l.moduleName,
+      duration: l.duration,
+      order: l.order,
+      isFreePreview: Boolean(l.isFreePreview),
+      demoUrl:
+        l.isFreePreview && l.youtubeVideoIdOrUrl
+          ? encryptVideoUrl(l.youtubeVideoIdOrUrl, { classId: l.id, expiresInMs: 4 * 60 * 60 * 1000 })
+          : undefined,
+      classSlideUrl: resolvedLesson?.classSlideUrl,
+      classNoteUrl: resolvedLesson?.classNoteUrl,
+      classSlideName: resolvedLesson?.classSlideName,
+      classNoteName: resolvedLesson?.classNoteName,
+    }
+  })
+
+  const safeIntroductoryVideo = course.introductoryVideo
+    ? encryptVideoUrl(course.introductoryVideo, { expiresInMs: 4 * 60 * 60 * 1000 })
+    : undefined
 
   const safeCourse = {
     ...course,
+    introductoryVideo: safeIntroductoryVideo,
     lessons: safeLessons,
   }
 

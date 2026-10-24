@@ -3,6 +3,7 @@ import { getPayload } from "payload"
 import config from "@payload-config"
 import { executeBkashPayment } from "@/payload/lib/bkash/client"
 import { createEnrollmentsForOrder } from "@/utils/enrollment"
+import { sendOrderPurchaseNotifications } from "@/payload/lib/sms/portaSms"
 
 async function handleBkashCallback(req: NextRequest) {
   const url = new URL(req.url)
@@ -140,7 +141,14 @@ async function handleBkashCallback(req: NextRequest) {
     // 6. Create enrollment records in dedicated enrollments collection
     await createEnrollmentsForOrder(payload, updatedOrder)
 
-    // 7. Clear user's server-side active cart
+    // 7. Trigger Purchase Confirmation Notifications (SMS & Email Invoice - safely isolated)
+    try {
+      await sendOrderPurchaseNotifications(payload, updatedOrder)
+    } catch (notifErr) {
+      console.warn("[bKash Callback] Non-blocking purchase notifications warning:", notifErr)
+    }
+
+    // 8. Clear user's server-side active cart
     if (order.customer) {
       try {
         const customerId =

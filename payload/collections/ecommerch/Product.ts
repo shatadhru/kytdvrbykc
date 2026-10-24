@@ -104,6 +104,15 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                 },
               },
               {
+                name: 'introductoryVideoPreview',
+                type: 'ui',
+                admin: {
+                  components: {
+                    Field: './admin/components/YouTubePreview#YouTubePreview',
+                  },
+                },
+              },
+              {
                 name: 'description',
                 type: 'richText',
                 editor: lexicalEditor({
@@ -246,6 +255,15 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                       description:
                         'Admin-only hidden field for piracy protection. Hidden from public and non-admin queries.',
                       placeholder: 'e.g. https://youtu.be/... or video ID',
+                    },
+                  },
+                  {
+                    name: 'lessonVideoPreview',
+                    type: 'ui',
+                    admin: {
+                      components: {
+                        Field: './admin/components/YouTubePreview#YouTubePreview',
+                      },
                     },
                   },
                   {

@@ -37,6 +37,7 @@ import {
   Clock,
   IdCard,
   GraduationCap,
+  Phone,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { logActivity } from "@/lib/activity/activity-service"
@@ -48,6 +49,10 @@ export function ProfileSettingsView() {
 
   // Profile fields state
   const [name, setName] = useState("")
+  const [phone, setPhone] = useState("")
+  const [sscBatch, setSscBatch] = useState("")
+  const [hscBatch, setHscBatch] = useState("")
+  const [initialProfile, setInitialProfile] = useState({ phone: "", sscBatch: "", hscBatch: "" })
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false)
 
   // Avatar state
@@ -106,14 +111,32 @@ export function ProfileSettingsView() {
     }
   }
 
-  // Synchronize name from session once loaded
+  // Synchronize name and student onboarding data once loaded
   useEffect(() => {
     if (session?.user?.name) {
       setName(session.user.name)
     }
-  }, [session?.user?.name])
+    if (session?.user?.id) {
+      fetch('/api/user/onboarding')
+        .then((r) => r.json())
+        .then((data) => {
+          if (data?.profile) {
+            const p = data.profile
+            if (p.phone) setPhone(p.phone)
+            if (p.sscBatch) setSscBatch(p.sscBatch)
+            if (p.hscBatch) setHscBatch(p.hscBatch)
+            setInitialProfile({
+              phone: p.phone || "",
+              sscBatch: p.sscBatch || "",
+              hscBatch: p.hscBatch || "",
+            })
+          }
+        })
+        .catch(() => {})
+    }
+  }, [session?.user?.id, session?.user?.name])
 
-  // Handle Profile Update (Name)
+  // Handle Profile Update (Name & Student Details)
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!name.trim()) {
@@ -140,6 +163,19 @@ export function ProfileSettingsView() {
         name: name.trim(),
       })
 
+      // Also update student onboarding profile fields (phone, batches)
+      if (phone.trim() || sscBatch.trim() || hscBatch.trim()) {
+        await fetch('/api/user/onboarding', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone: phone.trim(),
+            sscBatch: sscBatch.trim(),
+            hscBatch: hscBatch.trim(),
+          }),
+        })
+      }
+
       if (error) {
         toast.add({
           title: "Update Failed",
@@ -149,15 +185,20 @@ export function ProfileSettingsView() {
       } else {
         toast.add({
           title: "Profile Updated",
-          description: "Your display name has been successfully updated.",
+          description: "Your profile information has been successfully updated.",
           type: "success",
         })
         logActivity({
-          title: "Display name updated",
-          description: `Display name changed to "${name.trim()}".`,
+          title: "Profile updated",
+          description: `Profile information updated.`,
           category: "Account",
           type: "profile_update",
           status: "success",
+        })
+        setInitialProfile({
+          phone: phone.trim(),
+          sscBatch: sscBatch.trim(),
+          hscBatch: hscBatch.trim(),
         })
         if (refetch) await refetch()
       }
@@ -449,7 +490,11 @@ export function ProfileSettingsView() {
       })
     : null
 
-  const isNameChanged = name.trim() !== (user?.name || "")
+  const isProfileChanged =
+    name.trim() !== (user?.name || "") ||
+    phone.trim() !== initialProfile.phone ||
+    sscBatch.trim() !== initialProfile.sscBatch ||
+    hscBatch.trim() !== initialProfile.hscBatch
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto pb-10">
@@ -631,6 +676,59 @@ export function ProfileSettingsView() {
                   Primary identifier for sign-in and security notifications.
                 </p>
               </div>
+
+              {/* Mobile Number */}
+              <div className="space-y-1.5">
+                <Label htmlFor="phone" className="flex items-center gap-1.5">
+                  <Phone className="size-3.5 text-primary" />
+                  Mobile Number
+                </Label>
+                <Input
+                  id="phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="01XXXXXXXXX"
+                  disabled={isUpdatingProfile}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Used for SMS notifications, invoice delivery, and account verification.
+                </p>
+              </div>
+
+              {/* Batches */}
+              <div className="space-y-1.5">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="sscBatch" className="flex items-center gap-1.5">
+                      <GraduationCap className="size-3.5 text-primary" />
+                      SSC Batch
+                    </Label>
+                    <Input
+                      id="sscBatch"
+                      value={sscBatch}
+                      onChange={(e) => setSscBatch(e.target.value)}
+                      placeholder="e.g. 2025"
+                      disabled={isUpdatingProfile}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="hscBatch" className="flex items-center gap-1.5">
+                      <GraduationCap className="size-3.5 text-primary" />
+                      HSC Batch
+                    </Label>
+                    <Input
+                      id="hscBatch"
+                      value={hscBatch}
+                      onChange={(e) => setHscBatch(e.target.value)}
+                      placeholder="e.g. 2027"
+                      disabled={isUpdatingProfile}
+                    />
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Academic batches for tailored course recommendations and exam access.
+                </p>
+              </div>
             </div>
 
             {/* Role & Workspace Info */}
@@ -660,7 +758,7 @@ export function ProfileSettingsView() {
             <Button
               type="submit"
               size="sm"
-              disabled={isUpdatingProfile || !isNameChanged || !name.trim()}
+              disabled={isUpdatingProfile || !isProfileChanged || !name.trim()}
             >
               {isUpdatingProfile ? (
                 <>

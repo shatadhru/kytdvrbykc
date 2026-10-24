@@ -15,6 +15,9 @@ import {
   ArrowRight,
   ShieldCheck,
   Share2,
+  FileText,
+  Presentation,
+  Download,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -23,6 +26,7 @@ import { AddToCartButton } from '@/components/basic/cart/AddToCartButton'
 import CourseVideoPlayer from '@/components/basic/video/CourseVideoPlayer'
 import { extractCloudinarySecureUrl } from '@/utils/cloudinary'
 import { CourseReviewsSection } from './CourseReviewsSection'
+import { getDownloadUrl } from '@/payload/utils/download'
 
 export interface CourseDetailViewProps {
   course: {
@@ -199,11 +203,11 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
               {/* Top Preview Video or Thumbnail */}
               <div className="relative aspect-video w-full bg-black">
                 {activePreviewLesson?.demoUrl ? (
-                  <CourseVideoPlayer url={activePreviewLesson.demoUrl} className="size-full" />
+                  <CourseVideoPlayer videoHash={activePreviewLesson.demoUrl} className="size-full" />
                 ) : previewToken ? (
                   <CourseVideoPlayer videoHash={previewToken} className="size-full" />
                 ) : course.introductoryVideo ? (
-                  <CourseVideoPlayer url={course.introductoryVideo} className="size-full" />
+                  <CourseVideoPlayer videoHash={course.introductoryVideo} className="size-full" />
                 ) : thumbnailUrl.startsWith('http') || thumbnailUrl.startsWith('/') ? (
                   <Image src={thumbnailUrl} alt={course.title} fill className="object-cover" />
                 ) : (
@@ -331,13 +335,39 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
                           </Badge>
                         )}
                       </div>
-                      <div className="flex items-center gap-2 mt-0.5 text-[11px] text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[11px] text-muted-foreground">
                         {lesson.moduleName && <span>{lesson.moduleName}</span>}
                         {lesson.duration && (
                           <>
                             <span>•</span>
                             <span>{lesson.duration}</span>
                           </>
+                        )}
+                        {lesson.classSlideUrl && (
+                          <a
+                            href={getDownloadUrl(lesson.classSlideUrl, lesson.classSlideName || 'Class-Slide')}
+                            download={lesson.classSlideName || 'Class-Slide.pptx'}
+                            className="inline-flex items-center gap-1 text-orange-600 dark:text-orange-400 hover:underline font-medium"
+                            title="ক্লাস স্লাইড ডাউনলোড করুন"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <span>•</span>
+                            <Presentation className="size-3" />
+                            <span>স্লাইড</span>
+                          </a>
+                        )}
+                        {lesson.classNoteUrl && (
+                          <a
+                            href={getDownloadUrl(lesson.classNoteUrl, lesson.classNoteName || 'Class-Note')}
+                            download={lesson.classNoteName || 'Class-Note.pdf'}
+                            className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                            title="ক্লাস নোট ডাউনলোড করুন"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <span>•</span>
+                            <FileText className="size-3" />
+                            <span>নোট</span>
+                          </a>
                         )}
                       </div>
                     </div>

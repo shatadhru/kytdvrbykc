@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { formatPrice } from "@/components/basic/cart/cart-utils"
 import { CartClearer } from "@/components/basic/cart/CartClearer"
 import { createEnrollmentsForOrder } from "@/utils/enrollment"
+import { sendOrderPurchaseNotifications } from "@/payload/lib/sms/portaSms"
 import {
   CheckCircle2,
   Clock,
@@ -43,6 +44,11 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
       // Ensure enrollments are active if order is paid
       if (order?.paymentStatus === "paid") {
         await createEnrollmentsForOrder(payload, order)
+        try {
+          await sendOrderPurchaseNotifications(payload, order)
+        } catch {
+          // Non-blocking safety fallback
+        }
       }
     } catch (e) {
       console.warn("Could not find order by ID:", orderId)

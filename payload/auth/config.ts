@@ -10,6 +10,9 @@ export const betterAuthOptions: Partial<BetterAuthOptions> = {
     additionalFields: {
       // input: false keeps `role` server-only — clients cannot set it at sign-up.
       role: { type: 'string', defaultValue: 'user', input: false },
+      phone: { type: 'string', required: false },
+      sscBatch: { type: 'string', required: false },
+      hscBatch: { type: 'string', required: false },
     },
   },
   session: {

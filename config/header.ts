@@ -146,12 +146,6 @@ export const headerConfig: HeaderConfig = {
       ],
     },
     {
-      id: 'store',
-      title: 'স্টোর',
-      href: '/store',
-      icon: BookOpen,
-    },
-    {
       id: 'blog',
       title: 'ব্লগ ও নোটিশ',
       href: '/blog',

@@ -29,6 +29,7 @@ import { UploadFeatureClient as UploadFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { VariantOptionsSelector as VariantOptionsSelector_b91672ccd6e8b071c11142ab941fedfb } from '@payloadcms/plugin-ecommerce/rsc'
 import { PriceCell as PriceCell_e27bf7b8cc50640dcdd584767b8eac3c } from '@payloadcms/plugin-ecommerce/client'
 import { PriceInput as PriceInput_b91672ccd6e8b071c11142ab941fedfb } from '@payloadcms/plugin-ecommerce/rsc'
+import { YouTubePreview as YouTubePreview_0fae355d82666b330a08e3d7db421467 } from '../../../payload/admin/components/YouTubePreview'
 import { SocialLinksPreview as SocialLinksPreview_25c2278ad51baf6656c46215b31c6fc5 } from '../../../payload/admin/components/SocialLinksPreview'
 import { PaymentMethodsPreview as PaymentMethodsPreview_3380ceee677aec7389c82552b00ed06a } from '../../../payload/admin/components/PaymentMethodsPreview'
 import { ThemeLivePreview as ThemeLivePreview_d12bf8a4e1cf4b74afe2e616df591cd9 } from '../../../payload/admin/components/ThemeLivePreview'
@@ -83,6 +84,7 @@ export const importMap = {
   "@payloadcms/plugin-ecommerce/rsc#VariantOptionsSelector": VariantOptionsSelector_b91672ccd6e8b071c11142ab941fedfb,
   "@payloadcms/plugin-ecommerce/client#PriceCell": PriceCell_e27bf7b8cc50640dcdd584767b8eac3c,
   "@payloadcms/plugin-ecommerce/rsc#PriceInput": PriceInput_b91672ccd6e8b071c11142ab941fedfb,
+  "./admin/components/YouTubePreview#YouTubePreview": YouTubePreview_0fae355d82666b330a08e3d7db421467,
   "./admin/components/SocialLinksPreview#SocialLinksPreview": SocialLinksPreview_25c2278ad51baf6656c46215b31c6fc5,
   "./admin/components/PaymentMethodsPreview#PaymentMethodsPreview": PaymentMethodsPreview_3380ceee677aec7389c82552b00ed06a,
   "./admin/components/ThemeLivePreview#ThemeLivePreview": ThemeLivePreview_d12bf8a4e1cf4b74afe2e616df591cd9,

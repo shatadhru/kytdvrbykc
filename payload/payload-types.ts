@@ -215,6 +215,9 @@ export interface User {
   emailVerified?: boolean | null;
   name?: string | null;
   image?: string | null;
+  phone?: string | null;
+  sscBatch?: string | null;
+  hscBatch?: string | null;
   role?: ('user' | 'admin' | 'teacher' | 'coordinator') | null;
   orders?: {
     docs?: (string | Order)[];
@@ -276,6 +279,14 @@ export interface Order {
    * নগদ ম্যানুয়াল যাচাইয়ের পরে এখানে "paid" করুন।
    */
   paymentStatus?: ('pending' | 'paid' | 'failed') | null;
+  /**
+   * কোর্স ক্রয়ের কনফার্মেশন SMS শিক্ষার্থীকে পাঠানো হয়েছে কিনা।
+   */
+  confirmationSmsSent?: boolean | null;
+  /**
+   * কোর্স ক্রয়ের ইনভয়েস ইমেইল শিক্ষার্থীকে পাঠানো হয়েছে কিনা।
+   */
+  confirmationEmailSent?: boolean | null;
   /**
    * bKash গেটওয়ে দ্বারা স্বয়ংক্রিয়ভাবে পূরণ করা হয়।
    */
@@ -1486,6 +1497,9 @@ export interface UsersSelect<T extends boolean = true> {
   emailVerified?: T;
   name?: T;
   image?: T;
+  phone?: T;
+  sscBatch?: T;
+  hscBatch?: T;
   role?: T;
   orders?: T;
   cart?: T;
@@ -1984,6 +1998,8 @@ export interface OrdersSelect<T extends boolean = true> {
   currency?: T;
   paymentMethod?: T;
   paymentStatus?: T;
+  confirmationSmsSent?: T;
+  confirmationEmailSent?: T;
   bkash?:
     | T
     | {

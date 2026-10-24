@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { encryptVideoUrl } from '@/payload/utils/videoHash'
 
 // Public — no auth required. Never exposes youtubeVideoIdOrUrl.
 export async function GET(
@@ -38,13 +39,23 @@ export async function GET(
           order: true,
           isFreePreview: true,
           id: true,
+          classSlide: true,
+          classNote: true,
+          classSlideUrl: true,
+          classNoteUrl: true,
         },
       },
     })
 
-    const course = result.docs[0]
+    const course: any = result.docs[0]
     if (!course) {
       return NextResponse.json({ success: false, error: 'Course not found.' }, { status: 404 })
+    }
+
+    if (course.introductoryVideo) {
+      course.introductoryVideo = encryptVideoUrl(course.introductoryVideo, {
+        expiresInMs: 4 * 60 * 60 * 1000,
+      })
     }
 
     return NextResponse.json(

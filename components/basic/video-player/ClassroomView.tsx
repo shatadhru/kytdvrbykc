@@ -19,6 +19,7 @@ import Link from 'next/link'
 import { Progress } from '@/components/ui/progress'
 import { Button } from '@/components/ui/button'
 import { LessonCommentsSection } from './LessonCommentsSection'
+import { getDownloadUrl } from '@/payload/utils/download'
 
 export interface ClassroomClassItem {
   id: string
@@ -60,11 +61,10 @@ export default function ClassroomView({
   initialClasses,
 }: ClassroomViewProps) {
   const [classes] = useState<ClassroomClassItem[]>(initialClasses)
-  // Default to the first playable class (either first enrolled with videoHash or first free preview)
-  const defaultClass = classes.find((c) => c.videoHash || c.videoSource) || classes[0]
+  // Default to the first playable class (either first enrolled or first free preview with videoHash)
+  const defaultClass = classes.find((c) => c.videoHash || c.isFreePreview) || classes[0]
 
   const [activeClassId, setActiveClassId] = useState<string>(defaultClass?.id || '')
-  const [activeVideoUrl, setActiveVideoUrl] = useState<string>(defaultClass?.videoSource || '')
   const [activeVideoHash, setActiveVideoHash] = useState<string | undefined>(
     defaultClass?.videoHash || undefined
   )
@@ -102,39 +102,28 @@ export default function ClassroomView({
     setActiveClassId(cls.id)
     setAccessError(null)
 
-    // 1. Enrolled student: server pre-generated the secure object hash
+    // 1. Enrolled student or free preview: pre-generated secure video hash
     if (cls.videoHash) {
       setActiveVideoHash(cls.videoHash)
-      setActiveVideoUrl('')
       return
     }
 
-    // 2. Demo / Live Preview class: URL sent from server
-    if (cls.videoSource) {
-      setActiveVideoUrl(cls.videoSource)
-      setActiveVideoHash(undefined)
-      return
-    }
-
-    // 3. Paid class without enrollment: access denied
+    // 2. Paid class without enrollment: access denied
     if (!cls.isFreePreview) {
       setAccessError('এই ক্লাসটি লক করা। সম্পূর্ণ ক্লাস দেখতে কোর্সে ভর্তি (Enroll) হন।')
       setActiveVideoHash(undefined)
-      setActiveVideoUrl('')
       return
     }
 
-    // 4. Fallback on-demand verification for free preview
+    // 3. Fallback on-demand verification for free preview
     if (course.slug && cls.id) {
       setFetchingToken(true)
       setActiveVideoHash(undefined)
-      setActiveVideoUrl('')
       try {
         const res = await fetch(`/api/courses/${course.slug}/lessons/${cls.id}/access`)
         const data = await res.json()
         if (data.success && data.token) {
           setActiveVideoHash(data.token)
-          setActiveVideoUrl('')
         } else {
           setAccessError(data.error || 'Access denied.')
           setActiveVideoHash(undefined)
@@ -198,8 +187,7 @@ export default function ClassroomView({
                   </div>
                 ) : (
                   <CourseVideoPlayer
-                    key={activeVideoHash || activeVideoUrl}
-                    url={activeVideoUrl}
+                    key={activeVideoHash}
                     videoHash={activeVideoHash}
                   />
                 )}
@@ -253,13 +241,11 @@ export default function ClassroomView({
                       className="h-8 text-xs font-medium gap-1.5 border-orange-500/30 text-orange-600 dark:text-orange-400 hover:bg-orange-500/10 hover:border-orange-500/50"
                     >
                       <a
-                        href={currentClass.classSlideUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        download
+                        href={getDownloadUrl(currentClass.classSlideUrl, currentClass.classSlideName || 'Class-Slide')}
+                        download={currentClass.classSlideName || 'Class-Slide.pptx'}
                       >
                         <Presentation className="size-3.5 text-orange-500" />
-                        <span>ক্লাস স্লাইড (.pptx)</span>
+                        <span>ক্লাস স্লাইড</span>
                         <Download className="size-3 ml-0.5 opacity-70" />
                       </a>
                     </Button>
@@ -272,13 +258,11 @@ export default function ClassroomView({
                       className="h-8 text-xs font-medium gap-1.5 border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 hover:border-blue-500/50"
                     >
                       <a
-                        href={currentClass.classNoteUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        download
+                        href={getDownloadUrl(currentClass.classNoteUrl, currentClass.classNoteName || 'Class-Note')}
+                        download={currentClass.classNoteName || 'Class-Note.pdf'}
                       >
                         <FileText className="size-3.5 text-blue-500" />
-                        <span>ক্লাস নোট (PDF/DOC)</span>
+                        <span>ক্লাস নোট</span>
                         <Download className="size-3 ml-0.5 opacity-70" />
                       </a>
                     </Button>
@@ -430,6 +414,30 @@ export default function ClassroomView({
                                 <span>•</span>
                                 <span className="text-emerald-600 dark:text-emerald-400 font-medium">Free</span>
                               </>
+                            )}
+                            {(cls.classSlideUrl || cls.classNoteUrl) && (
+                              <div className="flex items-center gap-1.5 mt-1" onClick={(e) => e.stopPropagation()}>
+                                {cls.classSlideUrl && (
+                                  <a
+                                    href={getDownloadUrl(cls.classSlideUrl, cls.classSlideName || 'Class-Slide')}
+                                    download={cls.classSlideName || 'Class-Slide.pptx'}
+                                    className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-500/20 font-medium transition-colors"
+                                    title="স্লাইড ডাউনলোড"
+                                  >
+                                    <Presentation className="size-2.5" /> স্লাইড
+                                  </a>
+                                )}
+                                {cls.classNoteUrl && (
+                                  <a
+                                    href={getDownloadUrl(cls.classNoteUrl, cls.classNoteName || 'Class-Note')}
+                                    download={cls.classNoteName || 'Class-Note.pdf'}
+                                    className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 font-medium transition-colors"
+                                    title="নোট ডাউনলোড"
+                                  >
+                                    <FileText className="size-2.5" /> নোট
+                                  </a>
+                                )}
+                              </div>
                             )}
                           </div>
                         </div>

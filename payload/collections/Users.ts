@@ -40,6 +40,9 @@ export const Users: CollectionConfig = {
     { name: 'emailVerified', type: 'checkbox', defaultValue: false },
     { name: 'name', type: 'text' },
     { name: 'image', type: 'text' },
+    { name: 'phone', type: 'text', label: 'মোবাইল নম্বর (Phone Number)' },
+    { name: 'sscBatch', type: 'text', label: 'এসএসসি ব্যাচ (SSC Batch)' },
+    { name: 'hscBatch', type: 'text', label: 'এইচএসসি ব্যাচ (HSC Batch)' },
     {
       name: 'role',
       type: 'select',

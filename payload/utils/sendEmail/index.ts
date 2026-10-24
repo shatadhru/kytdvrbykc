@@ -4,17 +4,30 @@ import { getResetPasswordEmailTemplate } from "./templates/reset-password"
 import { getVerifyEmailTemplate } from "./templates/verify-email"
 import { getPasswordChangedEmailTemplate } from "./templates/password-changed"
 import { getBroadcastEmailTemplate } from "./templates/broadcast"
+import { getOrderInvoiceEmailTemplate, type OrderInvoiceTemplateProps } from "./templates/order-invoice"
 
-// Create nodemailer SMTP transporter using environment variables
-export const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.example.com",
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: process.env.SMTP_SECURE === "true" || process.env.SMTP_PORT === "465",
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-})
+// Create or get nodemailer SMTP transporter dynamically with trimmed credentials
+export function getTransporter() {
+  const host = (process.env.SMTP_HOST || "smtp.example.com").trim()
+  const port = Number(process.env.SMTP_PORT) || 587
+  const isSecure = process.env.SMTP_SECURE === "true" || port === 465
+
+  return nodemailer.createTransport({
+    host,
+    port,
+    secure: isSecure,
+    auth: {
+      user: process.env.SMTP_USER?.trim(),
+      pass: process.env.SMTP_PASS?.trim(),
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  })
+}
+
+// Backward-compatible static transporter export
+export const transporter = getTransporter()
 
 export interface SendEmailOptions {
   to: string
@@ -49,7 +62,8 @@ export async function sendEmail({
   }
 
   try {
-    const info = await transporter.sendMail({
+    const activeTransporter = getTransporter()
+    const info = await activeTransporter.sendMail({
       from: from || defaultFrom,
       to,
       subject,
@@ -189,9 +203,24 @@ export async function sendBroadcastEmail({
   })
 }
 
+/**
+ * Helper: Send Purchase Invoice Email to Student
+ */
+export async function sendOrderInvoiceEmail(props: OrderInvoiceTemplateProps) {
+  const { subject, html, text } = getOrderInvoiceEmailTemplate(props)
+
+  return sendEmail({
+    to: props.customerEmail,
+    subject,
+    html,
+    text,
+  })
+}
+
 export * from "./templates/base"
 export * from "./templates/reset-password"
 export * from "./templates/verify-email"
 export * from "./templates/password-changed"
 export * from "./templates/broadcast"
+export * from "./templates/order-invoice"
 export * from "./payloadAdapter"

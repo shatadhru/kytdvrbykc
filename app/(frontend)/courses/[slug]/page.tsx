@@ -15,6 +15,7 @@ import { encryptVideoUrl } from '@/utils/videoHash'
 import { extractCleanId } from '@/utils/extractId'
 import { checkUserEnrollment } from '@/utils/enrollment'
 import { SiteConfig, getPageTitle } from '@/config/site'
+import { getQuranVerseById } from '@/payload/data/quranVerses'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -45,9 +46,33 @@ async function getCourse(slug: string) {
       coordinators: true,
       categories: true,
       meta: true,
+      subjects: {
+        subjectName: true,
+        subjectSlug: true,
+        description: true,
+        lessons: {
+          lessonTitle: true,
+          moduleName: true,
+          duration: true,
+          order: true,
+          isFreePreview: true,
+          id: true,
+          youtubeVideoIdOrUrl: true,
+          classSlide: true,
+          classNote: true,
+          classSlideUrl: true,
+          classNoteUrl: true,
+          quranVersePreset: true,
+          customVerseSurah: true,
+          customVerseArabic: true,
+          customVerseBangla: true,
+        },
+      },
       lessons: {
         lessonTitle: true,
         moduleName: true,
+        subjectName: true,
+        subjectSlug: true,
         duration: true,
         order: true,
         isFreePreview: true,
@@ -57,6 +82,10 @@ async function getCourse(slug: string) {
         classNote: true,
         classSlideUrl: true,
         classNoteUrl: true,
+        quranVersePreset: true,
+        customVerseSurah: true,
+        customVerseArabic: true,
+        customVerseBangla: true,
       },
     },
   })
@@ -207,10 +236,51 @@ export default async function CoursePage({ params, searchParams }: Props) {
       classNoteName = 'Class-Note.pdf'
     }
 
+    // Resolve Quranic Motivational Verse (if set)
+    let quranVerse: { surah: string; arabic?: string; bangla: string } | undefined = undefined
+    if (l.quranVersePreset && l.quranVersePreset !== 'none') {
+      if (l.quranVersePreset === 'custom') {
+        if (l.customVerseBangla || l.customVerseArabic) {
+          quranVerse = {
+            surah: l.customVerseSurah || 'পবিত্র কুরআন',
+            arabic: l.customVerseArabic || '',
+            bangla: l.customVerseBangla || '',
+          }
+        }
+      } else {
+        const preset = getQuranVerseById(l.quranVersePreset)
+        if (preset) {
+          quranVerse = {
+            surah: preset.surah,
+            arabic: preset.arabic,
+            bangla: preset.bangla,
+          }
+        }
+      }
+    }
+
+    const rawSubjects = (course as any).subjects || []
+    const lessonSubjectSlug = (
+      l.subjectSlug ||
+      (rawSubjects.find((s: any) => s.lessons?.some((sl: any) => sl.id === l.id))?.subjectSlug) ||
+      l.moduleName ||
+      'general'
+    )
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'general'
+
+    const lessonSubjectName =
+      l.subjectName ||
+      rawSubjects.find((s: any) => s.lessons?.some((sl: any) => sl.id === l.id))?.subjectName ||
+      'সাধারণ বিষয়'
+
     return {
       id: l.id,
       title: l.lessonTitle,
-      subjectSlug: l.moduleName || 'General', // Chapter Name
+      subjectSlug: lessonSubjectSlug,
+      subjectName: lessonSubjectName,
+      moduleName: l.moduleName,
       order: l.order,
       duration: l.duration,
       isFreePreview: isFree,
@@ -220,8 +290,28 @@ export default async function CoursePage({ params, searchParams }: Props) {
       classNoteUrl,
       classSlideName,
       classNoteName,
+      quranVerse,
     }
   })
+
+  // Prepare structured subjects list
+  const rawSubjects = (course as any).subjects || []
+  const courseSubjects = rawSubjects.map((s: any) => ({
+    name: s.subjectName || 'সাধারণ বিষয়',
+    slug: (s.subjectSlug || s.subjectName || 'general')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'general',
+    description: s.description || null,
+  }))
+
+  if (courseSubjects.length === 0 && (course.lessons ?? []).length > 0) {
+    courseSubjects.push({
+      name: 'সাধারণ বিষয় (General)',
+      slug: 'general',
+      description: null,
+    })
+  }
 
   // Sanitize course object for CourseDetailView to prevent leaking raw URLs
   const safeLessons = (course.lessons ?? []).map((l: any, idx: number) => {
@@ -230,6 +320,8 @@ export default async function CoursePage({ params, searchParams }: Props) {
       id: l.id,
       lessonTitle: l.lessonTitle,
       moduleName: l.moduleName,
+      subjectName: resolvedLesson?.subjectName || l.subjectName,
+      subjectSlug: resolvedLesson?.subjectSlug || l.subjectSlug,
       duration: l.duration,
       order: l.order,
       isFreePreview: Boolean(l.isFreePreview),
@@ -241,6 +333,7 @@ export default async function CoursePage({ params, searchParams }: Props) {
       classNoteUrl: resolvedLesson?.classNoteUrl,
       classSlideName: resolvedLesson?.classSlideName,
       classNoteName: resolvedLesson?.classNoteName,
+      quranVerse: resolvedLesson?.quranVerse,
     }
   })
 
@@ -252,6 +345,7 @@ export default async function CoursePage({ params, searchParams }: Props) {
     ...course,
     introductoryVideo: safeIntroductoryVideo,
     lessons: safeLessons,
+    subjects: courseSubjects,
   }
 
   const courseItem: ClassroomCourseItem = {
@@ -259,6 +353,7 @@ export default async function CoursePage({ params, searchParams }: Props) {
     title: course.title,
     slug: course.slug,
     description: course.meta?.description || '',
+    subjects: courseSubjects,
   }
 
   // 3. Routing view decision:

@@ -23,6 +23,23 @@ export function CourseFilters({
 
   const [searchTerm, setSearchTerm] = React.useState(initialSearch)
 
+  // Keep state in sync if URL search param changes from outside
+  React.useEffect(() => {
+    setSearchTerm(initialSearch)
+  }, [initialSearch])
+
+  // Automatic search with 350ms debounce
+  React.useEffect(() => {
+    const currentQ = searchParams.get('q') || ''
+    if (searchTerm.trim() === currentQ.trim()) return
+
+    const timer = setTimeout(() => {
+      updateFilters(undefined, searchTerm)
+    }, 350)
+
+    return () => clearTimeout(timer)
+  }, [searchTerm, searchParams])
+
   const updateFilters = (newCategory?: string, newSearch?: string) => {
     const params = new URLSearchParams(searchParams.toString())
 

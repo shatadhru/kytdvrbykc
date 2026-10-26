@@ -21,18 +21,18 @@ export function BlogHero({
       <div className="max-w-5xl mx-auto px-4 sm:px-6 relative z-10 text-center space-y-6">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20 shadow-2xs">
           <BookOpen className="size-3.5" />
-          <span>Articles, Tutorials & Architecture Guides</span>
+          <span>ব্লগ, নোটিশ ও শিক্ষা প্রযুক্তি (EdTech)</span>
         </div>
 
         <div className="space-y-3">
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground">
-            Explore Modern Web & Engineering
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground font-heading">
+            এডটেক, পড়াশোনার কৌশল ও ক্লাসরুম নোটিশ
           </h1>
-          <p className="max-w-2xl mx-auto text-muted-foreground text-sm sm:text-base leading-relaxed">
-            Deep dives on Next.js, Payload CMS, scalable architectures, and modern cloud deployment strategies.
+          <p className="max-w-2xl mx-auto text-muted-foreground text-xs sm:text-sm md:text-base leading-relaxed">
+            ইউনিক টিচিং মেথডের আধুনিক শিক্ষা প্রবন্ধ, বিষয়ভিত্তিক পড়াশোনার বৈজ্ঞানিক টিপস এবং ক্লাসরুমের সর্বশেষ নোটিশসমূহ।
             {totalCount !== undefined && totalCount > 0 && (
               <span className="block mt-1 font-medium text-primary">
-                Browse all {totalCount} published {totalCount === 1 ? 'article' : 'articles'}.
+                মোট {totalCount} টি প্রকাশিত পোস্ট ও নোটিশ।
               </span>
             )}
           </p>

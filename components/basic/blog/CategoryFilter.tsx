@@ -31,7 +31,7 @@ export function CategoryFilter({
               : 'hover:bg-muted text-muted-foreground hover:text-foreground'
           }`}
         >
-          All Topics
+          সকল ক্যাটাগরি
         </Badge>
       </Link>
       {categories.map((cat) => {

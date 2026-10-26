@@ -12,6 +12,7 @@ import {
   AltArrowRightOutline,
   FlameBoldDuotone,
   SmileCircleBoldDuotone,
+  UserRoundedBoldDuotone,
 } from "solar-icon-set"
 import { authClient } from "@/payload/auth/client"
 import { useActivities } from "@/lib/activity/activity-service"
@@ -58,11 +59,11 @@ export default function DashboardPage() {
               <span>ক্লাস শুরু</span>
             </Link>
             <Link
-              href="/store"
+              href="/dashboard/my-courses"
               className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 h-7 sm:h-9 px-2.5 sm:px-3.5 rounded-lg sm:rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-[11px] sm:text-xs border-b-2 border-sky-700 active:translate-y-0.5 shadow-xs transition-all"
             >
               <Book2BoldDuotone size={13} color="#fff" />
-              <span>স্টোর</span>
+              <span>আমার কোর্স</span>
             </Link>
           </div>
         </div>
@@ -71,13 +72,13 @@ export default function DashboardPage() {
       {/* 2. Stats Section (Desktop/Tablet Only) */}
       <div className="hidden sm:grid sm:grid-cols-3 sm:gap-4">
         <Link
-          href="/store"
+          href="/dashboard/my-courses"
           className="group flex items-center justify-between p-4 rounded-2xl border-2 border-emerald-500/25 border-b-4 border-b-emerald-500 bg-card hover:bg-emerald-500/5 transition-colors"
         >
           <div>
-            <span className="text-xs font-semibold text-muted-foreground block truncate">স্টোর</span>
-            <div className="text-xl font-black text-foreground mt-0.5">প্রোডাক্টস</div>
-            <span className="text-[10px] text-emerald-600 font-medium">সকল আইটেম দেখুন</span>
+            <span className="text-xs font-semibold text-muted-foreground block truncate">কোর্স পোর্টাল</span>
+            <div className="text-xl font-black text-foreground mt-0.5">আমার কোর্সসমূহ</div>
+            <span className="text-[10px] text-emerald-600 font-medium">এনরোল্ড কোর্স দেখুন</span>
           </div>
           <div className="size-10 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-500 shrink-0">
             <Book2BoldDuotone size={20} color="#10b981" />
@@ -124,15 +125,15 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-2 sm:grid-cols-1 gap-1.5 sm:gap-2">
             <Link
-              href="/store"
+              href="/dashboard/my-courses"
               className="flex-1 sm:flex-initial flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10 transition-colors"
             >
               <div className="size-6 sm:size-7 rounded-md sm:rounded-lg bg-emerald-500/15 flex items-center justify-center shrink-0">
                 <Book2BoldDuotone size={13} color="#10b981" />
               </div>
               <div className="min-w-0">
-                <div className="text-[10.5px] sm:text-xs font-bold text-foreground truncate">স্টোর</div>
-                <div className="text-[9px] sm:text-[10px] text-muted-foreground truncate">প্রোডাক্টস</div>
+                <div className="text-[10.5px] sm:text-xs font-bold text-foreground truncate">আমার কোর্স</div>
+                <div className="text-[9px] sm:text-[10px] text-muted-foreground truncate">এনরোলমেন্ট</div>
               </div>
             </Link>
 
@@ -150,15 +151,15 @@ export default function DashboardPage() {
             </Link>
 
             <Link
-              href="/dashboard/settings"
-              className="flex-1 sm:flex-initial flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10 transition-colors"
+              href="/dashboard/profile"
+              className="flex-1 sm:flex-initial flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-cyan-500/20 bg-cyan-500/5 hover:bg-cyan-500/10 transition-colors"
             >
-              <div className="size-6 sm:size-7 rounded-md sm:rounded-lg bg-amber-500/15 flex items-center justify-center shrink-0">
-                <WalletMoneyBoldDuotone size={13} color="#f59e0b" />
+              <div className="size-6 sm:size-7 rounded-md sm:rounded-lg bg-cyan-500/15 flex items-center justify-center shrink-0">
+                <UserRoundedBoldDuotone size={13} color="#06b6d4" />
               </div>
               <div className="min-w-0">
                 <div className="text-[10.5px] sm:text-xs font-bold text-foreground truncate">প্রোফাইল</div>
-                <div className="text-[9px] sm:text-[10px] text-muted-foreground truncate">সেটিংস</div>
+                <div className="text-[9px] sm:text-[10px] text-muted-foreground truncate">শিক্ষার্থী তথ্য</div>
               </div>
             </Link>
 

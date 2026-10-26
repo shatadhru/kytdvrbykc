@@ -1,0 +1,75 @@
+services:
+  # ----------------------------------------------------------------------------
+  # NextLoad LMS Core Application (Next.js + Payload CMS 3.0)
+  # ----------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lms-app
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    env_file:
+      - .env
+    volumes:
+      # Persistent question bank SQLite DB and seed datasets
+      - ./data:/app/data
+      # Local media uploads directory (fallback when Cloudinary is not used)
+      - ./media:/app/media
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+  # ----------------------------------------------------------------------------
+  # (Optional) Self-Hosted MongoDB — for users who do not use MongoDB Atlas
+  # Activate with: docker compose --profile full up -d
+  # ----------------------------------------------------------------------------
+  mongodb:
+    image: mongo:7-jammy
+    container_name: lms-mongodb
+    restart: unless-stopped
+    profiles: ["full"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-change-me-in-production}
+      MONGO_INITDB_DATABASE: nextload
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "127.0.0.1:27017:27017"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "3"
+
+  # ----------------------------------------------------------------------------
+  # (Optional) Self-Hosted RabbitMQ Broker — for high-concurrency exam queues
+  # Activate with: docker compose --profile full up -d
+  # ----------------------------------------------------------------------------
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: lms-rabbitmq
+    restart: unless-stopped
+    profiles: ["full"]
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-guest}
+    ports:
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672" # RabbitMQ Management Dashboard
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  mongodb_data:
+  rabbitmq_data:
+

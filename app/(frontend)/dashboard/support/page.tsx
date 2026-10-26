@@ -91,7 +91,7 @@ export default function SupportPage() {
         </div>
 
         <Link
-          href="/dashboard/courses"
+          href="/dashboard/my-courses"
           className="text-[11px] sm:text-xs font-semibold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1 shrink-0 self-end sm:self-auto"
         >
           <span>আমার কোর্স দেখুন</span>
@@ -156,10 +156,10 @@ export default function SupportPage() {
           </div>
           <div className="pt-0.5 sm:pt-1">
             <Link
-              href="/dashboard/courses"
+              href="/courses"
               className="text-[11px] sm:text-xs font-semibold text-purple-600 dark:text-purple-400 hover:underline inline-flex items-center gap-1"
             >
-              <span>কমিউনিটি গ্রুপে যান</span>
+              <span>কোর্স তালিকা দেখুন</span>
               <AltArrowRightOutline size={12} />
             </Link>
           </div>

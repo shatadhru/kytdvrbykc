@@ -58,11 +58,11 @@ export function CourseCard({ course }: CourseCardProps) {
         </div>
 
         {price === 0 ? (
-          <Badge className="absolute bottom-2.5 right-2.5 bg-emerald-600 text-white font-bold text-xs">
+          <Badge className="absolute bottom-2.5 right-2.5 bg-emerald-600 text-white font-black text-sm px-3 py-1 shadow-sm">
             ফ্রি
           </Badge>
         ) : (
-          <Badge className="absolute bottom-2.5 right-2.5 bg-zinc-950/80 text-white backdrop-blur-xs font-bold text-xs border border-white/10">
+          <Badge className="absolute bottom-2.5 right-2.5 bg-zinc-950/85 text-white backdrop-blur-xs font-black text-sm px-3 py-1 border border-white/15 shadow-sm">
             ৳ {price.toLocaleString('bn-BD')}
           </Badge>
         )}
@@ -94,13 +94,18 @@ export function CourseCard({ course }: CourseCardProps) {
           </div>
         )}
 
-        <div className="mt-auto pt-4 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <BookOpen className="size-3.5 text-muted-foreground/80" />
-            <span>{lessonCount} টি ক্লাস</span>
-          </span>
+        <div className="mt-auto pt-3 border-t border-border/60 flex items-center justify-between">
+          <div className="flex flex-col">
+            <span className="text-[11px] text-muted-foreground flex items-center gap-1">
+              <BookOpen className="size-3 text-muted-foreground/80" />
+              <span>{lessonCount} টি ক্লাস</span>
+            </span>
+            <span className="text-base sm:text-lg font-black text-foreground tracking-tight">
+              {price === 0 ? 'ফ্রি' : `৳ ${price.toLocaleString('bn-BD')}`}
+            </span>
+          </div>
 
-          <Button asChild size="sm" variant="ghost" className="gap-1 px-2 text-primary hover:text-primary font-semibold text-xs group-hover:translate-x-0.5 transition-transform">
+          <Button asChild size="sm" variant="outline" className="gap-1 px-3 text-primary hover:bg-primary/10 font-bold text-xs group-hover:translate-x-0.5 transition-transform">
             <Link href={`/courses/${course.slug}`}>
               বিস্তারিত
               <ArrowRight className="size-3.5" />

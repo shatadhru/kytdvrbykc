@@ -87,6 +87,7 @@ export interface Config {
     enrollments: Enrollment;
     'lesson-comments': LessonComment;
     'exam-submissions': ExamSubmission;
+    'lesson-reports': LessonReport;
     sessions: Session;
     accounts: Account;
     verifications: Verification;
@@ -129,6 +130,7 @@ export interface Config {
     enrollments: EnrollmentsSelect<false> | EnrollmentsSelect<true>;
     'lesson-comments': LessonCommentsSelect<false> | LessonCommentsSelect<true>;
     'exam-submissions': ExamSubmissionsSelect<false> | ExamSubmissionsSelect<true>;
+    'lesson-reports': LessonReportsSelect<false> | LessonReportsSelect<true>;
     sessions: SessionsSelect<false> | SessionsSelect<true>;
     accounts: AccountsSelect<false> | AccountsSelect<true>;
     verifications: VerificationsSelect<false> | VerificationsSelect<true>;
@@ -365,7 +367,91 @@ export interface Product {
    */
   coordinators?: (string | Coordinator)[] | null;
   /**
-   * Organize course curriculum, classes, durations, and protected video sources.
+   * এই কোর্সে একাধিক বিষয় (যেমন: পদার্থবিজ্ঞান, রসায়ন, গণিত) যুক্ত করুন এবং প্রতিটি বিষয়ের অধীনে লেকচার সাজান।
+   */
+  subjects?:
+    | {
+        subjectName: string;
+        subjectSlug?: string | null;
+        description?: string | null;
+        lessons?:
+          | {
+              lessonTitle: string;
+              moduleName?: string | null;
+              duration?: string | null;
+              /**
+               * Sequential order of the class
+               */
+              order?: number | null;
+              /**
+               * Allow non-enrolled students to watch this lesson
+               */
+              isFreePreview?: boolean | null;
+              /**
+               * যদি এই লেকচারটি নির্দিষ্ট বিষয়ের অধীনে থাকে।
+               */
+              subjectName?: string | null;
+              subjectSlug?: string | null;
+              /**
+               * Admin-only hidden field for piracy protection. Hidden from public and non-admin queries.
+               */
+              youtubeVideoIdOrUrl?: string | null;
+              /**
+               * লেকচারের প্রেজেন্টেশন স্লাইড (.pptx) ফাইল আপলোড করুন।
+               */
+              classSlide?: (string | null) | Media;
+              /**
+               * লেকচার নোট (PDF, DOCX, PPTX) ফাইল আপলোড করুন।
+               */
+              classNote?: (string | null) | Media;
+              /**
+               * স্লাইডের সরাসরি ডাউনলোড বা ড্রাইভ লিংক (যদি ক্লাউড স্টোরেজে থাকে)।
+               */
+              classSlideUrl?: string | null;
+              /**
+               * নোটের সরাসরি ডাউনলোড বা ভিউ লিংক (যদি ক্লাউড স্টোরেজে থাকে)।
+               */
+              classNoteUrl?: string | null;
+              /**
+               * ক্লাস শুরুর সময় শিক্ষার্থীকে অনুপ্রেরণামূলক পপআপ দেখাতে একটি কুরআনের আয়াত নির্বাচন করুন।
+               */
+              quranVersePreset?:
+                | (
+                    | 'none'
+                    | 'verse-inshirah-5-6'
+                    | 'verse-taha-114'
+                    | 'verse-baqarah-286'
+                    | 'verse-ali-imran-139'
+                    | 'verse-rad-28'
+                    | 'verse-talaq-3'
+                    | 'verse-ankabut-69'
+                    | 'verse-baqarah-153'
+                    | 'verse-najm-39'
+                    | 'verse-zumar-53'
+                    | 'verse-inshirah-7-8'
+                    | 'verse-yusuf-87'
+                    | 'verse-baqarah-186'
+                    | 'verse-baqarah-216'
+                    | 'verse-fatihah-5'
+                    | 'verse-mujadila-11'
+                    | 'verse-shura-19'
+                    | 'verse-tawbah-51'
+                    | 'verse-qasas-24'
+                    | 'verse-balad-4'
+                    | 'custom'
+                  )
+                | null;
+              customVerseSurah?: string | null;
+              customVerseArabic?: string | null;
+              customVerseBangla?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * কোর্সের সামগ্রিক লেকচার তালিকা। বিষয়সমূহ থেকে স্বয়ংক্রিয়ভাবে সিঙ্ক হয় অথবা সরাসরি একক বিষয়ের লেকচার যোগ করতে পারেন।
    */
   lessons?:
     | {
@@ -380,6 +466,11 @@ export interface Product {
          * Allow non-enrolled students to watch this lesson
          */
         isFreePreview?: boolean | null;
+        /**
+         * যদি এই লেকচারটি নির্দিষ্ট বিষয়ের অধীনে থাকে।
+         */
+        subjectName?: string | null;
+        subjectSlug?: string | null;
         /**
          * Admin-only hidden field for piracy protection. Hidden from public and non-admin queries.
          */
@@ -400,6 +491,38 @@ export interface Product {
          * নোটের সরাসরি ডাউনলোড বা ভিউ লিংক (যদি ক্লাউড স্টোরেজে থাকে)।
          */
         classNoteUrl?: string | null;
+        /**
+         * ক্লাস শুরুর সময় শিক্ষার্থীকে অনুপ্রেরণামূলক পপআপ দেখাতে একটি কুরআনের আয়াত নির্বাচন করুন।
+         */
+        quranVersePreset?:
+          | (
+              | 'none'
+              | 'verse-inshirah-5-6'
+              | 'verse-taha-114'
+              | 'verse-baqarah-286'
+              | 'verse-ali-imran-139'
+              | 'verse-rad-28'
+              | 'verse-talaq-3'
+              | 'verse-ankabut-69'
+              | 'verse-baqarah-153'
+              | 'verse-najm-39'
+              | 'verse-zumar-53'
+              | 'verse-inshirah-7-8'
+              | 'verse-yusuf-87'
+              | 'verse-baqarah-186'
+              | 'verse-baqarah-216'
+              | 'verse-fatihah-5'
+              | 'verse-mujadila-11'
+              | 'verse-shura-19'
+              | 'verse-tawbah-51'
+              | 'verse-qasas-24'
+              | 'verse-balad-4'
+              | 'custom'
+            )
+          | null;
+        customVerseSurah?: string | null;
+        customVerseArabic?: string | null;
+        customVerseBangla?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -1268,6 +1391,31 @@ export interface ExamSubmission {
   createdAt: string;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lesson-reports".
+ */
+export interface LessonReport {
+  id: string;
+  lessonTitle: string;
+  /**
+   * যে কোর্সের লেকচারে সমস্যা হয়েছে।
+   */
+  course: string | Product;
+  lessonId: string;
+  student: string | User;
+  studentName?: string | null;
+  studentEmail?: string | null;
+  issueType: 'video_error' | 'audio_issue' | 'material_issue' | 'content_mistake' | 'other';
+  description: string;
+  status?: ('pending' | 'in_review' | 'resolved' | 'dismissed') | null;
+  /**
+   * সমস্যা সমাধানের জন্য অ্যাডমিনের অভ্যন্তরীণ মন্তব্য।
+   */
+  adminNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Auto-generated from Better Auth schema (session)
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1401,6 +1549,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'exam-submissions';
         value: string | ExamSubmission;
+      } | null)
+    | ({
+        relationTo: 'lesson-reports';
+        value: string | LessonReport;
       } | null)
     | ({
         relationTo: 'sessions';
@@ -1788,6 +1940,24 @@ export interface ExamSubmissionsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lesson-reports_select".
+ */
+export interface LessonReportsSelect<T extends boolean = true> {
+  lessonTitle?: T;
+  course?: T;
+  lessonId?: T;
+  student?: T;
+  studentName?: T;
+  studentEmail?: T;
+  issueType?: T;
+  description?: T;
+  status?: T;
+  adminNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sessions_select".
  */
 export interface SessionsSelect<T extends boolean = true> {
@@ -1906,6 +2076,35 @@ export interface ProductsSelect<T extends boolean = true> {
       };
   teachers?: T;
   coordinators?: T;
+  subjects?:
+    | T
+    | {
+        subjectName?: T;
+        subjectSlug?: T;
+        description?: T;
+        lessons?:
+          | T
+          | {
+              lessonTitle?: T;
+              moduleName?: T;
+              duration?: T;
+              order?: T;
+              isFreePreview?: T;
+              subjectName?: T;
+              subjectSlug?: T;
+              youtubeVideoIdOrUrl?: T;
+              classSlide?: T;
+              classNote?: T;
+              classSlideUrl?: T;
+              classNoteUrl?: T;
+              quranVersePreset?: T;
+              customVerseSurah?: T;
+              customVerseArabic?: T;
+              customVerseBangla?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   lessons?:
     | T
     | {
@@ -1914,11 +2113,17 @@ export interface ProductsSelect<T extends boolean = true> {
         duration?: T;
         order?: T;
         isFreePreview?: T;
+        subjectName?: T;
+        subjectSlug?: T;
         youtubeVideoIdOrUrl?: T;
         classSlide?: T;
         classNote?: T;
         classSlideUrl?: T;
         classNoteUrl?: T;
+        quranVersePreset?: T;
+        customVerseSurah?: T;
+        customVerseArabic?: T;
+        customVerseBangla?: T;
         id?: T;
       };
   inventory?: T;

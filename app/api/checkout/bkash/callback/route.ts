@@ -30,7 +30,7 @@ async function handleBkashCallback(req: NextRequest) {
     : appUrl
 
   if (!paymentID) {
-    return NextResponse.redirect(`${safeOrigin}/checkout?error=missing_payment_id`)
+    return NextResponse.redirect(`${safeOrigin}/checkout/failed?reason=missing_payment_id`)
   }
 
   try {
@@ -49,7 +49,7 @@ async function handleBkashCallback(req: NextRequest) {
 
     if (!orderRes.docs || orderRes.docs.length === 0) {
       console.error(`[bKash Callback] Order not found for paymentID: ${paymentID}`)
-      return NextResponse.redirect(`${safeOrigin}/checkout?error=order_not_found`)
+      return NextResponse.redirect(`${safeOrigin}/checkout/failed?reason=order_not_found`)
     }
 
     const order = orderRes.docs[0]
@@ -64,7 +64,7 @@ async function handleBkashCallback(req: NextRequest) {
         },
       })
       return NextResponse.redirect(
-        `${safeOrigin}/checkout?error=payment_${status || "cancelled"}&orderId=${order.id}`
+        `${safeOrigin}/checkout/failed?reason=payment_${status || "cancelled"}&orderId=${order.id}&status=${status}`
       )
     }
 
@@ -97,7 +97,7 @@ async function handleBkashCallback(req: NextRequest) {
 
       const reason = executeRes.statusMessage || "verification_failed"
       return NextResponse.redirect(
-        `${safeOrigin}/checkout?error=${encodeURIComponent(reason)}&orderId=${order.id}`
+        `${safeOrigin}/checkout/failed?reason=${encodeURIComponent(reason)}&orderId=${order.id}`
       )
     }
 
@@ -119,7 +119,7 @@ async function handleBkashCallback(req: NextRequest) {
         },
       })
       return NextResponse.redirect(
-        `${safeOrigin}/checkout?error=amount_mismatch&orderId=${order.id}`
+        `${safeOrigin}/checkout/failed?reason=amount_mismatch&orderId=${order.id}`
       )
     }
 
@@ -186,7 +186,7 @@ async function handleBkashCallback(req: NextRequest) {
     const errorDetails = error?.cause?.message || error?.message || "Internal error"
     console.error("[bKash Callback] Error processing execution:", error, error?.cause)
     return NextResponse.redirect(
-      `${safeOrigin}/checkout?error=server_error&details=${encodeURIComponent(errorDetails)}`
+      `${safeOrigin}/checkout/failed?reason=server_error&details=${encodeURIComponent(errorDetails)}`
     )
   }
 }

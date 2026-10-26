@@ -38,6 +38,7 @@ export interface CourseDetailViewProps {
     thumbnail?: any
     teachers?: any[]
     coordinators?: any[]
+    subjects?: { name: string; slug: string; description?: string | null }[]
     lessons?: any[]
     meta?: { title?: string | null; description?: string | null }
   }
@@ -62,8 +63,17 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
   }, [isEnrolled, cart, course.id, removeItem])
   const firstFreeLesson = lessons.find((l: any) => l.isFreePreview)
   const [activePreviewLesson, setActivePreviewLesson] = useState<any>(firstFreeLesson || null)
+  const [selectedSubject, setSelectedSubject] = useState<string>('all')
   const [previewToken, setPreviewToken] = useState<string | null>(null)
   const [isLoadingToken, setIsLoadingToken] = useState(false)
+
+  const filteredLessons =
+    selectedSubject === 'all'
+      ? lessons
+      : lessons.filter(
+          (l: any) =>
+            (l.subjectSlug || l.subjectName || '').toLowerCase() === selectedSubject.toLowerCase()
+        )
 
   const thumbnailUrl =
     extractCloudinarySecureUrl(course.thumbnail) ||
@@ -301,43 +311,90 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
             </p>
           </div>
 
+          {/* Subject Filter Pills (When course has multiple subjects) */}
+          {course.subjects && course.subjects.length > 1 && (
+            <div className="flex flex-wrap gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setSelectedSubject('all')}
+                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
+                  selectedSubject === 'all'
+                    ? 'bg-primary text-primary-foreground shadow-2xs'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                }`}
+              >
+                সকল বিষয় ({lessons.length})
+              </button>
+              {course.subjects.map((sub: any) => {
+                const count = lessons.filter(
+                  (l: any) =>
+                    (l.subjectSlug || l.subjectName || '').toLowerCase() === sub.slug.toLowerCase()
+                ).length
+                return (
+                  <button
+                    key={sub.slug}
+                    type="button"
+                    onClick={() => setSelectedSubject(sub.slug)}
+                    className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
+                      selectedSubject === sub.slug
+                        ? 'bg-primary text-primary-foreground shadow-2xs'
+                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                    }`}
+                  >
+                    {sub.name} ({count})
+                  </button>
+                )
+              })}
+            </div>
+          )}
+
           <div className="rounded-xl border border-border divide-y divide-border overflow-hidden bg-card">
-            {lessons.map((lesson: any, idx: number) => {
-              const isFree = Boolean(lesson.isFreePreview)
-              const isPlaying = activePreviewLesson?.id === lesson.id
+            {filteredLessons.length === 0 ? (
+              <div className="p-8 text-center text-sm text-muted-foreground">
+                এই বিষয়ের অধীনে এখনও কোনো ক্লাস যুক্ত করা হয়নি।
+              </div>
+            ) : (
+              filteredLessons.map((lesson: any, idx: number) => {
+                const isFree = Boolean(lesson.isFreePreview)
+                const isPlaying = activePreviewLesson?.id === lesson.id
 
-              return (
-                <div
-                  key={lesson.id || idx}
-                  className={`p-4 flex items-center justify-between gap-4 transition-colors ${
-                    isPlaying ? 'bg-primary/5' : 'hover:bg-muted/40'
-                  }`}
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div
-                      className={`size-8 rounded-full flex items-center justify-center shrink-0 ${
-                        isFree
-                          ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                          : 'bg-muted text-muted-foreground'
-                      }`}
-                    >
-                      {isFree ? <Play className="size-3.5 fill-current ml-0.5" /> : <Lock className="size-3.5" />}
-                    </div>
-
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold text-foreground truncate">
-                          {idx + 1}. {lesson.lessonTitle}
-                        </span>
-                        {isFree && (
-                          <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-semibold border border-emerald-500/20">
-                            ফ্রি প্রিভিউ
-                          </Badge>
-                        )}
+                return (
+                  <div
+                    key={lesson.id || idx}
+                    className={`p-4 flex items-center justify-between gap-4 transition-colors ${
+                      isPlaying ? 'bg-primary/5' : 'hover:bg-muted/40'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div
+                        className={`size-8 rounded-full flex items-center justify-center shrink-0 ${
+                          isFree
+                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                            : 'bg-muted text-muted-foreground'
+                        }`}
+                      >
+                        {isFree ? <Play className="size-3.5 fill-current ml-0.5" /> : <Lock className="size-3.5" />}
                       </div>
-                      <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[11px] text-muted-foreground">
-                        {lesson.moduleName && <span>{lesson.moduleName}</span>}
-                        {lesson.duration && (
+
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-semibold text-foreground truncate">
+                            {idx + 1}. {lesson.lessonTitle}
+                          </span>
+                          {lesson.subjectName && course.subjects && course.subjects.length > 1 && (
+                            <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-primary/5 text-primary border-primary/20">
+                              {lesson.subjectName}
+                            </Badge>
+                          )}
+                          {isFree && (
+                            <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-semibold border border-emerald-500/20">
+                              ফ্রি প্রিভিউ
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[11px] text-muted-foreground">
+                          {lesson.moduleName && <span>{lesson.moduleName}</span>}
+                          {lesson.duration && (
                           <>
                             <span>•</span>
                             <span>{lesson.duration}</span>
@@ -392,7 +449,7 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
                   )}
                 </div>
               )
-            })}
+            }))}
           </div>
         </div>
 

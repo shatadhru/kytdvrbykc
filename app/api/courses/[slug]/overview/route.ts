@@ -30,11 +30,18 @@ export async function GET(
         coordinators: true,
         categories: true,
         meta: true,
+        subjects: {
+          subjectName: true,
+          subjectSlug: true,
+          description: true,
+        },
         lessons: {
           // youtubeVideoIdOrUrl is intentionally omitted — admin-only access control
           // already blocks it in Payload, but we also never select it here.
           lessonTitle: true,
           moduleName: true,
+          subjectName: true,
+          subjectSlug: true,
           duration: true,
           order: true,
           isFreePreview: true,
@@ -43,6 +50,10 @@ export async function GET(
           classNote: true,
           classSlideUrl: true,
           classNoteUrl: true,
+          quranVersePreset: true,
+          customVerseSurah: true,
+          customVerseArabic: true,
+          customVerseBangla: true,
         },
       },
     })

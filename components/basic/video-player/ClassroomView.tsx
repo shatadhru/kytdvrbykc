@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import CourseVideoPlayer from '@/components/basic/video/CourseVideoPlayer'
 import {
   Play,
@@ -14,17 +14,33 @@ import {
   FileText,
   Presentation,
   ExternalLink,
+  Flag,
 } from 'lucide-react'
 import Link from 'next/link'
 import { Progress } from '@/components/ui/progress'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { LessonCommentsSection } from './LessonCommentsSection'
+import LessonReportModal from './LessonReportModal'
 import { getDownloadUrl } from '@/payload/utils/download'
+
+export interface QuranVerseData {
+  surah: string
+  arabic?: string
+  bangla: string
+}
 
 export interface ClassroomClassItem {
   id: string
   title: string
   subjectSlug: string
+  subjectName?: string | null
+  moduleName?: string | null
   order?: number | null
   duration?: string | null
   isFreePreview?: boolean | null
@@ -34,6 +50,7 @@ export interface ClassroomClassItem {
   classNoteUrl?: string | null
   classSlideName?: string | null
   classNoteName?: string | null
+  quranVerse?: QuranVerseData | null
 }
 
 export interface ClassroomSubjectItem {
@@ -73,6 +90,14 @@ export default function ClassroomView({
   const [accessError, setAccessError] = useState<string | null>(null)
   const [completedLessonIds, setCompletedLessonIds] = useState<Set<string>>(() => new Set())
 
+  // Motivational Quranic Verse State
+  const [verseModalOpen, setVerseModalOpen] = useState<boolean>(false)
+  const [activeVerse, setActiveVerse] = useState<QuranVerseData | null>(null)
+  const [dismissedVerseLessonIds, setDismissedVerseLessonIds] = useState<Set<string>>(() => new Set())
+
+  // Student Report Modal State
+  const [reportModalOpen, setReportModalOpen] = useState<boolean>(false)
+
   const toggleLessonComplete = (e: React.MouseEvent, id: string) => {
     e.stopPropagation()
     setCompletedLessonIds((prev) => {
@@ -91,6 +116,23 @@ export default function ClassroomView({
     : 0
 
   const currentClass = classes.find((c) => c.id === activeClassId)
+
+  // Automatically show Quranic motivational verse popup when student opens/switches to a lesson with a verse
+  useEffect(() => {
+    if (!currentClass?.id) return
+    const verse = currentClass.quranVerse
+    if (verse && !dismissedVerseLessonIds.has(currentClass.id)) {
+      setActiveVerse(verse)
+      setVerseModalOpen(true)
+    }
+  }, [currentClass?.id, currentClass?.quranVerse, dismissedVerseLessonIds])
+
+  const handleDismissVerse = () => {
+    if (currentClass?.id) {
+      setDismissedVerseLessonIds((prev) => new Set(prev).add(currentClass.id))
+    }
+    setVerseModalOpen(false)
+  }
 
   // Filter classes by selected subject
   const filteredClasses = classes.filter((c) => {
@@ -203,20 +245,47 @@ export default function ClassroomView({
             <div className="rounded-xl border border-border bg-card p-4 sm:p-5 shadow-xs">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3 mb-3">
                 <div className="flex items-center gap-2">
-                  <span className="rounded bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20 uppercase tracking-wide">
-                    {currentClass?.subjectSlug || 'General'}
+                  <span className="rounded bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20 tracking-wide">
+                    {currentClass?.subjectName || currentClass?.subjectSlug || 'General'}
                   </span>
                   {currentClass?.isFreePreview && (
                     <span className="rounded bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                       ফ্রি প্রিভিউ
                     </span>
                   )}
+                  {currentClass?.quranVerse && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveVerse(currentClass.quranVerse!)
+                        setVerseModalOpen(true)
+                      }}
+                      className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                      title="অনুপ্রেরণামূলক কুরআনের আয়াত দেখুন"
+                    >
+                      <BookOpen className="size-3 text-emerald-600 dark:text-emerald-400" />
+                      <span>কুরআনের বাণী</span>
+                    </button>
+                  )}
                 </div>
-                {currentClass?.duration && (
-                  <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Clock className="size-3.5" /> {currentClass.duration}
-                  </span>
-                )}
+                <div className="flex items-center gap-2.5">
+                  {currentClass?.duration && (
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground mr-1">
+                      <Clock className="size-3.5" /> {currentClass.duration}
+                    </span>
+                  )}
+                  {currentClass?.id && (
+                    <button
+                      type="button"
+                      onClick={() => setReportModalOpen(true)}
+                      className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium text-muted-foreground hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-all cursor-pointer"
+                      title="এই লেকচারে কোনো সমস্যা থাকলে রিপোর্ট করুন"
+                    >
+                      <Flag className="size-3" />
+                      <span>রিপোর্ট</span>
+                    </button>
+                  )}
+                </div>
               </div>
 
               <h2 className="text-lg sm:text-xl font-bold text-foreground">
@@ -401,8 +470,14 @@ export default function ClassroomView({
                               </span>
                             )}
                           </div>
-                          <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
-                            <span className="capitalize">{cls.subjectSlug}</span>
+                          <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                            <span className="font-medium text-foreground/80">{cls.subjectName || cls.subjectSlug}</span>
+                            {cls.moduleName && (
+                              <>
+                                <span>•</span>
+                                <span>{cls.moduleName}</span>
+                              </>
+                            )}
                             {cls.duration && (
                               <>
                                 <span>•</span>
@@ -413,6 +488,14 @@ export default function ClassroomView({
                               <>
                                 <span>•</span>
                                 <span className="text-emerald-600 dark:text-emerald-400 font-medium">Free</span>
+                              </>
+                            )}
+                            {cls.quranVerse && (
+                              <>
+                                <span>•</span>
+                                <span className="text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-0.5">
+                                  <BookOpen className="size-2.5" /> বাণী
+                                </span>
                               </>
                             )}
                             {(cls.classSlideUrl || cls.classNoteUrl) && (
@@ -468,6 +551,71 @@ export default function ClassroomView({
           </div>
         </div>
       </div>
+
+      {/* Motivational Quranic Verse Popup Dialog */}
+      <Dialog
+        open={verseModalOpen}
+        onOpenChange={(open) => {
+          if (!open) handleDismissVerse()
+          else setVerseModalOpen(true)
+        }}
+      >
+        <DialogContent
+          showCloseButton={true}
+          className="max-w-md p-6 sm:p-7 rounded-2xl bg-card border-border shadow-2xl backdrop-blur-md"
+        >
+          <DialogHeader className="text-center space-y-2">
+            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-1">
+              <BookOpen className="size-6 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div className="inline-flex items-center justify-center gap-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">
+              অনুপ্রেরণামূলক কুরআনের বাণী
+            </div>
+            <DialogTitle className="text-base font-bold text-foreground">
+              {activeVerse?.surah}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 my-2 text-center">
+            {activeVerse?.arabic && (
+              <div
+                dir="rtl"
+                lang="ar"
+                className="text-xl sm:text-2xl font-serif text-foreground leading-loose tracking-wide p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/15 font-normal select-text shadow-2xs"
+              >
+                {activeVerse.arabic}
+              </div>
+            )}
+
+            <div className="text-sm sm:text-base text-foreground font-medium leading-relaxed px-2">
+              "{activeVerse?.bangla}"
+            </div>
+          </div>
+
+          <div className="pt-2">
+            <Button
+              type="button"
+              onClick={handleDismissVerse}
+              className="w-full h-10 font-semibold gap-2 shadow-sm bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
+            >
+              <CheckCircle2 className="size-4" />
+              মাশাআল্লাহ, ক্লাস শুরু করুন
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Student Lesson Report Modal */}
+      {currentClass?.id && (
+        <LessonReportModal
+          isOpen={reportModalOpen}
+          onClose={() => setReportModalOpen(false)}
+          courseSlug={course.slug || ''}
+          courseTitle={course.title || 'কোর্স'}
+          lessonId={currentClass.id}
+          lessonTitle={currentClass.title || 'লেকচার'}
+        />
+      )}
     </div>
   )
 }

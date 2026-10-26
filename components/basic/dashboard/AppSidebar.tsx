@@ -325,11 +325,11 @@ function AccountMenu({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => router.push("/dashboard/settings")} className="cursor-pointer gap-2.5">
+              <DropdownMenuItem onClick={() => router.push("/dashboard/profile")} className="cursor-pointer gap-2.5">
                 <div className="flex size-6 shrink-0 items-center justify-center rounded-md bg-cyan-500/15" style={{ color: "#06b6d4" }}>
                   <UserRoundedBoldDuotone size={15} color="#06b6d4" style={{ color: "#06b6d4" }} className="text-cyan-500" aria-hidden="true" />
                 </div>
-                <span>প্রোফাইল ও সেটিংস</span>
+                <span>শিক্ষার্থী প্রোফাইল</span>
               </DropdownMenuItem>
               {isAdmin ? (
                 <DropdownMenuItem onClick={() => router.push("/admin")} className="cursor-pointer gap-2.5 text-primary font-medium">

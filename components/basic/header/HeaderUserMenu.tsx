@@ -39,7 +39,7 @@ export function HeaderUserMenu({
     loginUrl: '/auth/login',
     signupUrl: '/auth/signup',
     dashboardUrl: '/dashboard',
-    profileUrl: '/dashboard/settings',
+    profileUrl: '/dashboard/profile',
     notificationsUrl: '/dashboard/notifications',
     adminUrl: '/admin',
   },

@@ -11,7 +11,7 @@ interface BlogSearchProps {
 }
 
 export function BlogSearch({
-  placeholder = 'Search articles, topics, keywords...',
+  placeholder = 'ব্লগ ও নোটিশ খুঁজুন...',
   className = '',
 }: BlogSearchProps) {
   const router = useRouter()

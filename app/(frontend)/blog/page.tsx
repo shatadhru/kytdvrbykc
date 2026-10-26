@@ -12,6 +12,7 @@ import {
   BlogCategory,
 } from '@/components/basic/blog'
 import { BookOpen } from 'lucide-react'
+import { ensureEdTechBlogPosts } from '@/payload/data/edtechBlogSeed'
 
 export const revalidate = 60 // ISR revalidation
 
@@ -27,15 +28,15 @@ export async function generateMetadata({
   searchParams,
 }: BlogPageProps): Promise<Metadata> {
   const { category, q } = await searchParams
-  let title = 'Blog & Articles'
+  let title = 'ব্লগ ও নোটিশ | EdTech & Articles'
   let description =
-    'Read articles, technical guides, and architectural insights on modern full-stack development.'
+    'ইউনিক টিচিং মেথডের ডিজিটাল শিক্ষা প্রযুক্তি, পরীক্ষার প্রস্তুতি ও ক্লাসরুম নোটিশ।'
 
   if (category) {
-    title = `${category.charAt(0).toUpperCase() + category.slice(1)} Articles | Blog`
+    title = `${category.charAt(0).toUpperCase() + category.slice(1)} | ব্লগ ও নোটিশ`
   }
   if (q) {
-    title = `Search results for "${q}" | Blog`
+    title = `অনুসন্ধান: "${q}" | ব্লগ ও নোটিশ`
   }
 
   const canonicalUrl = `${SiteConfig.site.url}/blog${
@@ -70,6 +71,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const searchQuery = params.q || ''
 
   const payload = await getPayload({ config })
+  await ensureEdTechBlogPosts(payload)
 
   // 1. Fetch all blog categories for the filter bar
   const categoriesRes = await payload.find({

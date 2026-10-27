@@ -41,6 +41,9 @@ ENV PAYLOAD_SECRET=build-placeholder-secret-min-32-chars-long
 ENV BETTER_AUTH_SECRET=build-placeholder-secret-min-32-chars-long
 ENV NEXT_PUBLIC_APP_URL=http://localhost:3000
 ENV BETTER_AUTH_URL=http://localhost:3000
+ENV DATABASE_URL=mongodb://host.docker.internal:27017/nextload
+ENV NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=build-placeholder-cloud
+ENV NEXT_PUBLIC_CLOUDINARY_API_KEY=build-placeholder-key
 
 # Build Next.js in standalone mode with Payload CMS
 RUN pnpm build

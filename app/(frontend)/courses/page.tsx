@@ -9,7 +9,7 @@ import { CourseFilters } from '@/components/basic/courses/CourseFilters'
 import { GraduationCap, BookOpen, Layers } from 'lucide-react'
 import { SiteConfig, getPageTitle } from '@/config/site'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = 'সকল কোর্সসমূহ | Online Courses'
@@ -36,56 +36,62 @@ interface CoursesPageProps {
 
 export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   const { category = 'all', q = '' } = await searchParams
-  const payload = await getPayload({ config })
+  let categories: { id: string; title: string; slug: string }[] = []
+  let courses: any[] = []
 
-  // 1. Fetch Categories for filter pills
-  const categoriesResult = await payload.find({
-    collection: 'categories',
-    limit: 50,
-    depth: 0,
-  })
+  try {
+    const payload = await getPayload({ config })
 
-  const categories = categoriesResult.docs.map((cat: any) => ({
-    id: cat.id,
-    title: cat.title,
-    slug: cat.slug,
-  }))
-
-  // 2. Build where filter for products/courses
-  const whereConditions: any[] = [
-    {
-      _status: { equals: 'published' },
-    },
-  ]
-
-  if (q && q.trim()) {
-    whereConditions.push({
-      title: { contains: q.trim() },
+    // 1. Fetch Categories for filter pills
+    const categoriesResult = await payload.find({
+      collection: 'categories',
+      limit: 50,
+      depth: 0,
     })
-  }
 
-  if (category && category !== 'all') {
-    // If slug or id is passed
-    const targetCat = categoriesResult.docs.find(
-      (c: any) => c.slug === category || c.id === category
-    )
-    if (targetCat) {
+    categories = categoriesResult.docs.map((cat: any) => ({
+      id: cat.id,
+      title: cat.title,
+      slug: cat.slug,
+    }))
+
+    // 2. Build where filter for products/courses
+    const whereConditions: any[] = [
+      {
+        _status: { equals: 'published' },
+      },
+    ]
+
+    if (q && q.trim()) {
       whereConditions.push({
-        categories: { contains: targetCat.id },
+        title: { contains: q.trim() },
       })
     }
+
+    if (category && category !== 'all') {
+      const targetCat = categoriesResult.docs.find(
+        (c: any) => c.slug === category || c.id === category
+      )
+      if (targetCat) {
+        whereConditions.push({
+          categories: { contains: targetCat.id },
+        })
+      }
+    }
+
+    // 3. Fetch courses
+    const coursesResult = await payload.find({
+      collection: 'products',
+      where: whereConditions.length > 1 ? { and: whereConditions } : whereConditions[0],
+      depth: 2,
+      limit: 60,
+      sort: '-createdAt',
+    })
+
+    courses = coursesResult.docs
+  } catch (error) {
+    console.error('Failed to fetch courses/categories from Payload:', error)
   }
-
-  // 3. Fetch courses
-  const coursesResult = await payload.find({
-    collection: 'products',
-    where: whereConditions.length > 1 ? { and: whereConditions } : whereConditions[0],
-    depth: 2,
-    limit: 60,
-    sort: '-createdAt',
-  })
-
-  const courses = coursesResult.docs
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">

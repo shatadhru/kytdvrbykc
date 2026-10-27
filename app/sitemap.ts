@@ -5,7 +5,6 @@ import { SiteConfig } from '@/config/site'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SiteConfig.site.url || 'https://localhost:3000'
-  const payload = await getPayload({ config })
 
   // Static core routes
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -24,6 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   try {
+    const payload = await getPayload({ config })
     // 1. Published & Public Blog Posts
     const postsRes = await payload.find({
       collection: 'posts',

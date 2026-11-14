@@ -95,6 +95,9 @@
     "pnpm": "^9 || ^10 || ^11"
   },
   "pnpm": {
+    "overrides": {
+      "@payloadcms/plugin-cloud-storage": "3.90.2"
+    },
     "onlyBuiltDependencies": [
       "sharp",
       "esbuild",

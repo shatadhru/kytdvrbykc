@@ -35,6 +35,7 @@ import { PaymentMethodsPreview as PaymentMethodsPreview_3380ceee677aec7389c82552
 import { ThemeLivePreview as ThemeLivePreview_d12bf8a4e1cf4b74afe2e616df591cd9 } from '../../../payload/admin/components/ThemeLivePreview'
 import { ColorPickerField as ColorPickerField_fc211943d8e5176c28d7a2c0ba811806 } from '../../../payload/admin/components/ColorPickerField'
 import { CookieLivePreview as CookieLivePreview_db2ed534e8338df45e147f0547ecbd2f } from '../../../payload/admin/components/CookieLivePreview'
+import { CourseSalesAnalyticsView as CourseSalesAnalyticsView_72bdeededcadf5008431dde70ddc76c6 } from '../../../payload/admin/views/CourseSalesAnalyticsView'
 import { NotificationBroadcastView as NotificationBroadcastView_7945e368d16ef9b83be2507961167f3a } from '../../../payload/admin/views/NotificationBroadcastView'
 import { ApiReferenceView as ApiReferenceView_6105eb571f706495dc4f37fffd3eadf3 } from '../../../payload/admin/views/ApiReferenceView'
 import { Nav as Nav_f436cf2a4719114d9e44505773a04007 } from 'payload-theme/client'
@@ -90,6 +91,7 @@ export const importMap = {
   "./admin/components/ThemeLivePreview#ThemeLivePreview": ThemeLivePreview_d12bf8a4e1cf4b74afe2e616df591cd9,
   "./admin/components/ColorPickerField#ColorPickerField": ColorPickerField_fc211943d8e5176c28d7a2c0ba811806,
   "./admin/components/CookieLivePreview#CookieLivePreview": CookieLivePreview_db2ed534e8338df45e147f0547ecbd2f,
+  "./admin/views/CourseSalesAnalyticsView#CourseSalesAnalyticsView": CourseSalesAnalyticsView_72bdeededcadf5008431dde70ddc76c6,
   "./admin/views/NotificationBroadcastView#NotificationBroadcastView": NotificationBroadcastView_7945e368d16ef9b83be2507961167f3a,
   "./admin/views/ApiReferenceView#ApiReferenceView": ApiReferenceView_6105eb571f706495dc4f37fffd3eadf3,
   "payload-theme/client#Nav": Nav_f436cf2a4719114d9e44505773a04007,

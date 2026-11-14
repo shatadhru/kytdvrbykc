@@ -3,6 +3,7 @@ import { getPayload } from "payload"
 import config from "@payload-config"
 import { getServerSession } from "@delmaredigital/payload-better-auth"
 import { createBkashPayment } from "@/payload/lib/bkash/client"
+import { createEnrollmentsForOrder } from "@/utils/enrollment"
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,7 +18,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
-    const { items, customerInfo, shippingAddress, cartID } = body
+    const { items, customerInfo, shippingAddress, cartID, couponCode } = body
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
@@ -81,16 +82,91 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    if (calculatedTotal <= 0) {
-      return NextResponse.json(
-        { error: "বিনামূল্যের কোর্সের জন্য বিকাশ পেমেন্ট প্রযোজ্য নয়।" },
-        { status: 400 }
-      )
+    // 1.5. Apply Coupon Discount if provided
+    let discountAmount = 0
+    let appliedCouponDoc: any = null
+
+    if (couponCode && typeof couponCode === 'string') {
+      const cleanCode = couponCode.trim().toUpperCase()
+      const couponRes = await payload.find({
+        collection: 'coupons',
+        where: { code: { equals: cleanCode }, active: { equals: true } },
+        limit: 1,
+        depth: 0,
+        overrideAccess: true,
+      })
+
+      if (couponRes.docs.length > 0) {
+        const c = couponRes.docs[0] as any
+        const isNotExpired = !c.expiresAt || new Date(c.expiresAt).getTime() >= Date.now()
+        const hasUsesLeft = !c.maxUses || (c.usageCount || 0) < c.maxUses
+        if (isNotExpired && hasUsesLeft) {
+          appliedCouponDoc = c
+          if (c.type === 'percentage') {
+            discountAmount = Math.round((calculatedTotal * (Number(c.value) || 0)) / 100)
+            if (c.maxDiscountAmount && discountAmount > c.maxDiscountAmount) {
+              discountAmount = c.maxDiscountAmount
+            }
+          } else if (c.type === 'fixed') {
+            discountAmount = Math.min(calculatedTotal, Number(c.value) || 0)
+          }
+        }
+      }
     }
+
+    const finalPayableTotal = Math.max(0, calculatedTotal - discountAmount)
 
     const customerEmail = (session.user.email || customerInfo?.email || "").trim().toLowerCase()
     const customerPhone = customerInfo?.phone || (session.user as any).phone || ""
     const customerName = customerInfo?.firstName || session.user.name || "Student"
+
+    // If total is 0 (100% coupon discount or free courses), immediately enroll student
+    if (finalPayableTotal <= 0) {
+      const freeOrder = await payload.create({
+        collection: "orders",
+        data: {
+          customer: session.user.id,
+          customerEmail,
+          paymentMethod: "bkash",
+          paymentStatus: "paid",
+          status: "completed",
+          amount: 0,
+          currency: "BDT",
+          items: orderItems,
+          shippingAddress: {
+            title: shippingAddress?.title || "Digital Course Enrollment",
+            firstName: customerName,
+            lastName: customerInfo?.lastName || "",
+            company: "",
+            phone: customerPhone,
+            addressLine1: shippingAddress?.addressLine1 || "Online LMS Delivery",
+            addressLine2: shippingAddress?.addressLine2 || "",
+            city: shippingAddress?.city || "Dhaka",
+            state: shippingAddress?.state || "",
+            postalCode: shippingAddress?.postalCode || "1200",
+            country: shippingAddress?.country || "BD",
+          },
+        },
+        overrideAccess: true,
+      })
+
+      await createEnrollmentsForOrder(payload, freeOrder)
+
+      if (appliedCouponDoc) {
+        await payload.update({
+          collection: 'coupons',
+          id: appliedCouponDoc.id,
+          data: { usageCount: (appliedCouponDoc.usageCount || 0) + 1 },
+          overrideAccess: true,
+        }).catch(() => {})
+      }
+
+      return NextResponse.json({
+        success: true,
+        freeEnrollment: true,
+        orderID: freeOrder.id,
+      })
+    }
 
     // 2. Create Pending Order in Payload CMS
     const order = await payload.create({
@@ -101,7 +177,7 @@ export async function POST(req: NextRequest) {
         paymentMethod: "bkash",
         paymentStatus: "pending",
         status: "processing",
-        amount: calculatedTotal,
+        amount: finalPayableTotal,
         currency: "BDT",
         items: orderItems,
         shippingAddress: {

@@ -169,72 +169,52 @@ export function StudentOnboardingModal() {
             </p>
           </div>
 
-          {/* SSC Batch */}
+          {/* SSC Batch Dropdown */}
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold flex items-center justify-between">
+            <Label htmlFor="onboarding-ssc-batch" className="text-xs font-semibold flex items-center justify-between">
               <span className="flex items-center gap-1.5">
                 <GraduationCap className="size-3.5 text-primary" />
                 এসএসসি ব্যাচ (SSC Batch) <span className="text-destructive">*</span>
               </span>
-              {sscBatch && <span className="text-primary font-bold text-xs">{sscBatch}</span>}
             </Label>
-            <div className="flex flex-wrap gap-1.5">
-              {SSC_BATCH_OPTIONS.map((batch) => (
-                <button
-                  key={batch}
-                  type="button"
-                  onClick={() => setSscBatch(batch)}
-                  className={`px-3 py-1.5 text-xs rounded-lg border transition-all cursor-pointer font-medium ${
-                    sscBatch === batch
-                      ? 'bg-primary text-primary-foreground border-primary shadow-xs'
-                      : 'bg-muted/40 border-border text-foreground hover:bg-muted'
-                  }`}
-                >
-                  SSC {batch}
-                </button>
-              ))}
-            </div>
-            <Input
-              type="text"
+            <select
+              id="onboarding-ssc-batch"
               value={sscBatch}
               onChange={(e) => setSscBatch(e.target.value)}
-              placeholder="অন্যান্য বছর হলে লিখুন (যেমন: 2022)"
-              className="h-8 text-xs mt-1"
-            />
+              required
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+            >
+              <option value="">-- এসএসসি ব্যাচ নির্বাচন করুন --</option>
+              {SSC_BATCH_OPTIONS.map((batch) => (
+                <option key={batch} value={batch}>
+                  SSC {batch}
+                </option>
+              ))}
+            </select>
           </div>
 
-          {/* HSC Batch */}
+          {/* HSC Batch Dropdown */}
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold flex items-center justify-between">
+            <Label htmlFor="onboarding-hsc-batch" className="text-xs font-semibold flex items-center justify-between">
               <span className="flex items-center gap-1.5">
                 <Calendar className="size-3.5 text-primary" />
                 এইচএসসি ব্যাচ (HSC Batch) <span className="text-destructive">*</span>
               </span>
-              {hscBatch && <span className="text-primary font-bold text-xs">{hscBatch}</span>}
             </Label>
-            <div className="flex flex-wrap gap-1.5">
-              {HSC_BATCH_OPTIONS.map((batch) => (
-                <button
-                  key={batch}
-                  type="button"
-                  onClick={() => setHscBatch(batch)}
-                  className={`px-3 py-1.5 text-xs rounded-lg border transition-all cursor-pointer font-medium ${
-                    hscBatch === batch
-                      ? 'bg-primary text-primary-foreground border-primary shadow-xs'
-                      : 'bg-muted/40 border-border text-foreground hover:bg-muted'
-                  }`}
-                >
-                  HSC {batch}
-                </button>
-              ))}
-            </div>
-            <Input
-              type="text"
+            <select
+              id="onboarding-hsc-batch"
               value={hscBatch}
               onChange={(e) => setHscBatch(e.target.value)}
-              placeholder="অন্যান্য বছর হলে লিখুন (যেমন: 2024)"
-              className="h-8 text-xs mt-1"
-            />
+              required
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+            >
+              <option value="">-- এইচএসসি ব্যাচ নির্বাচন করুন --</option>
+              {HSC_BATCH_OPTIONS.map((batch) => (
+                <option key={batch} value={batch}>
+                  HSC {batch}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="pt-2">

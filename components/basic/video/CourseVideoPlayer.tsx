@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { VideoPlayer } from '@videojs/react/video'
+import { useEffect, useState, useRef } from 'react'
+import { selectPlayback } from '@videojs/react'
+import { VideoPlayer, usePlayer } from '@videojs/react/video'
 import { YouTubeVideo } from '@videojs/react/media/youtube-video'
 
 import { VideoSkin } from '@/components/videojs/video/skin'
@@ -16,6 +17,20 @@ export interface CourseVideoPlayerProps {
   className?: string
   /** Poster thumbnail image URL */
   poster?: string
+  /** Callback fired when student finishes watching the lecture video */
+  onEnded?: () => void
+}
+
+function EndedDetector({ onEnded }: { onEnded?: () => void }) {
+  const playback = usePlayer(selectPlayback)
+
+  useEffect(() => {
+    if (playback?.ended) {
+      onEnded?.()
+    }
+  }, [playback?.ended, onEnded])
+
+  return null
 }
 
 function normalizeVideoUrl(input?: string | null): string | null {
@@ -32,6 +47,7 @@ export default function CourseVideoPlayer({
   videoHash,
   className = '',
   poster,
+  onEnded,
 }: CourseVideoPlayerProps) {
   const [playableUrl, setPlayableUrl] = useState<string | null>(() => {
     if (videoHash) return null
@@ -39,6 +55,25 @@ export default function CourseVideoPlayer({
   })
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(() => Boolean(videoHash))
+
+  // Detect YouTube iframe ended state event via postMessage
+  useEffect(() => {
+    const handleWindowMessage = (event: MessageEvent) => {
+      try {
+        let data = event.data
+        if (typeof data === 'string') {
+          data = JSON.parse(data)
+        }
+        if (data && (data.info === 0 || (data.event === 'onStateChange' && data.info === 0))) {
+          onEnded?.()
+        }
+      } catch {
+        // non-JSON messages can be safely ignored
+      }
+    }
+    window.addEventListener('message', handleWindowMessage)
+    return () => window.removeEventListener('message', handleWindowMessage)
+  }, [onEnded])
 
   useEffect(() => {
     const target = (videoHash || initialUrl || '').trim()
@@ -91,6 +126,7 @@ export default function CourseVideoPlayer({
         </div>
       ) : playableUrl ? (
         <VideoPlayer>
+          <EndedDetector onEnded={onEnded} />
           <VideoSkin
             className="aspect-video w-full select-none"
             renderPoster={poster ? () => <img src={poster} alt="Course Poster" className="size-full object-cover" /> : undefined}

@@ -17,6 +17,7 @@ import {
   ArrowRight,
   ExternalLink,
   Layers,
+  CheckCircle2,
 } from "lucide-react"
 
 export const metadata = {
@@ -47,6 +48,7 @@ export default async function MyCoursesPage() {
     depth: 2,
     limit: 100,
     sort: "-enrolledAt",
+    overrideAccess: true,
   })
 
   // 2. Safety Fallback: Sync from Paid Orders if not yet enrolled
@@ -60,6 +62,7 @@ export default async function MyCoursesPage() {
     },
     depth: 2,
     limit: 50,
+    overrideAccess: true,
   })
 
   // Auto-sync missing orders to enrollments
@@ -81,17 +84,35 @@ export default async function MyCoursesPage() {
           depth: 2,
           limit: 100,
           sort: "-enrolledAt",
+          overrideAccess: true,
         })
       : enrollmentsRes
 
-  // Deduplicate courses by ID
+  // Deduplicate courses by ID and resolve unpopulated course docs
   const courseMap = new Map<string, any>()
   for (const enrollment of finalEnrollments.docs as any[]) {
-    const course = typeof enrollment.course === "object" ? enrollment.course : null
+    let course = typeof enrollment.course === "object" && enrollment.course ? enrollment.course : null
+    const courseId = course?.id || (typeof enrollment.course === "string" ? enrollment.course : null)
+    if (!courseId) continue
+
+    if (!course || !course.title) {
+      try {
+        course = await payload.findByID({
+          collection: "products",
+          id: String(courseId),
+          depth: 2,
+          overrideAccess: true,
+        })
+      } catch (e) {
+        console.warn(`Could not resolve course ${courseId}:`, e)
+      }
+    }
+
     if (course && course.id && !courseMap.has(String(course.id))) {
       courseMap.set(String(course.id), {
         ...course,
         enrolledAt: enrollment.enrolledAt || enrollment.createdAt,
+        completedLessons: Array.isArray(enrollment.completedLessons) ? enrollment.completedLessons : [],
       })
     }
   }
@@ -158,7 +179,11 @@ export default async function MyCoursesPage() {
               (typeof course.thumbnail === "object" && course.thumbnail?.url) ||
               "/images/course-placeholder.jpg"
 
-            const lessonCount = Array.isArray(course.lessons) ? course.lessons.length : 0
+            const directCount = Array.isArray(course.lessons) ? course.lessons.length : 0
+            const subjectCount = Array.isArray(course.subjects)
+              ? course.subjects.reduce((sum: number, s: any) => sum + (Array.isArray(s?.lessons) ? s.lessons.length : 0), 0)
+              : 0
+            const lessonCount = directCount > 0 ? directCount : subjectCount
             const subjectsCount = Array.isArray(course.subjects) ? course.subjects.length : 0
 
             return (
@@ -207,7 +232,34 @@ export default async function MyCoursesPage() {
                     </p>
                   )}
 
-                  <div className="mt-auto pt-4 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground">
+                  {/* Course Completion Progress Bar */}
+                  {(() => {
+                    const completedCount = (course.completedLessons || []).length
+                    const progressPercent = lessonCount > 0
+                      ? Math.min(100, Math.round((completedCount / lessonCount) * 100))
+                      : 0
+                    return (
+                      <div className="mt-3 mb-1 flex flex-col gap-1.5 p-2.5 rounded-lg bg-muted/40 border border-border/60">
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="text-muted-foreground font-medium flex items-center gap-1 text-[11px]">
+                            <CheckCircle2 className="size-3 text-emerald-600" />
+                            <span>কোর্স সম্পন্ন</span>
+                          </span>
+                          <span className="font-bold text-foreground text-xs">
+                            {progressPercent}% <span className="text-[10px] text-muted-foreground font-normal">({completedCount}/{lessonCount})</span>
+                          </span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+                          <div
+                            className="bg-emerald-600 h-1.5 rounded-full transition-all duration-300"
+                            style={{ width: `${progressPercent}%` }}
+                          />
+                        </div>
+                      </div>
+                    )
+                  })()}
+
+                  <div className="mt-auto pt-3 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <BookOpen className="size-3.5 text-muted-foreground/80" />
                       <span>{lessonCount} টি ক্লাস</span>
@@ -221,7 +273,7 @@ export default async function MyCoursesPage() {
                         </Link>
                       </Button>
                       <Button asChild size="sm" className="h-7 text-xs px-2.5 gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">
-                        <Link href="/video">
+                        <Link href={`/courses/${course.slug}`}>
                           <PlayCircle className="size-3.5" />
                           <span>ক্লাসরুম</span>
                         </Link>

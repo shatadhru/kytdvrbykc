@@ -41,6 +41,16 @@ function CheckoutContent() {
   const [activeMethod, setActiveMethod] = useState<"bkash" | "nagad">("bkash")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Coupon state
+  const [couponInput, setCouponInput] = useState("")
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string
+    type: string
+    value: number
+    discountAmount: number
+  } | null>(null)
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false)
+
   // Nagad manual form state
   const [senderNumber, setSenderNumber] = useState("")
   const [manualTrxId, setManualTrxId] = useState("")
@@ -56,6 +66,94 @@ function CheckoutContent() {
     const price = getProductUnitPrice(item.product, item.variant)
     return acc + price * (item.quantity || 1)
   }, 0)
+
+  const discountAmount = appliedCoupon ? appliedCoupon.discountAmount : 0
+  const finalAmount = Math.max(0, totalAmount - discountAmount)
+
+  const handleApplyCoupon = async () => {
+    if (!couponInput.trim()) {
+      toast.error("অনুগ্রহ করে একটি কুপন কোড লিখুন।")
+      return
+    }
+
+    try {
+      setIsApplyingCoupon(true)
+      const productIds = items
+        .map((item) => (typeof item.product === "object" ? item.product?.id : item.product))
+        .filter(Boolean)
+
+      const res = await fetch("/api/coupons/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: couponInput.trim().toUpperCase(),
+          cartTotal: totalAmount,
+          productIds,
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok || !data.valid) {
+        throw new Error(data.error || "কুপন কোডটি সঠিক নয়।")
+      }
+
+      setAppliedCoupon({
+        code: data.code,
+        type: data.type,
+        value: data.value,
+        discountAmount: data.discountAmount,
+      })
+      toast.success(data.message || "কুপন কোড সফলভাবে যোগ করা হয়েছে!")
+    } catch (err: any) {
+      toast.error(err.message || "কুপন যাচাই করতে সমস্যা হয়েছে।")
+    } finally {
+      setIsApplyingCoupon(false)
+    }
+  }
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null)
+    setCouponInput("")
+    toast.info("কুপন কোড সরিয়ে নেওয়া হয়েছে।")
+  }
+
+  // Handle Free 100% Discount Enrollment
+  const handleFreeEnrollment = async () => {
+    if (!session?.user?.id) {
+      toast.error("অনুগ্রহ করে আগে লগইন করুন")
+      router.push(`/auth/login?redirect=/checkout`)
+      return
+    }
+
+    try {
+      setIsSubmitting(true)
+      const res = await fetch("/api/checkout/bkash", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items,
+          couponCode: appliedCoupon?.code,
+          cartID: cart?.id,
+          customerInfo: {
+            email: session.user.email,
+            firstName: session.user.name,
+          },
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "এনরোলমেন্ট সম্পন্ন করতে সমস্যা হয়েছে।")
+      }
+
+      await clearCart()
+      toast.success("কোর্সে সফলভাবে ভর্তি সম্পন্ন হয়েছে!")
+      router.push(`/checkout/success?orderId=${data.orderID || data.orderId}&free=true`)
+    } catch (err: any) {
+      toast.error(err.message || "সমস্যা হয়েছে।")
+      setIsSubmitting(false)
+    }
+  }
 
   const nagadNumber = process.env.NEXT_PUBLIC_NAGAD_NUMBER || "01XXXXXXXXX"
   const nagadType = process.env.NEXT_PUBLIC_NAGAD_TYPE || "Personal"
@@ -80,6 +178,7 @@ function CheckoutContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items,
+          couponCode: appliedCoupon?.code,
           cartID: cart?.id,
           customerInfo: {
             email: session.user.email,
@@ -129,6 +228,7 @@ function CheckoutContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items,
+          couponCode: appliedCoupon?.code,
           senderNumber: senderNumber.trim(),
           manualTrxId: manualTrxId.trim(),
           cartID: cart?.id,
@@ -244,6 +344,15 @@ function CheckoutContent() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
+                  {finalAmount === 0 && (
+                    <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-900 dark:text-emerald-200 flex items-center gap-3 text-sm font-medium">
+                      <CheckCircle2 className="size-5 text-emerald-600 shrink-0" />
+                      <span>
+                        কুপন ছাড়ের ফলে আপনার প্রদেয় অর্থ ৳০ (ফ্রি)। ডানদিকের &apos;বিনামূল্যে ভর্তি সম্পন্ন করুন&apos; বাটনে ক্লিক করে সরাসরি কোর্সে যুক্ত হন।
+                      </span>
+                    </div>
+                  )}
+
                   <Tabs
                     value={activeMethod}
                     onValueChange={(val) => setActiveMethod(val as "bkash" | "nagad")}
@@ -430,6 +539,60 @@ function CheckoutContent() {
                     })}
                   </div>
 
+                  {/* Coupon Code Section */}
+                  <div className="pt-3 border-t border-border/80 space-y-2">
+                    <label className="text-xs font-semibold text-foreground flex items-center justify-between">
+                      <span>কুপন কোড (যদি থাকে)</span>
+                      {appliedCoupon && (
+                        <span className="text-[11px] text-emerald-600 font-bold">
+                          {appliedCoupon.code} সক্রিয়
+                        </span>
+                      )}
+                    </label>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="কুপন কোড (যেমন: 7UP, FREE26)"
+                        value={couponInput}
+                        onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                        disabled={appliedCoupon !== null || isApplyingCoupon}
+                        className="uppercase text-xs h-9 font-mono"
+                      />
+                      {appliedCoupon ? (
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          onClick={handleRemoveCoupon}
+                          className="text-xs h-9 shrink-0 cursor-pointer"
+                        >
+                          রিমুভ
+                        </Button>
+                      ) : (
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={handleApplyCoupon}
+                          disabled={isApplyingCoupon || !couponInput.trim()}
+                          className="text-xs h-9 shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold cursor-pointer"
+                        >
+                          {isApplyingCoupon ? (
+                            <Loader2 className="size-3 animate-spin" />
+                          ) : (
+                            "এপ্লাই"
+                          )}
+                        </Button>
+                      )}
+                    </div>
+                    {appliedCoupon && (
+                      <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                        <CheckCircle2 className="size-3 shrink-0" />
+                        <span>
+                          কুপন সফলভাবে প্রয়োগ করা হয়েছে ({formatPrice(discountAmount)} ছাড়)
+                        </span>
+                      </p>
+                    )}
+                  </div>
+
                   {/* Pricing Breakdown */}
                   <div className="pt-3 border-t border-border/80 space-y-2 text-sm">
                     <div className="flex justify-between text-muted-foreground">
@@ -438,16 +601,49 @@ function CheckoutContent() {
                         {formatPrice(totalAmount)}
                       </span>
                     </div>
+
+                    {discountAmount > 0 && (
+                      <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-medium">
+                        <span>কুপন ছাড় ({appliedCoupon?.code})</span>
+                        <span className="tabular-nums">- {formatPrice(discountAmount)}</span>
+                      </div>
+                    )}
+
                     <div className="flex justify-between text-muted-foreground">
                       <span>ডেলিভারি / ভ্যাট</span>
                       <span className="text-emerald-600 dark:text-emerald-400 font-medium">৳০ (ফ্রি)</span>
                     </div>
+
                     <div className="flex justify-between text-base font-bold text-foreground pt-2 border-t">
                       <span>সর্বমোট প্রদেয়</span>
                       <span className="text-primary tabular-nums text-lg">
-                        {formatPrice(totalAmount)}
+                        {formatPrice(finalAmount)}
                       </span>
                     </div>
+
+                    {finalAmount === 0 && (
+                      <div className="pt-2">
+                        <Button
+                          type="button"
+                          size="lg"
+                          onClick={handleFreeEnrollment}
+                          disabled={isSubmitting || !session}
+                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md cursor-pointer text-sm"
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <Loader2 className="size-4 mr-2 animate-spin" />
+                              এনরোলমেন্ট সম্পন্ন হচ্ছে...
+                            </>
+                          ) : (
+                            <>
+                              <CheckCircle2 className="size-4 mr-2" />
+                              বিনামূল্যে ভর্তি সম্পন্ন করুন
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
                 <CardFooter className="bg-muted/20 border-t py-3 px-6 text-[11px] text-muted-foreground flex items-center justify-center gap-1.5">

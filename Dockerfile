@@ -41,6 +41,10 @@ ENV PAYLOAD_SECRET=build-placeholder-secret-min-32-chars-long
 ENV BETTER_AUTH_SECRET=build-placeholder-secret-min-32-chars-long
 ENV NEXT_PUBLIC_APP_URL=http://localhost:3000
 ENV BETTER_AUTH_URL=http://localhost:3000
+ENV DATABASE_URL=mongodb://127.0.0.1:27017/nextload
+ENV NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=dccbp4dpb
+ENV NEXT_PUBLIC_CLOUDINARY_API_KEY=build-placeholder
+ENV CLOUDINARY_API_SECRET=build-placeholder
 
 # Build Next.js in standalone mode with Payload CMS
 RUN pnpm build

@@ -45,6 +45,22 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'utmeducation.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.utmeducation.com',
+      },
+      {
+        protocol: 'http',
+        hostname: 'utmeducation.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.utmeducation.com',
+      },
     ],
   },
   webpack: (webpackConfig) => {

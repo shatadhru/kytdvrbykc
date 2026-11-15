@@ -174,10 +174,16 @@ export default async function MyCoursesPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {enrolledCourses.map((course: any) => {
+            const thumbObj = typeof course.thumbnail === "object" && course.thumbnail ? course.thumbnail : null
             const thumbnailUrl =
+              (typeof course.thumbnail === "string" && (course.thumbnail.startsWith("http") || course.thumbnail.startsWith("/"))
+                ? course.thumbnail
+                : null) ||
               extractCloudinarySecureUrl(course.thumbnail) ||
-              (typeof course.thumbnail === "object" && course.thumbnail?.url) ||
-              "/images/course-placeholder.jpg"
+              thumbObj?.url ||
+              thumbObj?.externalUrl ||
+              (course as any).thumbnailUrl ||
+              null
 
             const directCount = Array.isArray(course.lessons) ? course.lessons.length : 0
             const subjectCount = Array.isArray(course.subjects)
@@ -193,7 +199,7 @@ export default async function MyCoursesPage() {
               >
                 {/* Thumbnail */}
                 <div className="relative aspect-video w-full overflow-hidden bg-muted">
-                  {thumbnailUrl.startsWith("http") || thumbnailUrl.startsWith("/") ? (
+                  {thumbnailUrl && (thumbnailUrl.startsWith("http") || thumbnailUrl.startsWith("/")) ? (
                     <Image
                       src={thumbnailUrl}
                       alt={course.title}

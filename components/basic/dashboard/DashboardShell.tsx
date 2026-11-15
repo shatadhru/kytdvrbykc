@@ -200,13 +200,13 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <SidebarProvider className="relative h-dvh min-h-0 w-full overflow-hidden">
+    <SidebarProvider className="relative min-h-screen w-full">
       <AppSidebar
         selectedWorkspace={workspace}
         onSelectWorkspace={setWorkspace}
         unreadCount={unreadCount}
       />
-      <SidebarInset className="min-w-0 overflow-hidden flex flex-col h-full">
+      <SidebarInset className="min-w-0 flex flex-col min-h-screen">
         <header className="flex h-10 sm:h-12 shrink-0 items-center gap-1.5 sm:gap-2 border-b px-2.5 sm:px-4 bg-background/95 backdrop-blur z-20">
           {/* Mobile Brand Logo - Visible on mobile (< md), hidden on desktop */}
           <div className="flex md:hidden items-center pl-1">
@@ -419,7 +419,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
         <EmailVerificationBanner />
 
-        <div className="flex-1 overflow-auto p-2.5 sm:p-4 md:p-6">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-6 md:p-8 min-h-[calc(100vh-3.5rem)] pb-16">
           {children}
         </div>
       </SidebarInset>

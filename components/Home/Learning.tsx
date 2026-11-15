@@ -6,7 +6,7 @@ import { ArrowUpRight, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CldImage } from "next-cloudinary";
+import Image from "next/image";
 
 type LearningStep = {
   number: string;
@@ -105,7 +105,7 @@ export function Learning() {
                 <CardContent className="flex h-full flex-col p-0">
                   {/* Image */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted/30">
-                    <CldImage
+                    <Image
                       src={step.image}
                       alt={step.title}
                       fill

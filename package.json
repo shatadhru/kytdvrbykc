@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "init:project": "node payload/scripts/init.mjs",
+    "sync:lms": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/sync-all-lms-data.ts",
     "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=4000\" next build --webpack",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev --webpack",
     "devsafe": "node -e \"try{fs.rmSync('.next',{recursive:true,force:true})}catch(e){}\" && cross-env NODE_OPTIONS=--no-deprecation next dev --webpack",

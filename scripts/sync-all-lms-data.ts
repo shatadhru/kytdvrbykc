@@ -9,419 +9,451 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const DATA_DIR = path.resolve(__dirname, '../data')
 
-const COURSE_SLUG_BY_ID: Record<number, string> = {
-  327: 'ssc-27-physics-basic-to-premium',
+export const COURSE_SLUG_BY_ID: Record<number, string> = {
   319: 'ssc-27-chemistry-basic-to-premium',
+  327: 'ssc-27-physics-basic-to-premium',
+  329: 'ssc-27-general-math-basic-to-premium',
   334: 'ssc-27-higher-math-basic-to-premium',
   526: 'ssc-28-general-math-basic-to-premium',
-  529: 'ssc-28-higher-math-basic-to-premium',
   527: 'ssc-28-physics-basic-to-premium',
   528: 'ssc-28-chemistry-basic-to-premium',
-  867: 'ssc-27-pcm-combo',
+  529: 'ssc-28-higher-math-basic-to-premium',
   892: 'ssc-27-pcm-combo',
-  887: 'ssc-28-pcm-combo',
   897: 'ssc-28-pcm-combo',
   1044: 'ssc-28-4-subject-combo',
   1052: 'ssc-27-4-subject-combo',
-  329: 'ssc-27-general-math-basic-to-premium',
-  5641: 'ssc-26-chemistry-extreme-revision',
   2195: 'ssc-2026-physics',
   2407: 'ssc-2026-chemistry',
   2484: 'ssc-2026-physics-chemistry-combo',
-  5547: 'ssc-27-28-high-voltage-physics-free',
-  5548: 'ssc-27-28-high-voltage-chemistry',
-  5546: 'ssc-27-28-high-voltage-higher-math',
-  5463: 'ssc-27-28-high-voltage-math-free',
   4235: '7-days-chemistry-challenge-free',
   4271: 'physics-bullet-mcq-free',
   4278: 'chemistry-top-25-bullet-mcq-free',
+  5463: 'ssc-27-28-high-voltage-math-free',
+  5546: 'ssc-27-28-high-voltage-higher-math',
+  5547: 'ssc-27-28-high-voltage-physics-free',
+  5548: 'ssc-27-28-high-voltage-chemistry',
+  5641: 'ssc-26-chemistry-extreme-revision',
 }
 
-const TITLE_TO_SLUG: Record<string, string> = {
-  'এস এস সি ২৭ – সাধারন গণিত – বেসিক টু প্রিমিয়াম': 'ssc-27-general-math-basic-to-premium',
-  'এস এস সি ২৭ – গণিত – বেসিক টু প্রিমিয়াম': 'ssc-27-general-math-basic-to-premium',
-  'এস এস সি ২৭ – পদার্থবিজ্ঞান- বেসিক টু প্রিমিয়াম': 'ssc-27-physics-basic-to-premium',
-  'এস এস সি ২৭ - রসায়ন - বেসিক টু প্রিমিয়াম': 'ssc-27-chemistry-basic-to-premium',
-  'এস এস সি ২৭ – উচ্চতর গণিত – বেসিক টু প্রিমিয়াম': 'ssc-27-higher-math-basic-to-premium',
-  'SSC 26 রসায়ন এক্সট্রিম রিভিশন': 'ssc-26-chemistry-extreme-revision',
-  'এস এস সি ২৮ – সাধারন গণিত – বেসিক টু প্রিমিয়াম': 'ssc-28-general-math-basic-to-premium',
-  'এস এস সি ২৮ – পদার্থবিজ্ঞান – বেসিক টু প্রিমিয়াম': 'ssc-28-physics-basic-to-premium',
-  'এস এস সি ২৮ – রসায়ন – বেসিক টু প্রিমিয়াম': 'ssc-28-chemistry-basic-to-premium',
-  'এস এস সি ২৮ – রসায়ন – বেসিক টু প্রিমিয়াম কোর্স': 'ssc-28-chemistry-basic-to-premium',
-  'এস এস সি ২৮ – উচ্চতর গণিত – বেসিক টু প্রিমিয়াম': 'ssc-28-higher-math-basic-to-premium',
-  'SSC 27 - পদার্থবিজ্ঞান, রসায়ন, গণিত কম্বো কোর্স': 'ssc-27-pcm-combo',
-  'SSC 27 - পদার্থবিজ্ঞান, রসায়ন, গনিত, উচ্চতর গণিত কম্বো কোর্স': 'ssc-27-4-subject-combo',
-  'SSC 28 - পদার্থবিজ্ঞান, রসায়ন, গণিত কম্বো কোর্স': 'ssc-28-pcm-combo',
-  'SSC 28 - পদার্থবিজ্ঞান, রসায়ন, গনিত, উচ্চতর গণিত কম্বো কোর্স': 'ssc-28-4-subject-combo',
-  'এস এস সি - ২০২৬ পদার্থবিজ্ঞান': 'ssc-2026-physics',
-  'এস এস সি - ২০২৬ রসায়ন': 'ssc-2026-chemistry',
-  'এস এস সি ২০২৬ পদার্থবিজ্ঞান ও রসায়ন কম্বো কোর্স': 'ssc-2026-physics-chemistry-combo',
-}
+const SUBJECT_KEYWORDS: [string, string, string][] = [
+  ['পদার্থবিজ্ঞান', 'পদার্থবিজ্ঞান (Physics)', 'physics'],
+  ['physics', 'পদার্থবিজ্ঞান (Physics)', 'physics'],
+  ['রসায়ন', 'রসায়ন (Chemistry)', 'chemistry'],
+  ['রসায়ন', 'রসায়ন (Chemistry)', 'chemistry'],
+  ['chemistry', 'রসায়ন (Chemistry)', 'chemistry'],
+  ['উচ্চতর গণিত', 'উচ্চতর গণিত (Higher Math)', 'higher-math'],
+  ['উচ্চতর গনিত', 'উচ্চতর গণিত (Higher Math)', 'higher-math'],
+  ['higher math', 'উচ্চতর গণিত (Higher Math)', 'higher-math'],
+  ['hmath', 'উচ্চতর গণিত (Higher Math)', 'higher-math'],
+  ['সাধারণ গণিত', 'সাধারণ গণিত (General Math)', 'general-math'],
+  ['গনিত', 'সাধারণ গণিত (General Math)', 'general-math'],
+  ['গণিত', 'সাধারণ গণিত (General Math)', 'general-math'],
+  ['math', 'সাধারণ গণিত (General Math)', 'general-math'],
+]
 
-function extractYoutubeUrl(rawVideoMeta: string | undefined): string {
-  if (!rawVideoMeta) return 'https://youtu.be/rnshfIpWurk'
-  const match = rawVideoMeta.match(/https?:\/\/[^\s";\\]+/)
-  return match ? match[0] : 'https://youtu.be/rnshfIpWurk'
-}
-
-function cleanText(text: string): string {
-  if (!text) return ''
-  return text
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/&#8211;/g, '–')
-    .replace(/&amp;/g, '&')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
+function detectSubject(title: string): { name: string; slug: string } {
+  const lower = (title || '').toLowerCase()
+  for (const [kw, name, slug] of SUBJECT_KEYWORDS) {
+    if (lower.includes(kw.toLowerCase())) {
+      return { name, slug }
+    }
+  }
+  return { name: 'সাধারণ পাঠ্যক্রম (General)', slug: 'general' }
 }
 
 export async function runFullDataSync(payloadInstance?: any) {
-  console.log('🚀 Starting Full LMS Data Sync & Migration...')
+  console.log('🚀 Starting Full LMS Data Sync & Migration from utmeducation.com MariaDB data...')
   const payload = payloadInstance || (await getPayload({ config }))
 
-  // --------------------------------------------------------------------------
-  // 1. SYNC COUPONS
-  // --------------------------------------------------------------------------
-  console.log('\n--- 1. Syncing Coupons ---')
-  const couponsFile = path.join(DATA_DIR, 'coupons.json')
-  let couponsCreated = 0
-  if (fs.existsSync(couponsFile)) {
-    const rawCoupons = JSON.parse(fs.readFileSync(couponsFile, 'utf8'))
-    for (const c of rawCoupons) {
-      const code = String(c.code).trim().toUpperCase()
-      const isPercent = c.discount_type === 'percent'
-      const value = parseFloat(c.amount) || 0
-      const expiresAt = c.date_expires ? new Date(c.date_expires).toISOString() : undefined
+  const coursesFile = path.join(DATA_DIR, 'courses.json')
+  const topicsFile = path.join(DATA_DIR, 'topics.json')
+  const lessonsFile = path.join(DATA_DIR, 'lessons.json')
+  const usersFile = path.join(DATA_DIR, 'users.json')
+  const enrollmentsFile = path.join(DATA_DIR, 'enrollments.json')
 
-      const found = await payload.find({
-        collection: 'coupons',
-        where: { code: { equals: code } },
-        limit: 1,
-        overrideAccess: true,
-      })
+  if (!fs.existsSync(coursesFile)) {
+    throw new Error(`Data file not found: ${coursesFile}`)
+  }
 
-      if (found.docs.length === 0) {
-        await payload.create({
-          collection: 'coupons',
-          data: {
-            code,
-            type: isPercent ? 'percentage' : 'fixed',
-            value,
-            active: true,
-            expiresAt,
-            maxUses: c.usage_limit ? Number(c.usage_limit) : 0,
-            usageCount: c.usage_count ? Number(c.usage_count) : 0,
-          } as any,
-          overrideAccess: true,
-        })
-        couponsCreated++
-      }
-    }
-    console.log(`✅ Synced coupons (New: ${couponsCreated})`)
+  const rawCourses: any[] = JSON.parse(fs.readFileSync(coursesFile, 'utf8'))
+  const rawTopics: any[] = fs.existsSync(topicsFile) ? JSON.parse(fs.readFileSync(topicsFile, 'utf8')) : []
+  const rawLessons: any[] = fs.existsSync(lessonsFile) ? JSON.parse(fs.readFileSync(lessonsFile, 'utf8')) : []
+  const rawUsers: any[] = fs.existsSync(usersFile) ? JSON.parse(fs.readFileSync(usersFile, 'utf8')) : []
+  const rawEnrollments: any[] = fs.existsSync(enrollmentsFile) ? JSON.parse(fs.readFileSync(enrollmentsFile, 'utf8')) : []
+
+  // --------------------------------------------------------------------------
+  // Map Topics by ID
+  // --------------------------------------------------------------------------
+  const topicMap = new Map<number, any>()
+  for (const t of rawTopics) {
+    topicMap.set(Number(t.id), t)
   }
 
   // --------------------------------------------------------------------------
-  // 2. SYNC COURSES & LESSONS
+  // Map Lessons by Course ID
   // --------------------------------------------------------------------------
-  console.log('\n--- 2. Syncing Courses & Lessons ---')
-  const coursesFile = path.join(DATA_DIR, 'courses.json')
-  const lessonsFile = path.join(DATA_DIR, 'lessons.json')
+  const lessonsByCourseId = new Map<number, any[]>()
+  for (const l of rawLessons) {
+    let cid = Number(l.course_id)
+    if (!cid && l.topic_id && topicMap.has(Number(l.topic_id))) {
+      cid = Number(topicMap.get(Number(l.topic_id)).course_id)
+    }
+    if (cid) {
+      if (!lessonsByCourseId.has(cid)) lessonsByCourseId.set(cid, [])
+      lessonsByCourseId.get(cid)!.push(l)
+    }
+  }
 
+  // --------------------------------------------------------------------------
+  // 1. SYNC MEDIA (Course Thumbnails)
+  // --------------------------------------------------------------------------
+  console.log('\n--- 1. Syncing Media Thumbnails ---')
+  const existingMedia = await payload.find({
+    collection: 'media',
+    limit: 500,
+    depth: 0,
+    overrideAccess: true,
+  })
+
+  const mediaUrlMap = new Map<string, string>()
+  const mediaAltMap = new Map<string, string>()
+
+  for (const m of existingMedia.docs as any[]) {
+    if (m.url) mediaUrlMap.set(m.url, String(m.id))
+    if (m.alt) mediaAltMap.set(m.alt, String(m.id))
+  }
+
+  let mediaCreated = 0
+  for (const c of rawCourses) {
+    const thumbUrl = c.thumbnail?.url
+    if (!thumbUrl) continue
+
+    if (!mediaUrlMap.has(thumbUrl) && !mediaAltMap.has(c.title)) {
+      try {
+        const created = await payload.create({
+          collection: 'media',
+          data: {
+            alt: c.title || 'Course Thumbnail',
+            url: thumbUrl,
+          } as any,
+          overrideAccess: true,
+        })
+        const mId = String(created.id)
+        mediaUrlMap.set(thumbUrl, mId)
+        mediaAltMap.set(c.title, mId)
+        mediaCreated++
+      } catch (err: any) {
+        console.warn(`Could not create media record for ${thumbUrl}:`, err?.message || err)
+      }
+    }
+  }
+  console.log(`✅ Media thumbnails synced (Created: ${mediaCreated}, Total available: ${mediaUrlMap.size})`)
+
+  // Default fallback thumbnail if needed
+  const fallbackThumbnailId = existingMedia.docs[0]?.id || Array.from(mediaUrlMap.values())[0]
+
+  // --------------------------------------------------------------------------
+  // 2. SYNC COURSES & CURRICULUM
+  // --------------------------------------------------------------------------
+  console.log('\n--- 2. Syncing Courses & Detailed Lessons ---')
   let coursesCreated = 0
   let coursesUpdated = 0
 
-  if (fs.existsSync(coursesFile)) {
-    const rawCourses = JSON.parse(fs.readFileSync(coursesFile, 'utf8'))
-    let lessonsByCourseId = new Map<number, any[]>()
+  // Pre-load all existing courses in Payload
+  const dbCourses = await payload.find({
+    collection: 'products',
+    limit: 200,
+    depth: 0,
+    overrideAccess: true,
+  })
+  const courseIdBySlug = new Map<string, string>()
+  const courseDocBySlug = new Map<string, any>()
 
-    if (fs.existsSync(lessonsFile)) {
-      const rawLessons = JSON.parse(fs.readFileSync(lessonsFile, 'utf8'))
-      for (const l of rawLessons) {
-        const cid = Number(l.postmeta?._tutor_course_id_for_lesson || l.meta?._tutor_course_id_for_lesson)
-        if (cid) {
-          if (!lessonsByCourseId.has(cid)) lessonsByCourseId.set(cid, [])
-          lessonsByCourseId.get(cid)!.push(l)
-        }
+  for (const doc of dbCourses.docs as any[]) {
+    if (doc.slug) {
+      courseIdBySlug.set(doc.slug, String(doc.id))
+      courseDocBySlug.set(doc.slug, doc)
+    }
+  }
+
+  // Filter out trash courses unless they have lessons
+  const validCourses = rawCourses.filter((c: any) => {
+    if (c.status === 'trash') return false
+    return true
+  })
+
+  for (const c of validCourses) {
+    const wpId = Number(c.id)
+    const slug = COURSE_SLUG_BY_ID[wpId] || `course-${wpId}`
+    const title = c.title
+    const introVideoUrl = c.intro_video?.youtube_url || ''
+    const thumbUrl = c.thumbnail?.url
+    const thumbnailId = (thumbUrl ? mediaUrlMap.get(thumbUrl) : null) || fallbackThumbnailId
+
+    const priceNum = parseFloat(c.pricing?.sale_price || c.pricing?.price || '0') || 0
+    const isFree = priceNum === 0 || [4235, 4271, 4278, 5463, 5547].includes(wpId)
+    const price = isFree ? 0 : priceNum
+
+    // Course raw lessons
+    const courseLessons = lessonsByCourseId.get(wpId) || []
+
+    // Group lessons into subjects/modules
+    const subjectsMap = new Map<string, { name: string; slug: string; lessons: any[] }>()
+
+    const mappedLessons = courseLessons.map((l: any, idx: number) => {
+      const topicObj = l.topic_id ? topicMap.get(Number(l.topic_id)) : null
+      const moduleName = topicObj?.title || 'সাধারণ পাঠ্যক্রম (General)'
+      const subInfo = detectSubject(moduleName !== 'সাধারণ পাঠ্যক্রম (General)' ? moduleName : l.title)
+
+      const ytUrl = l.video?.youtube_url || ''
+      const duration = l.video?.playtime || '45m'
+      const noteUrl = l.attachments?.[0]?.url || l.class_links_in_content?.[0] || ''
+      const slideUrl = l.attachments?.[1]?.url || ''
+
+      const lessonItem = {
+        id: String(l.id),
+        lessonTitle: l.title,
+        moduleName,
+        subjectName: subInfo.name,
+        subjectSlug: subInfo.slug,
+        duration,
+        order: Number(l.order) || idx + 1,
+        isFreePreview: idx === 0 || Boolean(l.is_preview),
+        youtubeVideoIdOrUrl: ytUrl,
+        classNoteUrl: noteUrl,
+        classSlideUrl: slideUrl,
+        quranVersePreset: 'none',
       }
+
+      // Add to subject group
+      if (!subjectsMap.has(subInfo.slug)) {
+        subjectsMap.set(subInfo.slug, {
+          name: subInfo.name,
+          slug: subInfo.slug,
+          lessons: [],
+        })
+      }
+      subjectsMap.get(subInfo.slug)!.lessons.push(lessonItem)
+
+      return lessonItem
+    })
+
+    const builtSubjects = Array.from(subjectsMap.values()).map((s) => ({
+      subjectName: s.name,
+      subjectSlug: s.slug,
+      lessons: s.lessons,
+    }))
+
+    const coursePayloadData: any = {
+      title,
+      slug,
+      isCourse: true,
+      priceInBDT: price,
+      price,
+      isFree,
+      introductoryVideo: introVideoUrl,
+      _status: 'published',
+      meta: {
+        title: title,
+        description: (c.description ? c.description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0, 160) : '').trim(),
+      },
     }
 
-    // Default fallback media ID for thumbnail
-    const mediaRes = await payload.find({ collection: 'media', limit: 1, overrideAccess: true })
-    const thumbnailId = mediaRes.docs[0]?.id
+    if (thumbnailId) {
+      coursePayloadData.thumbnail = thumbnailId
+    }
 
-    for (const c of rawCourses) {
-      const courseId = Number(c.id)
-      const slug = COURSE_SLUG_BY_ID[courseId] || `course-${courseId}`
-      const rawTitle = cleanText(c.title?.rendered || `কোর্স ${courseId}`)
-      const rawDesc = cleanText(c.content?.rendered || '')
-      const isFree = [4235, 4271, 4278, 5463, 5547].includes(courseId)
-      const price = isFree ? 0 : 2
+    if (builtSubjects.length > 0) {
+      coursePayloadData.subjects = builtSubjects
+    }
 
-      // Lessons for this course
-      const rawCourseLessons = lessonsByCourseId.get(courseId) || []
-      const lessonsData = rawCourseLessons.map((l: any, idx: number) => {
-        const videoMeta = l.postmeta?._video || l.meta?._video || ''
-        const youtubeUrl = extractYoutubeUrl(videoMeta)
-        return {
-          lessonTitle: cleanText(l.title?.rendered || l.title || `ক্লাস ${idx + 1}`),
-          moduleName: `অধ্যায় ১`,
-          subjectName: 'সাধারণ',
-          subjectSlug: 'general',
-          duration: '45m',
-          order: idx + 1,
-          isFreePreview: idx === 0,
-          youtubeVideoIdOrUrl: youtubeUrl,
-        }
-      })
+    if (mappedLessons.length > 0) {
+      coursePayloadData.lessons = mappedLessons
+    }
 
-      const existingCourse = await payload.find({
+    const existingId = courseIdBySlug.get(slug)
+
+    if (existingId) {
+      // Update existing course with refreshed lessons and fields
+      await payload.update({
         collection: 'products',
-        where: { slug: { equals: slug } },
-        limit: 1,
+        id: existingId,
+        data: coursePayloadData,
         overrideAccess: true,
       })
-
-      if (existingCourse.docs.length > 0) {
-        const existingDoc = existingCourse.docs[0] as any
-        const existingLessons = existingDoc.lessons || []
-        // Update if existing has fewer lessons than real catalog
-        if (existingLessons.length < lessonsData.length && lessonsData.length > 0) {
-          await payload.update({
-            collection: 'products',
-            id: existingDoc.id,
-            data: {
-              lessons: lessonsData,
-            } as any,
-            overrideAccess: true,
-          })
-          coursesUpdated++
-        }
-      } else {
-        await payload.create({
-          collection: 'products',
-          data: {
-            title: rawTitle,
-            slug,
-            productType: 'course',
-            priceInBDT: price,
-            price: price,
-            isCourse: true,
-            isFree,
-            thumbnail: thumbnailId || undefined,
-            meta: {
-              description: rawDesc.slice(0, 160),
-            },
-            lessons: lessonsData,
-          } as any,
-          overrideAccess: true,
-        })
-        coursesCreated++
-      }
-    }
-    console.log(`✅ Synced courses (Created: ${coursesCreated}, Updated with lessons: ${coursesUpdated})`)
-  }
-
-  // --------------------------------------------------------------------------
-  // 3. SYNC STUDENTS & ENROLLMENTS
-  // --------------------------------------------------------------------------
-  console.log('\n--- 3. Syncing Students & Enrollments ---')
-  const ordersPath = path.join(DATA_DIR, 'orders_enrollments.json')
-  const usersPath = path.join(DATA_DIR, 'users.json')
-
-  if (!fs.existsSync(ordersPath)) {
-    console.log('⚠️ orders_enrollments.json not found, skipping student enrollment sync.')
-    return
-  }
-
-  const rawOrders = JSON.parse(fs.readFileSync(ordersPath, 'utf8'))
-  let rawUsers: any[] = []
-  if (fs.existsSync(usersPath)) {
-    rawUsers = JSON.parse(fs.readFileSync(usersPath, 'utf8'))
-  }
-
-  const userMetaByWpId = new Map<number, { name: string; email: string; phone?: string }>()
-  for (const u of rawUsers) {
-    const wpId = Number(u.id || u.ID)
-    const email = String(u.user_email || u.email || '').trim().toLowerCase()
-    const name = u.display_name || u.name || email.split('@')[0]
-    const phone = u.meta?.billing_phone || u.postmeta?.billing_phone || ''
-    if (wpId && email) {
-      userMetaByWpId.set(wpId, { name, email, phone })
-    }
-  }
-
-  interface StudentEnrollmentRecord {
-    email: string
-    name: string
-    phone: string
-    courseSlugs: Set<string>
-    enrolledAt: string
-  }
-
-  const studentMap = new Map<string, StudentEnrollmentRecord>()
-
-  for (const o of rawOrders) {
-    if (o.status !== 'completed') continue
-
-    const customerId = Number(o.customer_id)
-    const email = String(o.billing?.email || userMetaByWpId.get(customerId)?.email || '')
-      .trim()
-      .toLowerCase()
-
-    if (!email || !email.includes('@')) continue
-
-    const name =
-      `${o.billing?.first_name || ''} ${o.billing?.last_name || ''}`.trim() ||
-      userMetaByWpId.get(customerId)?.name ||
-      email.split('@')[0]
-
-    const phone =
-      String(o.billing?.phone || userMetaByWpId.get(customerId)?.phone || '').trim()
-
-    const lineItems = Array.isArray(o.line_items) ? o.line_items : []
-    const matchedSlugs: string[] = []
-
-    for (const item of lineItems) {
-      const pid = Number(item.product_id)
-      const directSlug = COURSE_SLUG_BY_ID[pid]
-      if (directSlug) {
-        matchedSlugs.push(directSlug)
-      } else {
-        const itemName = cleanText(item.name || '')
-        const slugByName = TITLE_TO_SLUG[itemName]
-        if (slugByName) matchedSlugs.push(slugByName)
-      }
-    }
-
-    if (matchedSlugs.length === 0) continue
-
-    const enrolledAt = o.date_completed || o.date_created || new Date().toISOString()
-
-    if (!studentMap.has(email)) {
-      studentMap.set(email, {
-        email,
-        name,
-        phone,
-        courseSlugs: new Set(matchedSlugs),
-        enrolledAt,
-      })
+      coursesUpdated++
     } else {
-      const existing = studentMap.get(email)!
-      matchedSlugs.forEach((s) => existing.courseSlugs.add(s))
-      if (!existing.phone && phone) existing.phone = phone
+      // Create new course
+      const created = await payload.create({
+        collection: 'products',
+        data: coursePayloadData,
+        overrideAccess: true,
+      })
+      courseIdBySlug.set(slug, String(created.id))
+      coursesCreated++
     }
   }
 
-  console.log(`📊 Found ${studentMap.size} unique students with active course enrollments.`)
+  console.log(`✅ Synced courses (Created: ${coursesCreated}, Updated: ${coursesUpdated}, Total: ${courseIdBySlug.size})`)
 
-  // Preload courses from DB
-  const dbCourses = await payload.find({ collection: 'products', limit: 200, depth: 0, overrideAccess: true })
-  const courseIdBySlug = new Map<string, string>()
-  for (const c of dbCourses.docs) {
-    if (c.slug) courseIdBySlug.set(c.slug, String(c.id))
-  }
+  // --------------------------------------------------------------------------
+  // 3. SYNC STUDENTS & USERS
+  // --------------------------------------------------------------------------
+  console.log('\n--- 3. Syncing Users & Students ---')
+  const dbUsers = await payload.find({
+    collection: 'users',
+    limit: 10000,
+    depth: 0,
+    overrideAccess: true,
+  })
 
-  // Preload existing users from DB
-  const dbUsers = await payload.find({ collection: 'users', limit: 10000, depth: 0, overrideAccess: true })
   const dbUserIdByEmail = new Map<string, string>()
-  for (const u of dbUsers.docs) {
-    if (u.email) dbUserIdByEmail.set(String(u.email).trim().toLowerCase(), String(u.id))
-  }
+  const wpIdToEmailMap = new Map<number, string>()
 
-  // Preload existing enrollments from DB
-  const dbEnrollments = await payload.find({ collection: 'enrollments' as any, limit: 10000, depth: 0, overrideAccess: true })
-  const existingEnrollmentKeys = new Set<string>()
-  for (const e of dbEnrollments.docs as any[]) {
-    const sId = typeof e.student === 'object' ? e.student?.id : e.student
-    const cId = typeof e.course === 'object' ? e.course?.id : e.course
-    if (sId && cId) existingEnrollmentKeys.add(`${sId}_${cId}`)
+  for (const u of dbUsers.docs as any[]) {
+    if (u.email) {
+      dbUserIdByEmail.set(String(u.email).trim().toLowerCase(), String(u.id))
+    }
   }
 
   let usersCreated = 0
-  let enrollmentsCreated = 0
+  const USER_BATCH_SIZE = 25
 
-  const studentsList = Array.from(studentMap.values())
-  const BATCH_SIZE = 15
-
-  for (let i = 0; i < studentsList.length; i += BATCH_SIZE) {
-    const chunk = studentsList.slice(i, i + BATCH_SIZE)
+  for (let i = 0; i < rawUsers.length; i += USER_BATCH_SIZE) {
+    const chunk = rawUsers.slice(i, i + USER_BATCH_SIZE)
     await Promise.all(
-      chunk.map(async (student) => {
-        let userId = dbUserIdByEmail.get(student.email)
+      chunk.map(async (u: any) => {
+        const email = String(u.email || u.user_email || '').trim().toLowerCase()
+        const wpId = Number(u.id)
 
-        if (!userId) {
-          try {
-            const created = await payload.create({
-              collection: 'users',
-              data: {
-                name: student.name,
-                email: student.email,
-                phone: student.phone || undefined,
-                role: 'user',
-                emailVerified: true,
-              } as any,
-              overrideAccess: true,
-            })
-            userId = String(created.id)
-            dbUserIdByEmail.set(student.email, userId)
-            usersCreated++
-          } catch {
-            const found = await payload.find({
-              collection: 'users',
-              where: { email: { equals: student.email } },
-              limit: 1,
-              overrideAccess: true,
-            })
-            if (found.docs.length > 0) {
-              userId = String(found.docs[0].id)
-              dbUserIdByEmail.set(student.email, userId)
-            } else {
-              return
+        if (email && email.includes('@')) {
+          wpIdToEmailMap.set(wpId, email)
+
+          if (!dbUserIdByEmail.has(email)) {
+            const name = u.display_name || `${u.first_name || ''} ${u.last_name || ''}`.trim() || email.split('@')[0]
+            const phone = u.phone || ''
+            const role = Array.isArray(u.roles) && u.roles.includes('administrator') ? 'admin' : 'user'
+
+            try {
+              const created = await payload.create({
+                collection: 'users',
+                data: {
+                  name,
+                  email,
+                  phone: phone || undefined,
+                  role,
+                  emailVerified: true,
+                } as any,
+                overrideAccess: true,
+              })
+              dbUserIdByEmail.set(email, String(created.id))
+              usersCreated++
+            } catch (err: any) {
+              // If duplicate key race, find it
+              const found = await payload.find({
+                collection: 'users',
+                where: { email: { equals: email } },
+                limit: 1,
+                overrideAccess: true,
+              })
+              if (found.docs.length > 0) {
+                dbUserIdByEmail.set(email, String(found.docs[0].id))
+              }
             }
-          }
-        }
-
-        for (const slug of student.courseSlugs) {
-          const courseId = courseIdBySlug.get(slug)
-          if (!courseId) continue
-
-          const key = `${userId}_${courseId}`
-          if (existingEnrollmentKeys.has(key)) continue
-
-          try {
-            await payload.create({
-              collection: 'enrollments' as any,
-              data: {
-                student: userId,
-                course: courseId,
-                status: 'active',
-                enrolledAt: student.enrolledAt,
-                completedLessons: [],
-              } as any,
-              overrideAccess: true,
-            })
-            existingEnrollmentKeys.add(key)
-            enrollmentsCreated++
-          } catch (err: any) {
-            console.error(`Failed to enroll ${student.email} in ${slug}:`, err?.message || err)
           }
         }
       })
     )
   }
 
-  console.log('\n================================================')
-  console.log('🎉 LMS Full Sync Completed Successfully!')
-  console.log(`👤 Users in DB: ${dbUserIdByEmail.size}`)
-  console.log(`🎟️ Enrollments in DB: ${existingEnrollmentKeys.size}`)
-  console.log('================================================\n')
+  console.log(`✅ Synced users (New: ${usersCreated}, Total in DB: ${dbUserIdByEmail.size})`)
+
+  // --------------------------------------------------------------------------
+  // 4. SYNC ENROLLMENTS
+  // --------------------------------------------------------------------------
+  console.log('\n--- 4. Syncing Enrollments ---')
+  const dbEnrollments = await payload.find({
+    collection: 'enrollments' as any,
+    limit: 20000,
+    depth: 0,
+    overrideAccess: true,
+  })
+
+  const existingEnrollmentKeys = new Set<string>()
+  for (const e of dbEnrollments.docs as any[]) {
+    const sId = typeof e.student === 'object' ? e.student?.id : e.student
+    const cId = typeof e.course === 'object' ? e.course?.id : e.course
+    if (sId && cId) {
+      existingEnrollmentKeys.add(`${sId}_${cId}`)
+    }
+  }
+
+  let enrollmentsCreated = 0
+  const ENROLL_BATCH_SIZE = 30
+
+  for (let i = 0; i < rawEnrollments.length; i += ENROLL_BATCH_SIZE) {
+    const chunk = rawEnrollments.slice(i, i + ENROLL_BATCH_SIZE)
+    await Promise.all(
+      chunk.map(async (en: any) => {
+        const wpUserId = Number(en.user_id)
+        const wpCourseId = Number(en.course_id)
+
+        const studentEmail = en.user_email || wpIdToEmailMap.get(wpUserId)
+        if (!studentEmail) return
+
+        const studentMongoId = dbUserIdByEmail.get(String(studentEmail).trim().toLowerCase())
+        if (!studentMongoId) return
+
+        const courseSlug = COURSE_SLUG_BY_ID[wpCourseId] || `course-${wpCourseId}`
+        const courseMongoId = courseIdBySlug.get(courseSlug)
+        if (!courseMongoId) return
+
+        const key = `${studentMongoId}_${courseMongoId}`
+        if (existingEnrollmentKeys.has(key)) return
+
+        const status = en.status === 'cancel' || en.status === 'cancelled'
+          ? 'revoked'
+          : (en.status === 'on-hold' ? 'suspended' : 'active')
+
+        try {
+          await payload.create({
+            collection: 'enrollments' as any,
+            data: {
+              student: studentMongoId,
+              course: courseMongoId,
+              status,
+              enrolledAt: en.enrolled_at || new Date().toISOString(),
+              completedLessons: [],
+            } as any,
+            overrideAccess: true,
+          })
+          existingEnrollmentKeys.add(key)
+          enrollmentsCreated++
+        } catch (err: any) {
+          console.error(`Enrollment sync error for user ${studentEmail} in course ${courseSlug}:`, err?.message || err)
+        }
+      })
+    )
+  }
+
+  console.log(`✅ Synced enrollments (New: ${enrollmentsCreated}, Total in DB: ${existingEnrollmentKeys.size})`)
+
+  console.log('\n=============================================================')
+  console.log('🎉 LMS Data Sync & Migration Completed Successfully!')
+  console.log(`📚 Total Courses in DB: ${courseIdBySlug.size}`)
+  console.log(`👤 Total Users in DB: ${dbUserIdByEmail.size}`)
+  console.log(`🎟️ Total Enrollments in DB: ${existingEnrollmentKeys.size}`)
+  console.log('=============================================================\n')
 
   return {
     success: true,
-    totalStudents: studentMap.size,
+    totalCourses: courseIdBySlug.size,
+    newCoursesCreated: coursesCreated,
+    coursesUpdated,
+    totalUsers: dbUserIdByEmail.size,
     newUsersCreated: usersCreated,
-    newEnrollmentsCreated: enrollmentsCreated,
     totalEnrollments: existingEnrollmentKeys.size,
+    newEnrollmentsCreated: enrollmentsCreated,
   }
 }
 
@@ -433,4 +465,3 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       process.exit(1)
     })
 }
-

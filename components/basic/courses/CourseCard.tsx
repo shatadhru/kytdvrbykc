@@ -22,10 +22,16 @@ export interface CourseCardProps {
 }
 
 export function CourseCard({ course }: CourseCardProps) {
+  const thumbObj = typeof course.thumbnail === 'object' && course.thumbnail ? course.thumbnail : null
   const thumbnailUrl =
+    (typeof course.thumbnail === 'string' && (course.thumbnail.startsWith('http') || course.thumbnail.startsWith('/'))
+      ? course.thumbnail
+      : null) ||
     extractCloudinarySecureUrl(course.thumbnail) ||
-    (typeof course.thumbnail === 'object' && course.thumbnail?.url) ||
-    '/images/course-placeholder.jpg'
+    thumbObj?.url ||
+    thumbObj?.externalUrl ||
+    (course as any).thumbnailUrl ||
+    null
 
   const lessonCount = course.lessons?.length || 0
   const freePreviewCount = course.lessons?.filter((l: any) => l.isFreePreview)?.length || 0
@@ -35,7 +41,7 @@ export function CourseCard({ course }: CourseCardProps) {
     <Card className="flex flex-col h-full overflow-hidden border border-border/80 bg-card py-0 gap-0 hover:shadow-lg hover:border-primary/40 transition-all duration-200 group">
       {/* Thumbnail Area */}
       <div className="relative aspect-video w-full overflow-hidden bg-muted">
-        {thumbnailUrl.startsWith('http') || thumbnailUrl.startsWith('/') ? (
+        {thumbnailUrl && (thumbnailUrl.startsWith('http') || thumbnailUrl.startsWith('/')) ? (
           <Image
             src={thumbnailUrl}
             alt={course.title}

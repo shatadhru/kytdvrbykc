@@ -3,6 +3,8 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { SiteConfig } from '@/config/site'
 
+export const dynamic = 'force-dynamic'
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SiteConfig.site.url || 'https://localhost:3000'
   const payload = await getPayload({ config })

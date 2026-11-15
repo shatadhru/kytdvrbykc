@@ -71,11 +71,13 @@ export interface ClassroomCourseItem {
 interface ClassroomViewProps {
   course: ClassroomCourseItem
   initialClasses: ClassroomClassItem[]
+  initialCompletedLessons?: string[]
 }
 
 export default function ClassroomView({
   course,
   initialClasses,
+  initialCompletedLessons = [],
 }: ClassroomViewProps) {
   const [classes] = useState<ClassroomClassItem[]>(initialClasses)
   // Default to the first playable class (either first enrolled or first free preview with videoHash)
@@ -88,7 +90,26 @@ export default function ClassroomView({
   const [selectedSubject, setSelectedSubject] = useState<string>('all')
   const [fetchingToken, setFetchingToken] = useState<boolean>(false)
   const [accessError, setAccessError] = useState<string | null>(null)
-  const [completedLessonIds, setCompletedLessonIds] = useState<Set<string>>(() => new Set())
+  const [completedLessonIds, setCompletedLessonIds] = useState<Set<string>>(
+    () => new Set(initialCompletedLessons)
+  )
+
+  // Load saved progress from server on mount
+  useEffect(() => {
+    if (!course?.slug) return
+    let isMounted = true
+    fetch(`/api/courses/${course.slug}/lessons/status/complete`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (isMounted && data.success && Array.isArray(data.completedLessons)) {
+          setCompletedLessonIds(new Set(data.completedLessons))
+        }
+      })
+      .catch(() => {})
+    return () => {
+      isMounted = false
+    }
+  }, [course?.slug])
 
   // Motivational Quranic Verse State
   const [verseModalOpen, setVerseModalOpen] = useState<boolean>(false)
@@ -98,17 +119,49 @@ export default function ClassroomView({
   // Student Report Modal State
   const [reportModalOpen, setReportModalOpen] = useState<boolean>(false)
 
-  const toggleLessonComplete = (e: React.MouseEvent, id: string) => {
+  const toggleLessonComplete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation()
+    const willBeCompleted = !completedLessonIds.has(id)
     setCompletedLessonIds((prev) => {
       const next = new Set(prev)
-      if (next.has(id)) {
-        next.delete(id)
-      } else {
+      if (willBeCompleted) {
         next.add(id)
+      } else {
+        next.delete(id)
       }
       return next
     })
+
+    if (course?.slug) {
+      try {
+        await fetch(`/api/courses/${course.slug}/lessons/${id}/complete`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ completed: willBeCompleted }),
+        })
+      } catch (err) {
+        console.warn('Could not persist lesson completion status:', err)
+      }
+    }
+  }
+
+  // Automatic video finish detection: marks current lesson completed on video ended
+  const handleLessonEnded = async () => {
+    if (!activeClassId) return
+    if (!completedLessonIds.has(activeClassId)) {
+      setCompletedLessonIds((prev) => new Set(prev).add(activeClassId))
+      if (course?.slug) {
+        try {
+          await fetch(`/api/courses/${course.slug}/lessons/${activeClassId}/complete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ completed: true }),
+          })
+        } catch (err) {
+          console.warn('Could not persist auto lesson completion:', err)
+        }
+      }
+    }
   }
 
   const completionPercent = classes.length > 0
@@ -229,8 +282,9 @@ export default function ClassroomView({
                   </div>
                 ) : (
                   <CourseVideoPlayer
-                    key={activeVideoHash}
+                    key={activeVideoHash || activeClassId}
                     videoHash={activeVideoHash}
+                    onEnded={handleLessonEnded}
                   />
                 )}
               </div>
@@ -268,7 +322,23 @@ export default function ClassroomView({
                     </button>
                   )}
                 </div>
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2">
+                  {currentClass?.id && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={completedLessonIds.has(currentClass.id) ? 'default' : 'outline'}
+                      onClick={(e) => toggleLessonComplete(e, currentClass.id)}
+                      className={`h-7 text-xs font-semibold gap-1.5 transition-all ${
+                        completedLessonIds.has(currentClass.id)
+                          ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600 shadow-2xs'
+                          : 'border-border text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      <CheckCircle2 className={`size-3.5 ${completedLessonIds.has(currentClass.id) ? 'text-white' : 'text-muted-foreground'}`} />
+                      <span>{completedLessonIds.has(currentClass.id) ? 'সম্পন্ন' : 'মার্ক অ্যাজ কমপ্লিট'}</span>
+                    </Button>
+                  )}
                   {currentClass?.duration && (
                     <span className="flex items-center gap-1 text-xs text-muted-foreground mr-1">
                       <Clock className="size-3.5" /> {currentClass.duration}

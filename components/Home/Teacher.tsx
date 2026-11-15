@@ -16,7 +16,7 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
-import { CldImage } from "next-cloudinary";
+import Image from "next/image";
 
 export function Teacher() {
   return (
@@ -64,7 +64,7 @@ export function Teacher() {
                 <div className="absolute -bottom-20 -right-20 size-64 rounded-full bg-primary/10" />
 
                 <div className="absolute inset-x-6 bottom-0 top-6 overflow-hidden rounded-t-2xl sm:inset-x-8 sm:top-8 sm:rounded-t-3xl">
-                  <CldImage
+                  <Image
                     width={960}
                     height={600}
                     src="https://res.cloudinary.com/dccbp4dpb/image/upload/v1789397957/Gemini_Generated_Image_1wos3a1wos3a1wos_lvk1gm.jpg"

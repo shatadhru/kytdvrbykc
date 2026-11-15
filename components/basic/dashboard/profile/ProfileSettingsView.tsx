@@ -695,7 +695,7 @@ export function ProfileSettingsView() {
                 </p>
               </div>
 
-              {/* Batches */}
+              {/* Batches Dropdown */}
               <div className="space-y-1.5">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
@@ -703,26 +703,42 @@ export function ProfileSettingsView() {
                       <GraduationCap className="size-3.5 text-primary" />
                       SSC Batch
                     </Label>
-                    <Input
+                    <select
                       id="sscBatch"
                       value={sscBatch}
                       onChange={(e) => setSscBatch(e.target.value)}
-                      placeholder="e.g. 2025"
                       disabled={isUpdatingProfile}
-                    />
+                      className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                    >
+                      <option value="">-- ব্যাচ নির্বাচন করুন --</option>
+                      <option value="2024">SSC 2024</option>
+                      <option value="2025">SSC 2025</option>
+                      <option value="2026">SSC 2026</option>
+                      <option value="2027">SSC 2027</option>
+                      <option value="2028">SSC 2028</option>
+                      <option value="2029">SSC 2029</option>
+                    </select>
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="hscBatch" className="flex items-center gap-1.5">
                       <GraduationCap className="size-3.5 text-primary" />
                       HSC Batch
                     </Label>
-                    <Input
+                    <select
                       id="hscBatch"
                       value={hscBatch}
                       onChange={(e) => setHscBatch(e.target.value)}
-                      placeholder="e.g. 2027"
                       disabled={isUpdatingProfile}
-                    />
+                      className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                    >
+                      <option value="">-- ব্যাচ নির্বাচন করুন --</option>
+                      <option value="2025">HSC 2025</option>
+                      <option value="2026">HSC 2026</option>
+                      <option value="2027">HSC 2027</option>
+                      <option value="2028">HSC 2028</option>
+                      <option value="2029">HSC 2029</option>
+                      <option value="2030">HSC 2030</option>
+                    </select>
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground">

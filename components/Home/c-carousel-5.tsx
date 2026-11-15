@@ -8,7 +8,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel"
-import { CldImage } from "next-cloudinary"
+import Image from "next/image"
 
 const images = [
   "https://res.cloudinary.com/dccbp4dpb/image/upload/v1789276947/UTM-math-cover-1536x864_tplfis.webp",
@@ -42,7 +42,7 @@ export function Pattern() {
             >
               <Link href="/video" className="block focus:outline-none">
                 <Card className="group relative overflow-hidden rounded-2xl sm:rounded-3xl border border-white/15 bg-card/80 p-0 shadow-md backdrop-blur-xs transition-all duration-300 hover:border-primary/60 hover:shadow-xl hover:-translate-y-1">
-                  <CldImage
+                  <Image
                     src={image}
                     alt={`Course ${index + 1}`}
                     width={960}

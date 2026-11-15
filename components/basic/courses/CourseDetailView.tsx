@@ -75,10 +75,16 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
             (l.subjectSlug || l.subjectName || '').toLowerCase() === selectedSubject.toLowerCase()
         )
 
+  const thumbObj = typeof course.thumbnail === 'object' && course.thumbnail ? course.thumbnail : null
   const thumbnailUrl =
+    (typeof course.thumbnail === 'string' && (course.thumbnail.startsWith('http') || course.thumbnail.startsWith('/'))
+      ? course.thumbnail
+      : null) ||
     extractCloudinarySecureUrl(course.thumbnail) ||
-    (typeof course.thumbnail === 'object' && course.thumbnail?.url) ||
-    '/images/course-placeholder.jpg'
+    thumbObj?.url ||
+    thumbObj?.externalUrl ||
+    (course as any).thumbnailUrl ||
+    null
 
   const price = course.priceInBDT ?? 0
   const freeLessons = lessons.filter((l: any) => l.isFreePreview)
@@ -218,7 +224,7 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
                   <CourseVideoPlayer videoHash={previewToken} className="size-full" />
                 ) : course.introductoryVideo ? (
                   <CourseVideoPlayer videoHash={course.introductoryVideo} className="size-full" />
-                ) : thumbnailUrl.startsWith('http') || thumbnailUrl.startsWith('/') ? (
+                ) : thumbnailUrl && (thumbnailUrl.startsWith('http') || thumbnailUrl.startsWith('/')) ? (
                   <Image src={thumbnailUrl} alt={course.title} fill className="object-cover" />
                 ) : (
                   <div className="flex size-full items-center justify-center bg-muted text-muted-foreground">

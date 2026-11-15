@@ -79,6 +79,15 @@ export const Enrollments: CollectionConfig = {
         position: 'sidebar',
       },
     },
+    {
+      name: 'completedLessons',
+      type: 'json',
+      label: 'সম্পূর্ণ করা ক্লাস/লেসন আইডি (Completed Lesson IDs)',
+      defaultValue: [],
+      admin: {
+        description: 'শিক্ষার্থী যে ক্লাসগুলো শেষ করেছে তার আইডি তালিকা।',
+      },
+    },
   ],
 }
 

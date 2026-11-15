@@ -135,7 +135,19 @@ export function HeaderUserMenu({
   }
 
   return (
-    <div className={cn('relative flex items-center', className)}>
+    <div className={cn('relative flex items-center gap-1.5 sm:gap-2', className)}>
+      {/* Mobile-Only Dashboard Shortcut Button after login */}
+      <Link
+        href={authConfig.dashboardUrl || '/dashboard'}
+        className={cn(
+          buttonVariants({ variant: 'outline', size: 'xs' }),
+          'inline-flex md:hidden h-7 px-2 text-xs font-semibold items-center gap-1 border-primary/30 text-primary bg-primary/5 hover:bg-primary/10'
+        )}
+      >
+        <LayoutDashboard className="size-3.5" />
+        <span>ড্যাশবোর্ড</span>
+      </Link>
+
       <DropdownMenu>
         <DropdownMenuTrigger
           render={

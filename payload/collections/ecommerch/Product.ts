@@ -263,6 +263,7 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
       title: true,
       slug: true,
       thumbnail: true,
+      thumbnailUrl: true,
       introductoryVideo: true,
       gallery: true,
       priceInBDT: true,
@@ -366,6 +367,22 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
           if (doc?.lessons && !doc?.modules) {
             doc.modules = doc.lessons
           }
+
+          // Ensure course thumbnail and direct image URL are fully resolved
+          if (doc?.thumbnail && typeof doc.thumbnail === 'object') {
+            const thumbObj = doc.thumbnail as any
+            if (!thumbObj.url && (thumbObj.externalUrl || doc.thumbnailUrl)) {
+              thumbObj.url = thumbObj.externalUrl || doc.thumbnailUrl
+            }
+            if (!doc.thumbnailUrl && (thumbObj.url || thumbObj.externalUrl)) {
+              doc.thumbnailUrl = thumbObj.url || thumbObj.externalUrl
+            }
+          } else if (typeof doc?.thumbnail === 'string' && doc.thumbnail.startsWith('http')) {
+            if (!doc.thumbnailUrl) {
+              doc.thumbnailUrl = doc.thumbnail
+            }
+          }
+
           return doc
         },
       ],
@@ -387,6 +404,14 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                 label: 'Course Thumbnail',
                 admin: {
                   description: 'Main thumbnail image for course cards and banners',
+                },
+              },
+              {
+                name: 'thumbnailUrl',
+                type: 'text',
+                label: 'Direct Thumbnail URL',
+                admin: {
+                  description: 'Direct fallback image URL (e.g. from utmeducation.com)',
                 },
               },
               {

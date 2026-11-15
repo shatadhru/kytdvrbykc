@@ -6,16 +6,8 @@ import CookieConsentSlot from '@/components/basic/cookies/CookieConsentSlot'
 import { StudentOnboardingModal } from '@/components/basic/auth/StudentOnboardingModal'
 
 import type { Metadata } from 'next'
-import { Plus_Jakarta_Sans } from 'next/font/google'
 import localFont from 'next/font/local'
 import { SiteConfig } from '@/config/site'
-
-const googleSans = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-google-sans',
-  display: 'swap',
-})
 
 const solaimanLipi = localFont({
   src: [
@@ -34,6 +26,8 @@ const solaimanLipi = localFont({
   display: 'swap',
 })
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: {
     default: SiteConfig.seo.title.default,
@@ -47,7 +41,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
   return (
-    <html lang="bn" suppressHydrationWarning className={`${googleSans.variable} ${solaimanLipi.variable}`}>
+    <html lang="bn" suppressHydrationWarning className={`${solaimanLipi.variable}`}>
       <body className={`${solaimanLipi.className} min-h-screen overflow-x-hidden antialiased font-sans`}>
         <main className="min-h-screen overflow-x-hidden flex flex-col">
           <Providor>

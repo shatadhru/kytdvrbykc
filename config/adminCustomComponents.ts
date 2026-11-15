@@ -39,7 +39,17 @@ export interface CustomAdminViewConfig {
 }
 
 export const customAdminViews: CustomAdminViewConfig[] = [
- 
+  {
+    id: "sales-analytics",
+    title: "কোর্স সেলস ও টার্গেট অ্যানালিটিক্স",
+    path: "/sales-analytics",
+    componentPath: "./admin/views/CourseSalesAnalyticsView#CourseSalesAnalyticsView",
+    icon: "BarChart3",
+    badge: "Analytics",
+    description: "কোর্স বিক্রির পরিমাণ, লক্ষ্যমাত্রা (টার্গেট) এবং মাসিক/বার্ষিক রেভিনিউ রিপোর্ট।",
+    group: "Ecommerce",
+    exact: true,
+  },
   {
     id: "notifications",
     title: "Notification Broadcast",
@@ -115,6 +125,7 @@ export function generateThemeNavIcons(): Record<string, string> {
   // Ensure explicit overrides for any special Lucide icon names
   icons["notifications"] = "bell"
   icons["api-reference"] = "code-2"
+  icons["sales-analytics"] = "bar-chart-3"
 
   return icons
 }

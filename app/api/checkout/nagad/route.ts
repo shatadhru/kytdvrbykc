@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
-    const { items, manualTrxId, senderNumber, customerInfo, shippingAddress, cartID } = body
+    const { items, manualTrxId, senderNumber, customerInfo, shippingAddress, cartID, couponCode } = body
 
     // 1. Validation
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -96,6 +96,37 @@ export async function POST(req: NextRequest) {
       })
     }
 
+    // Apply Coupon Discount if provided
+    let discountAmount = 0
+    if (couponCode && typeof couponCode === 'string') {
+      const cleanCode = couponCode.trim().toUpperCase()
+      const couponRes = await payload.find({
+        collection: 'coupons',
+        where: { code: { equals: cleanCode }, active: { equals: true } },
+        limit: 1,
+        depth: 0,
+        overrideAccess: true,
+      })
+
+      if (couponRes.docs.length > 0) {
+        const c = couponRes.docs[0] as any
+        const isNotExpired = !c.expiresAt || new Date(c.expiresAt).getTime() >= Date.now()
+        const hasUsesLeft = !c.maxUses || (c.usageCount || 0) < c.maxUses
+        if (isNotExpired && hasUsesLeft) {
+          if (c.type === 'percentage') {
+            discountAmount = Math.round((calculatedTotal * (Number(c.value) || 0)) / 100)
+            if (c.maxDiscountAmount && discountAmount > c.maxDiscountAmount) {
+              discountAmount = c.maxDiscountAmount
+            }
+          } else if (c.type === 'fixed') {
+            discountAmount = Math.min(calculatedTotal, Number(c.value) || 0)
+          }
+        }
+      }
+    }
+
+    const finalPayableTotal = Math.max(0, calculatedTotal - discountAmount)
+
     const customerEmail = (session.user.email || customerInfo?.email || "").trim().toLowerCase()
     const customerName = customerInfo?.firstName || session.user.name || "Student"
 
@@ -108,7 +139,7 @@ export async function POST(req: NextRequest) {
         paymentMethod: "nagad",
         paymentStatus: "pending",
         status: "processing",
-        amount: calculatedTotal,
+        amount: finalPayableTotal,
         currency: "BDT",
         items: orderItems,
         nagad: {

@@ -123,6 +123,7 @@ export default async function CoursePage({ params, searchParams }: Props) {
   // 1. Verify user session and enrollment status server-side
   let isEnrolled = false
   let userId: string | undefined = undefined
+  let initialCompletedLessons: string[] = []
 
   try {
     const payload = await getPayload({ config })
@@ -133,6 +134,25 @@ export default async function CoursePage({ params, searchParams }: Props) {
     if (userId) {
       const courseId = extractCleanId(course.id)
       isEnrolled = await checkUserEnrollment(payload, userId, courseId)
+      if (isEnrolled) {
+        const enrollmentRes = await payload.find({
+          collection: 'enrollments' as any,
+          where: {
+            and: [
+              { student: { equals: userId } },
+              { course: { equals: courseId } },
+              { status: { equals: 'active' } },
+            ],
+          },
+          limit: 1,
+          depth: 0,
+          overrideAccess: true,
+        })
+        const enrollmentDoc = enrollmentRes.docs[0] as any
+        if (enrollmentDoc && Array.isArray(enrollmentDoc.completedLessons)) {
+          initialCompletedLessons = enrollmentDoc.completedLessons
+        }
+      }
     }
   } catch (err) {
     console.error('Error checking course enrollment:', err)
@@ -367,7 +387,11 @@ export default async function CoursePage({ params, searchParams }: Props) {
       <Header />
       <main className="min-h-screen bg-background text-foreground">
         {showClassroom ? (
-          <ClassroomView course={courseItem} initialClasses={lessons} />
+          <ClassroomView
+            course={courseItem}
+            initialClasses={lessons}
+            initialCompletedLessons={initialCompletedLessons}
+          />
         ) : (
           <CourseDetailView course={safeCourse as any} isEnrolled={isEnrolled} />
         )}

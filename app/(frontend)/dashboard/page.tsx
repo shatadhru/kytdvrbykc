@@ -52,7 +52,7 @@ export default function DashboardPage() {
           {/* Quick Action Buttons */}
           <div className="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto shrink-0">
             <Link
-              href="/video"
+              href="/dashboard/my-courses"
               className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 h-7 sm:h-9 px-2.5 sm:px-3.5 rounded-lg sm:rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[11px] sm:text-xs border-b-2 border-emerald-700 active:translate-y-0.5 shadow-xs transition-all"
             >
               <VideocameraBoldDuotone size={13} color="#fff" />
@@ -65,6 +65,15 @@ export default function DashboardPage() {
               <Book2BoldDuotone size={13} color="#fff" />
               <span>আমার কোর্স</span>
             </Link>
+            {isAdmin && (
+              <Link
+                href="/admin/sales-analytics"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 h-7 sm:h-9 px-2.5 sm:px-3.5 rounded-lg sm:rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-[11px] sm:text-xs border-b-2 border-purple-800 active:translate-y-0.5 shadow-xs transition-all"
+              >
+                <WalletMoneyBoldDuotone size={13} color="#fff" />
+                <span>সেলস অ্যানালিটিক্স</span>
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -86,7 +95,7 @@ export default function DashboardPage() {
         </Link>
 
         <Link
-          href="/video"
+          href="/dashboard/my-courses"
           className="group flex items-center justify-between p-4 rounded-2xl border-2 border-sky-500/25 border-b-4 border-b-sky-500 bg-card hover:bg-sky-500/5 transition-colors"
         >
           <div>
@@ -138,7 +147,7 @@ export default function DashboardPage() {
             </Link>
 
             <Link
-              href="/video"
+              href="/dashboard/my-courses"
               className="flex-1 sm:flex-initial flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/10 transition-colors"
             >
               <div className="size-6 sm:size-7 rounded-md sm:rounded-lg bg-rose-500/15 flex items-center justify-center shrink-0">

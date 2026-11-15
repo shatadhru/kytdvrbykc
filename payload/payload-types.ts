@@ -154,12 +154,14 @@ export interface Config {
   globals: {
     'site-settings': SiteSetting;
     'cookie-consent': CookieConsent;
+    'sales-analytics': SalesAnalytic;
     notifications: Notification;
     'api-reference': ApiReference;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     'cookie-consent': CookieConsentSelect<false> | CookieConsentSelect<true>;
+    'sales-analytics': SalesAnalyticsSelect<false> | SalesAnalyticsSelect<true>;
     notifications: NotificationsSelect<false> | NotificationsSelect<true>;
     'api-reference': ApiReferenceSelect<false> | ApiReferenceSelect<true>;
   };
@@ -1321,6 +1323,18 @@ export interface Enrollment {
   order?: (string | null) | Order;
   status?: ('active' | 'suspended' | 'revoked') | null;
   enrolledAt?: string | null;
+  /**
+   * শিক্ষার্থী যে ক্লাসগুলো শেষ করেছে তার আইডি তালিকা।
+   */
+  completedLessons?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1897,6 +1911,7 @@ export interface EnrollmentsSelect<T extends boolean = true> {
   order?: T;
   status?: T;
   enrolledAt?: T;
+  completedLessons?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2626,6 +2641,15 @@ export interface CookieConsent {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sales-analytics".
+ */
+export interface SalesAnalytic {
+  id: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "notifications".
  */
 export interface Notification {
@@ -2788,6 +2812,15 @@ export interface CookieConsentSelect<T extends boolean = true> {
   functionalDescription?: T;
   consentExpiryDays?: T;
   policyVersion?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sales-analytics_select".
+ */
+export interface SalesAnalyticsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

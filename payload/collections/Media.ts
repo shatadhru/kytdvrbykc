@@ -14,6 +14,14 @@ export const Media: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    {
+      name: 'externalUrl',
+      type: 'text',
+      label: 'External Image URL',
+      admin: {
+        description: 'Direct image URL if hosted externally (e.g. utmeducation.com or CDN)',
+      },
+    },
   ],
   upload: true,
   hooks: {
@@ -21,6 +29,10 @@ export const Media: CollectionConfig = {
       ({ doc }) => {
         if (doc?.cloudinary?.secure_url) {
           doc.url = doc.cloudinary.secure_url
+        } else if (doc?.externalUrl) {
+          doc.url = doc.externalUrl
+        } else if (doc?.url && typeof doc.url === 'string' && doc.url.startsWith('http')) {
+          doc.url = doc.url
         }
         return doc
       },

@@ -15,6 +15,7 @@ import {
   Presentation,
   ExternalLink,
   Flag,
+  MoreVertical,
 } from 'lucide-react'
 import Link from 'next/link'
 import { Progress } from '@/components/ui/progress'
@@ -25,6 +26,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { LessonCommentsSection } from './LessonCommentsSection'
 import LessonReportModal from './LessonReportModal'
 import { getDownloadUrl } from '@/payload/utils/download'
@@ -93,130 +101,158 @@ export default function ClassroomView({
   const [completedLessonIds, setCompletedLessonIds] = useState<Set<string>>(
     () => new Set(initialCompletedLessons)
   )
+  const [mobileCurriculumOpen, setMobileCurriculumOpen] = useState(false)
 
   // Load saved progress from server on mount
   useEffect(() => {
     if (!course?.slug) return
     let isMounted = true
-    fetch(`/api/courses/${course.slug}/lessons/status/complete`)
+
+    fetch(`/api/courses/${course.slug}/progress`)
       .then((res) => res.json())
       .then((data) => {
         if (isMounted && data.success && Array.isArray(data.completedLessons)) {
           setCompletedLessonIds(new Set(data.completedLessons))
         }
       })
-      .catch(() => {})
+      .catch((err) => {
+        console.warn('Could not sync course progress:', err)
+      })
+
     return () => {
       isMounted = false
     }
   }, [course?.slug])
 
-  // Motivational Quranic Verse State
-  const [verseModalOpen, setVerseModalOpen] = useState<boolean>(false)
+  // Quran Verse popup modal state
+  const [verseModalOpen, setVerseModalOpen] = useState(false)
   const [activeVerse, setActiveVerse] = useState<QuranVerseData | null>(null)
-  const [dismissedVerseLessonIds, setDismissedVerseLessonIds] = useState<Set<string>>(() => new Set())
 
-  // Student Report Modal State
-  const [reportModalOpen, setReportModalOpen] = useState<boolean>(false)
+  // Lesson Report modal state
+  const [reportModalOpen, setReportModalOpen] = useState(false)
 
-  const toggleLessonComplete = async (e: React.MouseEvent, id: string) => {
-    e.stopPropagation()
-    const willBeCompleted = !completedLessonIds.has(id)
-    setCompletedLessonIds((prev) => {
-      const next = new Set(prev)
-      if (willBeCompleted) {
-        next.add(id)
-      } else {
-        next.delete(id)
-      }
-      return next
-    })
-
-    if (course?.slug) {
-      try {
-        await fetch(`/api/courses/${course.slug}/lessons/${id}/complete`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ completed: willBeCompleted }),
-        })
-      } catch (err) {
-        console.warn('Could not persist lesson completion status:', err)
-      }
-    }
-  }
-
-  // Automatic video finish detection: marks current lesson completed on video ended
-  const handleLessonEnded = async () => {
-    if (!activeClassId) return
-    if (!completedLessonIds.has(activeClassId)) {
-      setCompletedLessonIds((prev) => new Set(prev).add(activeClassId))
-      if (course?.slug) {
-        try {
-          await fetch(`/api/courses/${course.slug}/lessons/${activeClassId}/complete`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ completed: true }),
-          })
-        } catch (err) {
-          console.warn('Could not persist auto lesson completion:', err)
-        }
-      }
-    }
-  }
-
-  const completionPercent = classes.length > 0
-    ? Math.round((completedLessonIds.size / classes.length) * 100)
-    : 0
-
-  const currentClass = classes.find((c) => c.id === activeClassId)
-
-  // Automatically show Quranic motivational verse popup when student opens/switches to a lesson with a verse
+  // Automatically check verse for current default lesson on initial load
   useEffect(() => {
-    if (!currentClass?.id) return
-    const verse = currentClass.quranVerse
-    if (verse && !dismissedVerseLessonIds.has(currentClass.id)) {
-      setActiveVerse(verse)
-      setVerseModalOpen(true)
+    if (defaultClass?.quranVerse) {
+      const storageKey = `utm_verse_dismissed_${defaultClass.id}`
+      const dismissed = typeof window !== 'undefined' ? sessionStorage.getItem(storageKey) : null
+      if (!dismissed) {
+        setActiveVerse(defaultClass.quranVerse)
+        setVerseModalOpen(true)
+      }
     }
-  }, [currentClass?.id, currentClass?.quranVerse, dismissedVerseLessonIds])
+  }, [defaultClass?.id])
 
   const handleDismissVerse = () => {
-    if (currentClass?.id) {
-      setDismissedVerseLessonIds((prev) => new Set(prev).add(currentClass.id))
+    if (activeVerse && activeClassId) {
+      try {
+        sessionStorage.setItem(`utm_verse_dismissed_${activeClassId}`, 'true')
+      } catch {}
     }
     setVerseModalOpen(false)
   }
 
-  // Filter classes by selected subject
-  const filteredClasses = classes.filter((c) => {
-    if (selectedSubject === 'all') return true
-    return c.subjectSlug.toLowerCase() === selectedSubject.toLowerCase()
-  })
+  // Filter classes by subject
+  const filteredClasses =
+    selectedSubject === 'all'
+      ? classes
+      : classes.filter(
+          (c) => c.subjectSlug.toLowerCase() === selectedSubject.toLowerCase()
+        )
+
+  const currentClass = classes.find((c) => c.id === activeClassId) || defaultClass
+
+  // Progress percentage
+  const completionPercent =
+    classes.length > 0 ? Math.round((completedLessonIds.size / classes.length) * 100) : 0
+
+  const toggleLessonComplete = async (e: React.MouseEvent, lessonId: string) => {
+    e.stopPropagation()
+    const isCompleted = completedLessonIds.has(lessonId)
+    const newSet = new Set(completedLessonIds)
+
+    if (isCompleted) {
+      newSet.delete(lessonId)
+    } else {
+      newSet.add(lessonId)
+    }
+
+    setCompletedLessonIds(newSet)
+
+    if (course?.slug) {
+      try {
+        await fetch(`/api/courses/${course.slug}/progress`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            lessonId,
+            completed: !isCompleted,
+          }),
+        })
+      } catch (err) {
+        console.error('Failed to update lesson progress on server:', err)
+      }
+    }
+  }
+
+  // Auto-mark completed and auto-advance to next class when current video ends
+  const handleLessonEnded = () => {
+    if (currentClass?.id && !completedLessonIds.has(currentClass.id)) {
+      const newSet = new Set(completedLessonIds)
+      newSet.add(currentClass.id)
+      setCompletedLessonIds(newSet)
+
+      if (course?.slug) {
+        fetch(`/api/courses/${course.slug}/progress`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            lessonId: currentClass.id,
+            completed: true,
+          }),
+        }).catch(() => {})
+      }
+    }
+
+    // Advance to next class if available
+    const currentIndex = classes.findIndex((c) => c.id === activeClassId)
+    if (currentIndex !== -1 && currentIndex + 1 < classes.length) {
+      const nextClass = classes[currentIndex + 1]
+      handleSelectClass(nextClass)
+    }
+  }
 
   const handleSelectClass = async (cls: ClassroomClassItem) => {
+    if (cls.id === activeClassId) return
+
     setActiveClassId(cls.id)
     setAccessError(null)
 
-    // 1. Enrolled student or free preview: pre-generated secure video hash
+    // Check Quran verse modal on class change
+    if (cls.quranVerse) {
+      const storageKey = `utm_verse_dismissed_${cls.id}`
+      const dismissed = typeof window !== 'undefined' ? sessionStorage.getItem(storageKey) : null
+      if (!dismissed) {
+        setActiveVerse(cls.quranVerse)
+        setVerseModalOpen(true)
+      }
+    }
+
+    // If video hash is directly embedded
     if (cls.videoHash) {
       setActiveVideoHash(cls.videoHash)
       return
     }
 
-    // 2. Paid class without enrollment: access denied
-    if (!cls.isFreePreview) {
-      setAccessError('এই ক্লাসটি লক করা। সম্পূর্ণ ক্লাস দেখতে কোর্সে ভর্তি (Enroll) হন।')
-      setActiveVideoHash(undefined)
-      return
-    }
-
-    // 3. Fallback on-demand verification for free preview
-    if (course.slug && cls.id) {
+    // Otherwise fetch dynamic encrypted token
+    if (course.slug) {
       setFetchingToken(true)
       setActiveVideoHash(undefined)
+
       try {
         const res = await fetch(`/api/courses/${course.slug}/lessons/${cls.id}/access`)
         const data = await res.json()
+
         if (data.success && data.token) {
           setActiveVideoHash(data.token)
         } else {
@@ -229,6 +265,162 @@ export default function ClassroomView({
         setFetchingToken(false)
       }
     }
+  }
+
+  const renderCurriculumItems = (isMobileSheet = false) => {
+    if (filteredClasses.length === 0) {
+      return (
+        <div className="p-6 text-center text-xs text-muted-foreground">
+          এই বিষয়ের অধীনে এখনও কোনো ক্লাস পাওয়া যায়নি।
+        </div>
+      )
+    }
+
+    return filteredClasses.map((cls, idx) => {
+      const isActive = cls.id === activeClassId
+      const isCompleted = completedLessonIds.has(cls.id)
+      const isPlayable = Boolean(cls.videoHash || cls.videoSource || cls.isFreePreview)
+      const isLocked = !isPlayable
+
+      return (
+        <div
+          key={cls.id || idx}
+          onClick={() => {
+            handleSelectClass(cls)
+            if (isMobileSheet) {
+              setMobileCurriculumOpen(false)
+            }
+          }}
+          className={`group relative flex items-start gap-3 rounded-lg p-3 text-left transition-all cursor-pointer ${
+            isActive
+              ? 'bg-primary/10 border border-primary/40 text-foreground shadow-xs'
+              : isLocked
+              ? 'bg-card/40 border border-border/50 text-muted-foreground hover:bg-card/70'
+              : 'bg-background border border-border/70 text-foreground hover:bg-muted/50 hover:border-border'
+          }`}
+        >
+          {/* Play / Lock Icon */}
+          <div
+            className={`mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full transition-colors ${
+              isActive
+                ? 'bg-primary text-primary-foreground'
+                : isLocked
+                ? 'bg-muted/60 text-muted-foreground'
+                : 'bg-muted text-muted-foreground group-hover:bg-muted/80 group-hover:text-foreground'
+            }`}
+          >
+            {isLocked ? (
+              <Lock className="size-3.5" />
+            ) : isActive ? (
+              <Play className="size-3.5 fill-current" />
+            ) : (
+              <Play className="size-3.5 fill-current ml-0.5" />
+            )}
+          </div>
+
+          {/* Title & Metadata */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span
+                className={`text-xs font-semibold truncate leading-snug ${
+                  isCompleted
+                    ? 'line-through text-muted-foreground'
+                    : isLocked
+                    ? 'text-muted-foreground'
+                    : 'text-foreground'
+                }`}
+              >
+                {cls.title}
+              </span>
+              {isLocked && (
+                <span className="text-[10px] text-muted-foreground/80 font-medium shrink-0 flex items-center gap-0.5">
+                  <Lock className="size-2.5" /> লক
+                </span>
+              )}
+            </div>
+            <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+              <span className="font-medium text-foreground/80">
+                {cls.subjectName || cls.subjectSlug}
+              </span>
+              {cls.moduleName && (
+                <>
+                  <span>•</span>
+                  <span>{cls.moduleName}</span>
+                </>
+              )}
+              {cls.duration && (
+                <>
+                  <span>•</span>
+                  <span>{cls.duration}</span>
+                </>
+              )}
+              {cls.isFreePreview && (
+                <>
+                  <span>•</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-medium">Free</span>
+                </>
+              )}
+              {cls.quranVerse && (
+                <>
+                  <span>•</span>
+                  <span className="text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-0.5">
+                    <BookOpen className="size-2.5" /> বাণী
+                  </span>
+                </>
+              )}
+              {(cls.classSlideUrl || cls.classNoteUrl) && (
+                <div
+                  className="flex items-center gap-1.5 mt-1"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {cls.classSlideUrl && (
+                    <a
+                      href={getDownloadUrl(cls.classSlideUrl, cls.classSlideName || 'Class-Slide')}
+                      download={cls.classSlideName || 'Class-Slide.pptx'}
+                      className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-500/20 font-medium transition-colors"
+                      title="স্লাইড ডাউনলোড"
+                    >
+                      <Presentation className="size-2.5" /> স্লাইড
+                    </a>
+                  )}
+                  {cls.classNoteUrl && (
+                    <a
+                      href={getDownloadUrl(cls.classNoteUrl, cls.classNoteName || 'Class-Note')}
+                      download={cls.classNoteName || 'Class-Note.pdf'}
+                      className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 font-medium transition-colors"
+                      title="নোট ডাউনলোড"
+                    >
+                      <FileText className="size-2.5" /> নোট
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Complete Checkbox Toggle */}
+          <button
+            type="button"
+            onClick={(e) => toggleLessonComplete(e, cls.id)}
+            title={isCompleted ? 'সম্পন্ন (আনমার্ক করতে ক্লিক করুন)' : 'সম্পন্ন হিসেবে মার্ক করুন'}
+            className={`mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md transition-all cursor-pointer ${
+              isCompleted
+                ? 'bg-primary/20 text-primary hover:bg-primary/30'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+            }`}
+          >
+            <CheckCircle2
+              className={`size-4 ${isCompleted ? 'fill-primary/20 text-primary' : ''}`}
+            />
+          </button>
+
+          {/* Clean Static Active Indicator (NO blinking animation) */}
+          {isActive && (
+            <span className="flex size-2 rounded-full bg-primary self-center shrink-0 ring-2 ring-primary/20" />
+          )}
+        </div>
+      )
+    })
   }
 
   return (
@@ -253,10 +445,24 @@ export default function ClassroomView({
               <Button asChild variant="outline" size="sm" className="h-8 text-xs">
                 <Link href={`/courses/${course.slug}?view=details`}>
                   <ArrowLeft className="size-3.5 mr-1" />
-                  কোর্স বিবরণী
+                  <span className="hidden sm:inline">কোর্স বিবরণী</span>
+                  <span className="sm:hidden">বিবরণী</span>
                 </Link>
               </Button>
             )}
+
+            {/* Mobile-only 3-dot class switcher button */}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setMobileCurriculumOpen(true)}
+              className="lg:hidden h-8 px-2 text-xs font-medium gap-1 text-foreground"
+              aria-label="কোর্স পাঠ্যক্রম ও ক্লাস পরিবর্তন"
+              title="কোর্স পাঠ্যক্রম ও ক্লাস পরিবর্তন"
+            >
+              <MoreVertical className="size-4" />
+            </Button>
           </div>
         </div>
       </div>
@@ -264,9 +470,9 @@ export default function ClassroomView({
       {/* Main Content Layout */}
       <div className="mx-auto max-w-7xl px-3 py-4 sm:px-6 lg:py-6">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
-          {/* Left Column: Player & Active Lesson Info (8 Cols on Desktop, sticky on mobile) */}
+          {/* Left Column: Player & Active Lesson Info (8 Cols on Desktop) */}
           <div className="lg:col-span-8 flex flex-col gap-4">
-            {/* Sticky Player Container for mobile */}
+            {/* Sticky Player Container */}
             <div className="sticky top-0 z-20 -mx-3 sm:mx-0 sm:static sm:z-auto bg-background/90 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none p-1 sm:p-0">
               <div className="rounded-xl border border-border bg-black overflow-hidden shadow-lg">
                 {fetchingToken ? (
@@ -288,15 +494,169 @@ export default function ClassroomView({
                   />
                 )}
               </div>
-
-              {/* Player Controls Info */}
-              <div className="mt-2 flex items-center justify-end text-[11px] text-muted-foreground px-1">
-                <span>ফুলস্ক্রিন, সিকিং ও কীবোর্ড কন্ট্রোল উপলব্ধ</span>
-              </div>
             </div>
 
-            {/* Current Lesson Title & Description */}
-            <div className="rounded-xl border border-border bg-card p-4 sm:p-5 shadow-xs">
+            {/* Mobile View (< lg): Vertical Layout with Tabs [ডেসক্রিপশন | কমেন্ট] */}
+            <div className="lg:hidden flex flex-col gap-3">
+              <Tabs defaultValue="description" className="w-full">
+                <TabsList className="w-full grid grid-cols-2 h-10 p-1 bg-muted/80 rounded-xl">
+                  <TabsTrigger value="description" className="text-xs font-semibold rounded-lg">
+                    ডেসক্রিপশন
+                  </TabsTrigger>
+                  <TabsTrigger value="comments" className="text-xs font-semibold rounded-lg">
+                    কমেন্ট
+                  </TabsTrigger>
+                </TabsList>
+
+                {/* Tab 1: ডেসক্রিপশন */}
+                <TabsContent value="description" className="mt-3 flex flex-col gap-3">
+                  <div className="rounded-xl border border-border bg-card p-4 shadow-xs">
+                    {/* Lesson Meta Badges & Actions */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3 mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="rounded bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20 tracking-wide">
+                          {currentClass?.subjectName || currentClass?.subjectSlug || 'General'}
+                        </span>
+                        {currentClass?.isFreePreview && (
+                          <span className="rounded bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                            ফ্রি প্রিভিউ
+                          </span>
+                        )}
+                        {currentClass?.quranVerse && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActiveVerse(currentClass.quranVerse!)
+                              setVerseModalOpen(true)
+                            }}
+                            className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                            title="অনুপ্রেরণামূলক কুরআনের আয়াত দেখুন"
+                          >
+                            <BookOpen className="size-3 text-emerald-600 dark:text-emerald-400" />
+                            <span>কুরআনের বাণী</span>
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {currentClass?.id && (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant={completedLessonIds.has(currentClass.id) ? 'default' : 'outline'}
+                            onClick={(e) => toggleLessonComplete(e, currentClass.id)}
+                            className={`h-7 text-xs font-semibold gap-1.5 transition-all ${
+                              completedLessonIds.has(currentClass.id)
+                                ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600 shadow-2xs'
+                                : 'border-border text-muted-foreground hover:text-foreground'
+                            }`}
+                          >
+                            <CheckCircle2
+                              className={`size-3.5 ${completedLessonIds.has(currentClass.id) ? 'text-white' : 'text-muted-foreground'}`}
+                            />
+                            <span>{completedLessonIds.has(currentClass.id) ? 'সম্পন্ন' : 'মার্ক অ্যাজ কমপ্লিট'}</span>
+                          </Button>
+                        )}
+                        {currentClass?.duration && (
+                          <span className="flex items-center gap-1 text-xs text-muted-foreground mr-1">
+                            <Clock className="size-3.5" /> {currentClass.duration}
+                          </span>
+                        )}
+                        {currentClass?.id && (
+                          <button
+                            type="button"
+                            onClick={() => setReportModalOpen(true)}
+                            className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium text-muted-foreground hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-all cursor-pointer"
+                            title="এই লেকচারে কোনো সমস্যা থাকলে রিপোর্ট করুন"
+                          >
+                            <Flag className="size-3" />
+                            <span>রিপোর্ট</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <h2 className="text-base sm:text-lg font-bold text-foreground">
+                      {currentClass?.title || 'ক্লাসরুম লেকচার প্লেয়ার'}
+                    </h2>
+                    <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+                      {course.description || 'ক্লাসরুমে স্বাগতম। সম্পূর্ণ লেকচারটি মনোযোগ সহকারে দেখুন।'}
+                    </p>
+
+                    {/* Progress tracking on mobile */}
+                    <div className="mt-3 pt-3 border-t border-border">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                        <span className="flex items-center gap-1 text-foreground font-medium">
+                          <CheckCircle2 className="size-3 text-primary" /> কোর্সের অগ্রগতি
+                        </span>
+                        <span className="font-semibold text-primary">
+                          {completedLessonIds.size}/{classes.length} ({completionPercent}%)
+                        </span>
+                      </div>
+                      <Progress value={completionPercent} className="h-1.5 bg-muted" />
+                    </div>
+
+                    {/* Lecture Resources */}
+                    {(currentClass?.classSlideUrl || currentClass?.classNoteUrl) && (
+                      <div className="mt-3 pt-3 border-t border-border flex flex-wrap items-center gap-2">
+                        <span className="text-xs font-semibold text-foreground flex items-center gap-1.5 mr-1">
+                          <BookOpen className="size-3.5 text-primary" />
+                          লেকচার রিসোর্স:
+                        </span>
+                        {currentClass?.classSlideUrl && (
+                          <Button
+                            asChild
+                            variant="outline"
+                            size="sm"
+                            className="h-7 text-xs font-medium gap-1 border-orange-500/30 text-orange-600 dark:text-orange-400 hover:bg-orange-500/10 hover:border-orange-500/50"
+                          >
+                            <a
+                              href={getDownloadUrl(currentClass.classSlideUrl, currentClass.classSlideName || 'Class-Slide')}
+                              download={currentClass.classSlideName || 'Class-Slide.pptx'}
+                            >
+                              <Presentation className="size-3 text-orange-500" />
+                              <span>স্লাইড</span>
+                              <Download className="size-2.5 ml-0.5 opacity-70" />
+                            </a>
+                          </Button>
+                        )}
+                        {currentClass?.classNoteUrl && (
+                          <Button
+                            asChild
+                            variant="outline"
+                            size="sm"
+                            className="h-7 text-xs font-medium gap-1 border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 hover:border-blue-500/50"
+                          >
+                            <a
+                              href={getDownloadUrl(currentClass.classNoteUrl, currentClass.classNoteName || 'Class-Note')}
+                              download={currentClass.classNoteName || 'Class-Note.pdf'}
+                            >
+                              <FileText className="size-3 text-blue-500" />
+                              <span>নোট</span>
+                              <Download className="size-2.5 ml-0.5 opacity-70" />
+                            </a>
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+
+                {/* Tab 2: কমেন্ট */}
+                <TabsContent value="comments" className="mt-3">
+                  {currentClass?.id && (
+                    <LessonCommentsSection
+                      courseSlug={course.slug || ''}
+                      lessonId={currentClass.id}
+                      lessonTitle={currentClass.title}
+                    />
+                  )}
+                </TabsContent>
+              </Tabs>
+            </div>
+
+            {/* Desktop Only: Current Lesson Title & Description (Hidden on mobile) */}
+            <div className="hidden lg:flex lg:flex-col rounded-xl border border-border bg-card p-4 sm:p-5 shadow-xs">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3 mb-3">
                 <div className="flex items-center gap-2">
                   <span className="rounded bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20 tracking-wide">
@@ -335,7 +695,9 @@ export default function ClassroomView({
                           : 'border-border text-muted-foreground hover:text-foreground'
                       }`}
                     >
-                      <CheckCircle2 className={`size-3.5 ${completedLessonIds.has(currentClass.id) ? 'text-white' : 'text-muted-foreground'}`} />
+                      <CheckCircle2
+                        className={`size-3.5 ${completedLessonIds.has(currentClass.id) ? 'text-white' : 'text-muted-foreground'}`}
+                      />
                       <span>{completedLessonIds.has(currentClass.id) ? 'সম্পন্ন' : 'মার্ক অ্যাজ কমপ্লিট'}</span>
                     </Button>
                   )}
@@ -410,18 +772,20 @@ export default function ClassroomView({
               )}
             </div>
 
-            {/* Lesson Comments & Discussion Section */}
+            {/* Desktop Only: Lesson Comments & Discussion Section */}
             {currentClass?.id && (
-              <LessonCommentsSection
-                courseSlug={course.slug || ''}
-                lessonId={currentClass.id}
-                lessonTitle={currentClass.title}
-              />
+              <div className="hidden lg:block">
+                <LessonCommentsSection
+                  courseSlug={course.slug || ''}
+                  lessonId={currentClass.id}
+                  lessonTitle={currentClass.title}
+                />
+              </div>
             )}
           </div>
 
           {/* Right Column: Curriculum / Subject Navigation (4 Cols on Desktop) */}
-          <div className="lg:col-span-4 flex flex-col gap-4">
+          <div className="hidden lg:flex lg:col-span-4 flex-col gap-4">
             <div className="rounded-xl border border-border bg-card p-4 shadow-sm flex flex-col">
               <div className="flex items-center justify-between border-b border-border pb-3 mb-3">
                 <div className="flex items-center gap-2">
@@ -448,7 +812,7 @@ export default function ClassroomView({
                 <Progress value={completionPercent} className="h-1.5 bg-muted" />
               </div>
 
-              {/* Subject Tabs Filter (Mobile / Desktop) */}
+              {/* Subject Tabs Filter (Desktop) */}
               {course.subjects && course.subjects.length > 0 && (
                 <div className="mb-3 flex flex-wrap gap-1.5">
                   <button
@@ -484,143 +848,78 @@ export default function ClassroomView({
                 </div>
               )}
 
-              {/* Class List */}
+              {/* Class List (Desktop) */}
               <div className="flex flex-col gap-2 max-h-[520px] overflow-y-auto pr-1">
-                {filteredClasses.length === 0 ? (
-                  <div className="p-6 text-center text-xs text-muted-foreground">
-                    এই বিষয়ের অধীনে এখনও কোনো ক্লাস পাওয়া যায়নি।
-                  </div>
-                ) : (
-                  filteredClasses.map((cls, idx) => {
-                    const isActive = cls.id === activeClassId
-                    const isCompleted = completedLessonIds.has(cls.id)
-                    const isPlayable = Boolean(cls.videoHash || cls.videoSource || cls.isFreePreview)
-                    const isLocked = !isPlayable
-
-                    return (
-                      <div
-                        key={cls.id || idx}
-                        onClick={() => handleSelectClass(cls)}
-                        className={`group relative flex items-start gap-3 rounded-lg p-3 text-left transition-all cursor-pointer ${
-                          isActive
-                            ? 'bg-primary/10 border border-primary/40 text-foreground shadow-xs'
-                            : isLocked
-                            ? 'bg-card/40 border border-border/50 text-muted-foreground hover:bg-card/70'
-                            : 'bg-background border border-border/70 text-foreground hover:bg-muted/50 hover:border-border'
-                        }`}
-                      >
-                        {/* Play / Lock Icon */}
-                        <div
-                          className={`mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full transition-colors ${
-                            isActive
-                              ? 'bg-primary text-primary-foreground'
-                              : isLocked
-                              ? 'bg-muted/60 text-muted-foreground'
-                              : 'bg-muted text-muted-foreground group-hover:bg-muted/80 group-hover:text-foreground'
-                          }`}
-                        >
-                          {isLocked ? (
-                            <Lock className="size-3.5" />
-                          ) : isActive ? (
-                            <Play className="size-3.5 fill-current" />
-                          ) : (
-                            <Play className="size-3.5 fill-current ml-0.5" />
-                          )}
-                        </div>
-
-                        {/* Title & Metadata */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1.5">
-                            <span className={`text-xs font-semibold truncate leading-snug ${isCompleted ? 'line-through text-muted-foreground' : isLocked ? 'text-muted-foreground' : 'text-foreground'}`}>
-                              {cls.title}
-                            </span>
-                            {isLocked && (
-                              <span className="text-[10px] text-muted-foreground/80 font-medium shrink-0 flex items-center gap-0.5">
-                                <Lock className="size-2.5" /> লক
-                              </span>
-                            )}
-                          </div>
-                          <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
-                            <span className="font-medium text-foreground/80">{cls.subjectName || cls.subjectSlug}</span>
-                            {cls.moduleName && (
-                              <>
-                                <span>•</span>
-                                <span>{cls.moduleName}</span>
-                              </>
-                            )}
-                            {cls.duration && (
-                              <>
-                                <span>•</span>
-                                <span>{cls.duration}</span>
-                              </>
-                            )}
-                            {cls.isFreePreview && (
-                              <>
-                                <span>•</span>
-                                <span className="text-emerald-600 dark:text-emerald-400 font-medium">Free</span>
-                              </>
-                            )}
-                            {cls.quranVerse && (
-                              <>
-                                <span>•</span>
-                                <span className="text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-0.5">
-                                  <BookOpen className="size-2.5" /> বাণী
-                                </span>
-                              </>
-                            )}
-                            {(cls.classSlideUrl || cls.classNoteUrl) && (
-                              <div className="flex items-center gap-1.5 mt-1" onClick={(e) => e.stopPropagation()}>
-                                {cls.classSlideUrl && (
-                                  <a
-                                    href={getDownloadUrl(cls.classSlideUrl, cls.classSlideName || 'Class-Slide')}
-                                    download={cls.classSlideName || 'Class-Slide.pptx'}
-                                    className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-500/20 font-medium transition-colors"
-                                    title="স্লাইড ডাউনলোড"
-                                  >
-                                    <Presentation className="size-2.5" /> স্লাইড
-                                  </a>
-                                )}
-                                {cls.classNoteUrl && (
-                                  <a
-                                    href={getDownloadUrl(cls.classNoteUrl, cls.classNoteName || 'Class-Note')}
-                                    download={cls.classNoteName || 'Class-Note.pdf'}
-                                    className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 font-medium transition-colors"
-                                    title="নোট ডাউনলোড"
-                                  >
-                                    <FileText className="size-2.5" /> নোট
-                                  </a>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Complete Checkbox Toggle */}
-                        <button
-                          type="button"
-                          onClick={(e) => toggleLessonComplete(e, cls.id)}
-                          title={isCompleted ? 'সম্পন্ন (আনমার্ক করতে ক্লিক করুন)' : 'সম্পন্ন হিসেবে মার্ক করুন'}
-                          className={`mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md transition-all cursor-pointer ${
-                            isCompleted
-                              ? 'bg-primary/20 text-primary hover:bg-primary/30'
-                              : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                          }`}
-                        >
-                          <CheckCircle2 className={`size-4 ${isCompleted ? 'fill-primary/20 text-primary' : ''}`} />
-                        </button>
-
-                        {isActive && (
-                          <span className="flex size-2 rounded-full bg-primary animate-ping self-center" />
-                        )}
-                      </div>
-                    )
-                  })
-                )}
+                {renderCurriculumItems(false)}
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Mobile Class Switcher Bottom Sheet */}
+      <Sheet open={mobileCurriculumOpen} onOpenChange={setMobileCurriculumOpen}>
+        <SheetContent side="bottom" className="max-h-[85vh] rounded-t-2xl p-4 sm:p-6 flex flex-col bg-card">
+          <SheetHeader className="pb-2 border-b border-border">
+            <SheetTitle className="text-base font-bold text-foreground flex items-center gap-2">
+              <BookOpen className="size-4 text-primary" />
+              <span>কোর্স পাঠ্যক্রম ({classes.length} টি ক্লাস)</span>
+            </SheetTitle>
+            <div className="mt-2 rounded-lg bg-muted/50 border border-border p-2">
+              <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                <span className="flex items-center gap-1 text-foreground font-medium">
+                  <CheckCircle2 className="size-3 text-primary" /> কোর্সের অগ্রগতি
+                </span>
+                <span className="font-semibold text-primary">
+                  {completedLessonIds.size}/{classes.length} ({completionPercent}%)
+                </span>
+              </div>
+              <Progress value={completionPercent} className="h-1.5 bg-muted" />
+            </div>
+          </SheetHeader>
+
+          {/* Subject Pills Filter (Mobile Sheet) */}
+          {course.subjects && course.subjects.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 py-2 border-b border-border">
+              <button
+                type="button"
+                onClick={() => setSelectedSubject('all')}
+                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                  selectedSubject === 'all'
+                    ? 'bg-primary text-primary-foreground font-semibold'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                }`}
+              >
+                সকল ({classes.length})
+              </button>
+              {course.subjects.map((sub) => {
+                const count = classes.filter(
+                  (c) => c.subjectSlug.toLowerCase() === sub.slug.toLowerCase()
+                ).length
+                return (
+                  <button
+                    key={sub.slug}
+                    type="button"
+                    onClick={() => setSelectedSubject(sub.slug)}
+                    className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                      selectedSubject === sub.slug
+                        ? 'bg-primary text-primary-foreground font-semibold'
+                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                    }`}
+                  >
+                    {sub.name} ({count})
+                  </button>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Scrollable Class List */}
+          <div className="flex-1 overflow-y-auto space-y-2 py-2 pr-1">
+            {renderCurriculumItems(true)}
+          </div>
+        </SheetContent>
+      </Sheet>
 
       {/* Motivational Quranic Verse Popup Dialog */}
       <Dialog

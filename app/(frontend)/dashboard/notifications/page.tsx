@@ -59,6 +59,14 @@ export default function NotificationsPage() {
 
   useEffect(() => {
     fetchNotifications()
+
+    const handleSync = () => {
+      fetchNotifications()
+    }
+    window.addEventListener("notifications-updated", handleSync)
+    return () => {
+      window.removeEventListener("notifications-updated", handleSync)
+    }
   }, [userEmail, userRole])
 
   const handleMarkAsRead = async (id: string) => {
@@ -66,21 +74,35 @@ export default function NotificationsPage() {
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
     )
-    await fetch("/api/user/notifications", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "mark_read", id, email: userEmail }),
-    })
+    try {
+      await fetch("/api/user/notifications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "mark_read", id, email: userEmail }),
+      })
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("notifications-updated"))
+      }
+    } catch (err) {
+      console.error("Failed to mark notification as read:", err)
+    }
   }
 
   const handleMarkAllAsRead = async () => {
     if (!userEmail) return
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })))
-    await fetch("/api/user/notifications", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "mark_all_read", email: userEmail }),
-    })
+    try {
+      await fetch("/api/user/notifications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "mark_all_read", email: userEmail }),
+      })
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("notifications-updated"))
+      }
+    } catch (err) {
+      console.error("Failed to mark all notifications as read:", err)
+    }
   }
 
   const handleDeleteNotification = async (id: string, e?: React.MouseEvent) => {
@@ -93,6 +115,9 @@ export default function NotificationsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "delete", id, email: userEmail }),
       })
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("notifications-updated"))
+      }
     } catch (err) {
       console.error("Failed to delete notification:", err)
     }
@@ -108,6 +133,9 @@ export default function NotificationsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "delete_all", email: userEmail }),
       })
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("notifications-updated"))
+      }
     } catch (err) {
       console.error("Failed to clear all notifications:", err)
     }

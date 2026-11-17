@@ -15,6 +15,20 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // Verify user email in database before allowing checkout
+    const dbUser = await payload.findByID({
+      collection: "users",
+      id: session.user.id,
+      depth: 0,
+    })
+
+    if (!dbUser || !dbUser.emailVerified) {
+      return NextResponse.json(
+        { error: "কোর্স কেনার পূর্বে আপনার ইমেইল ভেরিফাই করা আবশ্যক। অনুগ্রহ করে আপনার ইমেইল ভেরিফাই করুন।" },
+        { status: 403 }
+      )
+    }
+
     const body = await req.json()
     const { items, manualTrxId, senderNumber, customerInfo, shippingAddress, cartID, couponCode } = body
 

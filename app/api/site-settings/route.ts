@@ -51,6 +51,21 @@ export async function GET() {
     const themeConfig = settings?.themeConfig?.themeEnabled ? settings.themeConfig : null
     const security = settings?.security || null
 
+    const promoImage = getCloudinarySecureUrl(settings?.promoModal?.image) || settings?.promoModal?.imageUrl || null
+    const promoModal = settings?.promoModal
+      ? {
+          enabled: settings.promoModal.enabled ?? false,
+          version: settings.promoModal.version || 'v1',
+          title: settings.promoModal.title || '',
+          description: settings.promoModal.description || '',
+          imageUrl: promoImage,
+          ctaText: settings.promoModal.ctaText || 'বিস্তারিত দেখুন',
+          ctaLink: settings.promoModal.ctaLink || '/courses',
+        }
+      : null
+
+    const supportAndFaq = settings?.supportAndFaq || null
+
     return NextResponse.json(
       {
         success: true,
@@ -72,6 +87,8 @@ export async function GET() {
         favicon: settings?.favicon || null,
         themeConfig,
         security,
+        promoModal,
+        supportAndFaq,
       },
       {
         headers: {

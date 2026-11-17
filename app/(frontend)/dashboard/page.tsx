@@ -1,15 +1,15 @@
 "use client"
 
+export const dynamic = 'force-dynamic'
+
 import React from "react"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import {
   Book2BoldDuotone,
-  VideocameraBoldDuotone,
   WalletMoneyBoldDuotone,
   ShieldCheckBoldDuotone,
   QuestionCircleBoldDuotone,
-  AltArrowRightOutline,
   FlameBoldDuotone,
   SmileCircleBoldDuotone,
   UserRoundedBoldDuotone,
@@ -53,13 +53,6 @@ export default function DashboardPage() {
           <div className="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto shrink-0">
             <Link
               href="/dashboard/my-courses"
-              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 h-7 sm:h-9 px-2.5 sm:px-3.5 rounded-lg sm:rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[11px] sm:text-xs border-b-2 border-emerald-700 active:translate-y-0.5 shadow-xs transition-all"
-            >
-              <VideocameraBoldDuotone size={13} color="#fff" />
-              <span>ক্লাস শুরু</span>
-            </Link>
-            <Link
-              href="/dashboard/my-courses"
               className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1 h-7 sm:h-9 px-2.5 sm:px-3.5 rounded-lg sm:rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-[11px] sm:text-xs border-b-2 border-sky-700 active:translate-y-0.5 shadow-xs transition-all"
             >
               <Book2BoldDuotone size={13} color="#fff" />
@@ -79,7 +72,7 @@ export default function DashboardPage() {
       </div>
 
       {/* 2. Stats Section (Desktop/Tablet Only) */}
-      <div className="hidden sm:grid sm:grid-cols-3 sm:gap-4">
+      <div className="hidden sm:grid sm:grid-cols-2 sm:gap-4">
         <Link
           href="/dashboard/my-courses"
           className="group flex items-center justify-between p-4 rounded-2xl border-2 border-emerald-500/25 border-b-4 border-b-emerald-500 bg-card hover:bg-emerald-500/5 transition-colors"
@@ -91,20 +84,6 @@ export default function DashboardPage() {
           </div>
           <div className="size-10 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-500 shrink-0">
             <Book2BoldDuotone size={20} color="#10b981" />
-          </div>
-        </Link>
-
-        <Link
-          href="/dashboard/my-courses"
-          className="group flex items-center justify-between p-4 rounded-2xl border-2 border-sky-500/25 border-b-4 border-b-sky-500 bg-card hover:bg-sky-500/5 transition-colors"
-        >
-          <div>
-            <span className="text-xs font-semibold text-muted-foreground block truncate">ভিডিও ক্লাস</span>
-            <div className="text-xl font-black text-foreground mt-0.5">৬২২+</div>
-            <span className="text-[10px] text-sky-600 font-medium">নিয়মিত নতুন লেকচার</span>
-          </div>
-          <div className="size-10 rounded-xl bg-sky-500/15 flex items-center justify-center text-sky-500 shrink-0">
-            <VideocameraBoldDuotone size={20} color="#0ea5e9" />
           </div>
         </Link>
 
@@ -143,19 +122,6 @@ export default function DashboardPage() {
               <div className="min-w-0">
                 <div className="text-[10.5px] sm:text-xs font-bold text-foreground truncate">আমার কোর্স</div>
                 <div className="text-[9px] sm:text-[10px] text-muted-foreground truncate">এনরোলমেন্ট</div>
-              </div>
-            </Link>
-
-            <Link
-              href="/dashboard/my-courses"
-              className="flex-1 sm:flex-initial flex items-center gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-lg sm:rounded-xl border border-rose-500/20 bg-rose-500/5 hover:bg-rose-500/10 transition-colors"
-            >
-              <div className="size-6 sm:size-7 rounded-md sm:rounded-lg bg-rose-500/15 flex items-center justify-center shrink-0">
-                <VideocameraBoldDuotone size={13} color="#f43f5e" />
-              </div>
-              <div className="min-w-0">
-                <div className="text-[10.5px] sm:text-xs font-bold text-foreground truncate">ভিডিও ক্লাস</div>
-                <div className="text-[9px] sm:text-[10px] text-muted-foreground truncate">লেকচার দেখো</div>
               </div>
             </Link>
 

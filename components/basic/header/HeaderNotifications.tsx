@@ -1,33 +1,15 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useTheme } from 'next-themes'
 import {
   Bell,
   CheckCheck,
   X,
   ChevronRight,
-  MoreVertical,
-  BookOpen,
-  Award,
-  Users,
-  Info,
-  Sun,
-  Moon,
-  LogIn,
-  UserPlus,
 } from 'lucide-react'
 import { authClient } from '@/payload/auth/client'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 
 interface NotificationItem {
@@ -56,14 +38,13 @@ export function HeaderNotifications({
   const [isLoading, setIsLoading] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
-  const { resolvedTheme, setTheme } = useTheme()
 
   const { data: session, isPending } = authClient.useSession()
   const user = session?.user
   const userEmail = session?.user?.email || ''
   const userRole = (session?.user as { role?: string } | undefined)?.role || 'user'
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     if (!userEmail) return
     try {
       setIsLoading(true)
@@ -83,13 +64,21 @@ export function HeaderNotifications({
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [userEmail, userRole])
 
   useEffect(() => {
     if (userEmail) {
       fetchNotifications()
     }
-  }, [userEmail, userRole])
+
+    const handleUpdate = () => {
+      fetchNotifications()
+    }
+    window.addEventListener('notifications-updated', handleUpdate)
+    return () => {
+      window.removeEventListener('notifications-updated', handleUpdate)
+    }
+  }, [fetchNotifications, userEmail])
 
   // Close on outside click (desktop)
   useEffect(() => {
@@ -118,7 +107,7 @@ export function HeaderNotifications({
         await fetch('/api/user/notifications', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'read', notificationId: notif.id, email: userEmail }),
+          body: JSON.stringify({ action: 'mark_read', id: notif.id }),
         })
       } catch {
         // ignore
@@ -138,104 +127,16 @@ export function HeaderNotifications({
       await fetch('/api/user/notifications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'readAll', email: userEmail }),
+        body: JSON.stringify({ action: 'mark_all_read' }),
       })
     } catch {
       // ignore
     }
   }
 
-  // If user is not logged in, show 3-dot menu trigger instead of notification bell
+  // If user is not logged in, return null (unauthenticated users should not see 3-dot menu or notification bell)
   if (!isPending && !user) {
-    return (
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          render={
-            <button
-              type="button"
-              aria-label="আরও অপশন"
-              className={cn(
-                'relative inline-flex items-center justify-center size-7.5 sm:size-8 rounded-xl border border-border/80 bg-background/80 hover:bg-accent/60 transition-all duration-200 shadow-xs cursor-pointer text-foreground',
-                className
-              )}
-            />
-          }
-        >
-          <MoreVertical className="size-4 text-foreground/80 hover:text-foreground transition-transform duration-200" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
-          sideOffset={8}
-          className="w-52 p-1.5 shadow-xl border border-border/60 bg-popover/95 backdrop-blur-md rounded-xl"
-        >
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              onClick={() => router.push('/courses')}
-              className="gap-2.5 text-xs py-2 font-medium cursor-pointer"
-            >
-              <BookOpen className="size-3.5 text-muted-foreground" />
-              <span>কোর্সসমূহ</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => router.push('/exams')}
-              className="gap-2.5 text-xs py-2 font-medium cursor-pointer"
-            >
-              <Award className="size-3.5 text-muted-foreground" />
-              <span>ফ্রি এক্সাম</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => router.push('/teachers')}
-              className="gap-2.5 text-xs py-2 font-medium cursor-pointer"
-            >
-              <Users className="size-3.5 text-muted-foreground" />
-              <span>শিক্ষকবৃন্দ</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => router.push('/about')}
-              className="gap-2.5 text-xs py-2 font-medium cursor-pointer"
-            >
-              <Info className="size-3.5 text-muted-foreground" />
-              <span>আমাদের সম্পর্কে</span>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-
-          <DropdownMenuSeparator className="my-1" />
-
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-              className="gap-2.5 text-xs py-2 font-medium cursor-pointer"
-            >
-              {resolvedTheme === 'dark' ? (
-                <Sun className="size-3.5 text-amber-500" />
-              ) : (
-                <Moon className="size-3.5 text-slate-700 dark:text-slate-200" />
-              )}
-              <span>{resolvedTheme === 'dark' ? 'লাইট মোড' : 'ডার্ক মোড'}</span>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-
-          <DropdownMenuSeparator className="my-1" />
-
-          <DropdownMenuGroup>
-            <DropdownMenuItem
-              onClick={() => router.push('/auth/login')}
-              className="gap-2.5 text-xs py-2 font-medium text-primary cursor-pointer"
-            >
-              <LogIn className="size-3.5 text-primary" />
-              <span>লগইন করুন</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => router.push('/auth/signup')}
-              className="gap-2.5 text-xs py-2 font-medium cursor-pointer"
-            >
-              <UserPlus className="size-3.5 text-muted-foreground" />
-              <span>নতুন অ্যাকাউন্ট</span>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    )
+    return null
   }
 
   // Loading state placeholder

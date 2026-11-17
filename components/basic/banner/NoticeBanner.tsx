@@ -19,6 +19,7 @@ export interface BannerData {
   title?: string | null
   content: string
   badge?: string | null
+  placement?: string | null
   icon?: string | null
   isActive?: boolean | null
   backgroundType?: string | null

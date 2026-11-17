@@ -40,6 +40,8 @@ function CheckoutContent() {
 
   const [activeMethod, setActiveMethod] = useState<"bkash" | "nagad">("bkash")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSendingVerification, setIsSendingVerification] = useState(false)
+  const [verificationSent, setVerificationSent] = useState(false)
 
   // Coupon state
   const [couponInput, setCouponInput] = useState("")
@@ -69,6 +71,28 @@ function CheckoutContent() {
 
   const discountAmount = appliedCoupon ? appliedCoupon.discountAmount : 0
   const finalAmount = Math.max(0, totalAmount - discountAmount)
+  const isEmailUnverified = Boolean(session?.user && !session.user.emailVerified)
+
+  const handleResendVerification = async () => {
+    if (!session?.user?.email || isSendingVerification) return
+    try {
+      setIsSendingVerification(true)
+      const res = await authClient.sendVerificationEmail({
+        email: session.user.email,
+        callbackURL: "/checkout",
+      })
+      if (res?.error) {
+        toast.error(res.error.message || "ভেরিফিকেশন ইমেইল পাঠানো যায়নি।")
+      } else {
+        setVerificationSent(true)
+        toast.success(`ভেরিফিকেশন লিংক ${session.user.email} ঠিকানায় পাঠানো হয়েছে।`)
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "ভেরিফিকেশন ইমেইল পাঠানো যায়নি।")
+    } finally {
+      setIsSendingVerification(false)
+    }
+  }
 
   const handleApplyCoupon = async () => {
     if (!couponInput.trim()) {
@@ -125,6 +149,11 @@ function CheckoutContent() {
       return
     }
 
+    if (isEmailUnverified) {
+      toast.error("কোর্স কেনার পূর্বে আপনার ইমেইল ভেরিফাই করা আবশ্যক।")
+      return
+    }
+
     try {
       setIsSubmitting(true)
       const res = await fetch("/api/checkout/bkash", {
@@ -171,6 +200,16 @@ function CheckoutContent() {
       return
     }
 
+    if (isEmailUnverified) {
+      toast.error("কোর্স কেনার পূর্বে আপনার ইমেইল ভেরিফাই করা আবশ্যক।")
+      return
+    }
+
+    if (finalAmount <= 0) {
+      toast.info("প্রদেয় অর্থ ৳০। অনুগ্রহ করে বিনামূল্যে ভর্তি সম্পন্ন করুন বাটনে ক্লিক করুন।")
+      return
+    }
+
     try {
       setIsSubmitting(true)
       const res = await fetch("/api/checkout/bkash", {
@@ -208,6 +247,16 @@ function CheckoutContent() {
     if (!session?.user?.id) {
       toast.error("অনুগ্রহ করে আগে লগইন করুন")
       router.push(`/auth/login?redirect=/checkout`)
+      return
+    }
+
+    if (isEmailUnverified) {
+      toast.error("কোর্স কেনার পূর্বে আপনার ইমেইল ভেরিফাই করা আবশ্যক।")
+      return
+    }
+
+    if (finalAmount <= 0) {
+      toast.info("প্রদেয় অর্থ ৳০। অনুগ্রহ করে বিনামূল্যে ভর্তি সম্পন্ন করুন বাটনে ক্লিক করুন।")
       return
     }
 
@@ -288,6 +337,43 @@ function CheckoutContent() {
           </div>
         )}
 
+        {/* Unverified Email Warning Banner */}
+        {!isSessionLoading && session?.user && !session.user.emailVerified && (
+          <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start sm:items-center gap-3">
+              <AlertCircle className="size-5 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5 sm:mt-0" />
+              <div>
+                <p className="font-semibold text-sm">ইমেইল ভেরিফিকেশন আবশ্যক</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  কোর্স কেনার পূর্বে আপনার ইমেইল (<strong>{session.user.email}</strong>) ভেরিফাই করা আবশ্যক। অনুগ্রহ করে আপনার ইনবক্স চেক করুন অথবা নতুন ভেরিফিকেশন লিংক রিকোয়েস্ট করুন।
+                </p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={handleResendVerification}
+              disabled={isSendingVerification}
+              className="shrink-0 border-amber-500/40 hover:bg-amber-500/20 text-amber-900 dark:text-amber-100 cursor-pointer"
+            >
+              {isSendingVerification ? (
+                <>
+                  <Loader2 className="size-3.5 mr-1.5 animate-spin" />
+                  পাঠানো হচ্ছে...
+                </>
+              ) : verificationSent ? (
+                <>
+                  <CheckCircle2 className="size-3.5 mr-1.5 text-emerald-600" />
+                  ইমেইল পাঠানো হয়েছে!
+                </>
+              ) : (
+                "ভেরিফিকেশন ইমেইল পাঠান"
+              )}
+            </Button>
+          </div>
+        )}
+
         {/* Not Logged In Notice */}
         {!isSessionLoading && !session && (
           <div className="mb-8 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -345,11 +431,31 @@ function CheckoutContent() {
                 </CardHeader>
                 <CardContent>
                   {finalAmount === 0 && (
-                    <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-900 dark:text-emerald-200 flex items-center gap-3 text-sm font-medium">
-                      <CheckCircle2 className="size-5 text-emerald-600 shrink-0" />
-                      <span>
-                        কুপন ছাড়ের ফলে আপনার প্রদেয় অর্থ ৳০ (ফ্রি)। ডানদিকের &apos;বিনামূল্যে ভর্তি সম্পন্ন করুন&apos; বাটনে ক্লিক করে সরাসরি কোর্সে যুক্ত হন।
-                      </span>
+                    <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border-2 border-emerald-500/40 text-emerald-950 dark:text-emerald-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <CheckCircle2 className="size-6 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                        <div>
+                          <p className="font-bold text-sm text-emerald-800 dark:text-emerald-300">
+                            ১০০% ছাড় সক্রিয় — কোনো পেমেন্ট ফি নেই!
+                          </p>
+                          <p className="text-xs text-emerald-700/90 dark:text-emerald-300/80">
+                            কুপন ছাড়ের ফলে আপনার প্রদেয় অর্থ ৳০ (ফ্রি)। সরাসরি কোর্সে এনরোল সম্পন্ন করতে ডানদিকের বাটনে ক্লিক করুন।
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={handleFreeEnrollment}
+                        disabled={isSubmitting || !session || isEmailUnverified}
+                        className="shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold cursor-pointer shadow-sm"
+                      >
+                        {isSubmitting ? (
+                          <Loader2 className="size-4 animate-spin" />
+                        ) : (
+                          "বিনামূল্যে ভর্তি সম্পন্ন করুন"
+                        )}
+                      </Button>
                     </div>
                   )}
 
@@ -386,9 +492,9 @@ function CheckoutContent() {
 
                       <Button
                         size="lg"
-                        disabled={isSubmitting || !session}
+                        disabled={isSubmitting || !session || isEmailUnverified || finalAmount <= 0}
                         onClick={handleBkashCheckout}
-                        className="w-full font-semibold bg-[#E2136E] hover:bg-[#C90E60] text-white shadow-md transition-all cursor-pointer"
+                        className="w-full font-semibold bg-[#E2136E] hover:bg-[#C90E60] text-white shadow-md transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {isSubmitting ? (
                           <>
@@ -398,7 +504,7 @@ function CheckoutContent() {
                         ) : (
                           <>
                             <Lock className="size-4 mr-2" />
-                            বিকাশ দিয়ে পে করুন ({formatPrice(totalAmount)})
+                            বিকাশ দিয়ে পে করুন ({formatPrice(finalAmount)})
                             <ArrowRight className="size-4 ml-auto" />
                           </>
                         )}
@@ -434,7 +540,7 @@ function CheckoutContent() {
                             </Button>
                           </div>
                           <p>
-                            ২. সঠিক টাকার পরিমাণ: <strong>{formatPrice(totalAmount)}</strong>
+                            ২. সঠিক টাকার পরিমাণ: <strong>{formatPrice(finalAmount)}</strong>
                           </p>
                           <p>
                             ৩. টাকা পাঠানোর পর এসএমএস থেকে প্রাপ্ত <strong>TrxID</strong> এবং আপনার <strong>নগদ নম্বর</strong> নিচে দিন।
@@ -479,8 +585,8 @@ function CheckoutContent() {
                         <Button
                           type="submit"
                           size="lg"
-                          disabled={isSubmitting || !session}
-                          className="w-full font-semibold bg-[#F7941D] hover:bg-[#DE8214] text-white shadow-md transition-all cursor-pointer"
+                          disabled={isSubmitting || !session || isEmailUnverified || finalAmount <= 0}
+                          className="w-full font-semibold bg-[#F7941D] hover:bg-[#DE8214] text-white shadow-md transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {isSubmitting ? (
                             <>
@@ -627,8 +733,8 @@ function CheckoutContent() {
                           type="button"
                           size="lg"
                           onClick={handleFreeEnrollment}
-                          disabled={isSubmitting || !session}
-                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md cursor-pointer text-sm"
+                          disabled={isSubmitting || !session || isEmailUnverified}
+                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-md cursor-pointer text-sm ring-2 ring-emerald-500/50 hover:ring-emerald-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {isSubmitting ? (
                             <>

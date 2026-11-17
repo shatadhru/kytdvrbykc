@@ -2,6 +2,7 @@ import React from 'react'
 import '@/components/style/globals.css'
 import Providor from '@/payload/providors'
 import NoticeBannerSlot from '@/components/basic/banner/NoticeBannerSlot'
+import PromoModal from '@/components/basic/banner/PromoModal'
 import CookieConsentSlot from '@/components/basic/cookies/CookieConsentSlot'
 import { StudentOnboardingModal } from '@/components/basic/auth/StudentOnboardingModal'
 
@@ -47,6 +48,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
           <Providor>
             <NoticeBannerSlot />
             {children}
+            <PromoModal />
             <CookieConsentSlot />
             <StudentOnboardingModal />
           </Providor>

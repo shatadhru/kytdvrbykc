@@ -56,15 +56,15 @@ export const betterAuthOptions: Partial<BetterAuthOptions> = {
     },
   },
 
-  	account: {
-		accountLinking: {
-			enabled: true, // default
-			trustedProviders: ["google"], // optional: auto-link even if email not verified
-			disableImplicitLinking: true, // set to true to require explicit linking
-			allowDifferentEmails: false, // allow linking accounts with different emails
-			updateUserInfoOnLink: false, // update user profile when linking
-			allowUnlinkingAll: false, // prevent unlinking the last account
-		}
-	},
+  account: {
+    accountLinking: {
+      enabled: true, // default
+      trustedProviders: ["google"], // optional: auto-link even if email not verified
+      disableImplicitLinking: false, // allow implicit linking for trusted providers (e.g. Google)
+      allowDifferentEmails: false, // allow linking accounts with different emails
+      updateUserInfoOnLink: true, // update user profile when linking
+      allowUnlinkingAll: false, // prevent unlinking the last account
+    },
+  },
 }
 

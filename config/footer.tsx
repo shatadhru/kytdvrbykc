@@ -2,11 +2,9 @@ import React from 'react'
 import {
   BookOpen,
   Code2,
-  Database,
   FileText,
   Globe,
   HelpCircle,
-  Layers,
   LayoutDashboard,
   Lock,
   Mail,
@@ -50,11 +48,9 @@ export const footerConfig: FooterConfig = {
       items: [
         { title: 'হোম পেজ', href: '/', icon: Globe },
         { title: 'কোর্সসমূহ', href: '/courses', icon: GraduationCap, badge: 'নতুন' },
-        { title: 'ভিডিও ক্লাস', href: '/video', icon: Layers, badge: 'জনপ্রিয়' },
         { title: 'আমাদের শিক্ষকবৃন্দ', href: '/teachers', icon: GraduationCap, badge: 'ফ্যাকাল্টি' },
         { title: 'কো-অর্ডিনেটর টিম', href: '/coordinators', icon: Headphones },
         { title: 'শিক্ষার্থী ড্যাশবোর্ড', href: '/dashboard', icon: LayoutDashboard },
-        { title: 'এডমিন পোর্টাল', href: '/admin', icon: Database, badge: 'CMS', external: true },
       ],
     },
     {

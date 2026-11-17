@@ -41,6 +41,7 @@ next-env.d.ts
 .env
 
 /media
+*.tar.gz
 
 # Playwright
 node_modules/

@@ -571,6 +571,150 @@ export const SiteSettings: GlobalConfig = {
         },
       ],
     },
+    {
+      name: "promoModal",
+      type: "group",
+      label: "Promotional Popup Modal",
+      admin: {
+        description: "Configure the promotional announcement popup modal shown to visitors once.",
+      },
+      fields: [
+        {
+          name: "enabled",
+          type: "checkbox",
+          label: "Enable Promotional Popup Modal",
+          defaultValue: false,
+        },
+        {
+          name: "version",
+          type: "text",
+          label: "Modal Version",
+          defaultValue: "v1",
+          admin: {
+            description: "Change this version string (e.g. v2, v3, ramadan-2026) to re-trigger the modal for all visitors.",
+          },
+        },
+        {
+          name: "title",
+          type: "text",
+          label: "Modal Title",
+          defaultValue: "বিশেষ অফার ও ভর্তি বিজ্ঞপ্তি",
+        },
+        {
+          name: "description",
+          type: "textarea",
+          label: "Modal Description / Announcement",
+          defaultValue: "নতুন সেশনে ভর্তি চলছে! এখনই ভর্তি হয়ে আপনার প্রস্তুতি নিশ্চিত করুন।",
+        },
+        {
+          name: "image",
+          type: "upload",
+          relationTo: "media",
+          label: "Promotional Banner Image (Optional)",
+        },
+        {
+          name: "imageUrl",
+          type: "text",
+          label: "External Image URL Fallback (Optional)",
+          admin: {
+            description: "Direct image URL if not uploading media to CMS.",
+          },
+        },
+        {
+          name: "ctaText",
+          type: "text",
+          label: "Call-to-Action Button Text",
+          defaultValue: "বিস্তারিত দেখুন",
+        },
+        {
+          name: "ctaLink",
+          type: "text",
+          label: "Call-to-Action URL",
+          defaultValue: "/courses",
+        },
+      ],
+    },
+    {
+      name: "supportAndFaq",
+      type: "group",
+      label: "Support Helpline & FAQs",
+      admin: {
+        description: "Configure student support contact details and dashboard FAQs.",
+      },
+      fields: [
+        {
+          name: "hotline",
+          type: "text",
+          label: "Hotline Phone Number",
+          defaultValue: "+৮৮০ ১৭০০-০০০০০০",
+        },
+        {
+          name: "hotlineHours",
+          type: "text",
+          label: "Support Working Hours",
+          defaultValue: "সকাল ৯টা - রাত ১০টা",
+        },
+        {
+          name: "email",
+          type: "text",
+          label: "Support Email",
+          defaultValue: "support@uniqueteaching.com",
+        },
+        {
+          name: "whatsapp",
+          type: "text",
+          label: "WhatsApp Number / Contact Link",
+          defaultValue: "+8801700000000",
+        },
+        {
+          name: "communityLink",
+          type: "text",
+          label: "Study Community Group Link",
+          defaultValue: "/courses",
+        },
+        {
+          name: "faqs",
+          type: "array",
+          label: "Frequently Asked Questions (FAQs)",
+          labels: {
+            singular: "FAQ",
+            plural: "FAQs",
+          },
+          fields: [
+            {
+              name: "question",
+              type: "text",
+              required: true,
+              label: "Question",
+            },
+            {
+              name: "answer",
+              type: "textarea",
+              required: true,
+              label: "Answer",
+            },
+          ],
+          defaultValue: [
+            {
+              question: "ভিডিও ক্লাসগুলো কীভাবে দেখব?",
+              answer: "ড্যাশবোর্ডের 'আমার কোর্সসমূহ' মেনুতে গিয়ে আপনার কোর্সের অধ্যায় অনুযায়ী সকল রেকর্ডেড ক্লাস উচ্চমানের ভিডিও রেজুলেশনে দেখতে পারবেন।",
+            },
+            {
+              question: "কোর্স ফি কীভাবে পরিশোধ করব?",
+              answer: "বিকাশ, নগদ, রকেট কিংবা যেকোনো ব্যাংকিং কার্ডের মাধ্যমে খুব সহজেই কোর্স ফি পরিশোধ করা যায়। পরিশোধের সাথে সাথেই আপনার কোর্সের অ্যাক্সেস চালু হয়ে যাবে।",
+            },
+            {
+              question: "লাইভ বা ক্লাসের কোনো সমস্যা হলে কার সাথে যোগাযোগ করব?",
+              answer: "আমাদের হটলাইন নম্বরে (সকাল ৯টা থেকে রাত ১০টা) সরাসরি কল করতে পারেন অথবা আমাদের অফিশিয়াল ফেসবুক গ্রুপ ও হোয়াটসঅ্যাপে মেসেজ দিতে পারেন।",
+            },
+            {
+              question: "লেকচার শিট বা অনুশীলনী প্রশ্নপত্র কীভাবে পাব?",
+              answer: "প্রতিটি ক্লাসের ভিডিও লিঙ্কের সাথে ডাউনলোডযোগ্য পিডিএফ লেকচার নোট ও অনুশীলনী শিট সংযুক্ত থাকে।",
+            },
+          ],
+        },
+      ],
+    },
   ],
   hooks: {
     afterChange: [

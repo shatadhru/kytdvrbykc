@@ -156,7 +156,7 @@ export default function AboutPage() {
 
                 <div className="mt-5 space-y-4 text-xs leading-relaxed text-muted-foreground sm:text-sm sm:leading-7">
                   <p>
-                    ২০১৭ সালে একটি সাধারণ কিন্তু গুরুত্বপূর্ণ পর্যবেক্ষণ থেকে শুরু হয়{' '}
+                    ২০১৫ সালে একটি সাধারণ কিন্তু গুরুত্বপূর্ণ পর্যবেক্ষণ থেকে শুরু হয়{' '}
                     <strong className="text-foreground">ইউনিক টিচিং মেথড</strong>। আমাদের দেশের
                     অধিকাংশ শিক্ষার্থী বিজ্ঞান ও গণিতের মতো যৌক্তিক বিষয়গুলোকে ভয় পায় শুধু সঠিক
                     উপস্থাপনা ও কনসেপ্টের অভাবে।

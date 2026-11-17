@@ -20,6 +20,8 @@ import {
   CheckCircle2,
 } from "lucide-react"
 
+export const dynamic = "force-dynamic"
+
 export const metadata = {
   title: "আমার কোর্সসমূহ | ড্যাশবোর্ড",
   description: "আপনার সক্রিয় নিবন্ধিত কোর্স এবং ক্লাসরুম এক্সেস।",

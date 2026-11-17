@@ -15,7 +15,7 @@ export const Banners: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'isActive', 'badge', 'backgroundType', 'updatedAt'],
+    defaultColumns: ['title', 'isActive', 'placement', 'badge', 'backgroundType', 'updatedAt'],
     group: 'Content',
     description: 'Create and manage mobile-friendly announcement and notice banners displayed across the site.',
   },
@@ -40,13 +40,34 @@ export const Banners: CollectionConfig = {
       },
     },
     {
-      name: 'isActive',
-      type: 'checkbox',
-      label: 'Enable / Show Banner',
-      defaultValue: true,
-      admin: {
-        description: 'Toggle this notice on or off. Only active banners are rendered to visitors.',
-      },
+      type: 'row',
+      fields: [
+        {
+          name: 'isActive',
+          type: 'checkbox',
+          label: 'Enable / Show Banner',
+          defaultValue: true,
+          admin: {
+            width: '50%',
+            description: 'Toggle this notice on or off. Only active banners are rendered to visitors.',
+          },
+        },
+        {
+          name: 'placement',
+          type: 'select',
+          label: 'Display Location',
+          defaultValue: 'global',
+          options: [
+            { label: 'Global Top Bar', value: 'global' },
+            { label: 'Courses Page Top Offer', value: 'courses' },
+            { label: 'All Locations', value: 'all' },
+          ],
+          admin: {
+            width: '50%',
+            description: 'Choose where this banner should be displayed.',
+          },
+        },
+      ],
     },
     {
       name: 'content',
@@ -348,6 +369,7 @@ export const Banners: CollectionConfig = {
         try {
           const { cache } = await import('@/lib/cache')
           await cache.del('banners:active')
+          await cache.del('banners:courses')
         } catch {}
       },
     ],
@@ -356,6 +378,7 @@ export const Banners: CollectionConfig = {
         try {
           const { cache } = await import('@/lib/cache')
           await cache.del('banners:active')
+          await cache.del('banners:courses')
         } catch {}
       },
     ],

@@ -49,10 +49,10 @@ function Hero() {
       {/* Content */}
       <div className="absolute inset-0 z-10 flex items-center justify-center px-4 sm:px-6">
         <div className="mx-auto max-w-4xl text-center">
-          <div className="mb-2 sm:mb-3">
+          <div className="mb-2 sm:mb-3 flex justify-center">
             <AnimatedBadge
               label="এস এস সি - ২০২৮ ব্যাচ ভর্তি চলছে"
-              className="text-xs sm:text-sm"
+              className="text-xs sm:text-sm border-white/20 bg-black/40 text-white backdrop-blur-md hover:border-primary/50"
             />
           </div>
 

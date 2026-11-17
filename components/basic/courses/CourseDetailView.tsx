@@ -18,6 +18,8 @@ import {
   FileText,
   Presentation,
   Download,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -41,6 +43,7 @@ export interface CourseDetailViewProps {
     subjects?: { name: string; slug: string; description?: string | null }[]
     lessons?: any[]
     meta?: { title?: string | null; description?: string | null }
+    description?: any
   }
   isEnrolled?: boolean
 }
@@ -48,6 +51,16 @@ export interface CourseDetailViewProps {
 export function CourseDetailView({ course, isEnrolled = false }: CourseDetailViewProps) {
   const { cart, removeItem } = useCart()
   const lessons = course.lessons || []
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
+
+  const descriptionText =
+    course.meta?.description ||
+    (typeof course.description === 'string' ? course.description : '')
+  const isLongDescription = descriptionText.length > 180
+  const displayedDescription =
+    isLongDescription && !isDescriptionExpanded
+      ? `${descriptionText.slice(0, 180)}...`
+      : descriptionText
 
   // If user is already enrolled, automatically remove this course from their cart
   useEffect(() => {
@@ -157,10 +170,26 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
               {course.title}
             </h1>
 
-            {course.meta?.description && (
-              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                {course.meta.description}
-              </p>
+            {descriptionText && (
+              <div className="space-y-1.5">
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                  {displayedDescription}
+                </p>
+                {isLongDescription && (
+                  <button
+                    type="button"
+                    onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline cursor-pointer"
+                  >
+                    <span>{isDescriptionExpanded ? 'সংক্ষিপ্ত' : 'বিস্তারিত'}</span>
+                    {isDescriptionExpanded ? (
+                      <ChevronUp className="size-3.5" />
+                    ) : (
+                      <ChevronDown className="size-3.5" />
+                    )}
+                  </button>
+                )}
+              </div>
             )}
 
             {/* Quick Stats Grid */}
@@ -420,17 +449,28 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
                           </a>
                         )}
                         {lesson.classNoteUrl && (
-                          <a
-                            href={getDownloadUrl(lesson.classNoteUrl, lesson.classNoteName || 'Class-Note')}
-                            download={lesson.classNoteName || 'Class-Note.pdf'}
-                            className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline font-medium"
-                            title="ক্লাস নোট ডাউনলোড করুন"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <span>•</span>
-                            <FileText className="size-3" />
-                            <span>নোট</span>
-                          </a>
+                          isEnrolled ? (
+                            <a
+                              href={getDownloadUrl(lesson.classNoteUrl, lesson.classNoteName || 'Class-Note')}
+                              download={lesson.classNoteName || 'Class-Note.pdf'}
+                              className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                              title="ক্লাস নোট ডাউনলোড করুন"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <span>•</span>
+                              <FileText className="size-3" />
+                              <span>নোট</span>
+                            </a>
+                          ) : (
+                            <span
+                              className="inline-flex items-center gap-1 text-muted-foreground/80 font-medium cursor-not-allowed"
+                              title="নোট শুধুমাত্র এনরোল্ড শিক্ষার্থীদের জন্য সংরক্ষিত"
+                            >
+                              <span>•</span>
+                              <Lock className="size-3 text-muted-foreground" />
+                              <span>নোট (লক করা)</span>
+                            </span>
+                          )
                         )}
                       </div>
                     </div>

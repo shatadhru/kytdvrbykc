@@ -23,6 +23,7 @@ export async function NoticeBannerSlot() {
     })
 
     const found = result.docs.find((doc: any) => {
+      if (doc.placement && doc.placement !== 'global' && doc.placement !== 'all') return false
       if (doc.startDate && new Date(doc.startDate) > now) return false
       if (doc.endDate && new Date(doc.endDate) < now) return false
       return true
@@ -34,6 +35,7 @@ export async function NoticeBannerSlot() {
         title: found.title,
         content: found.content,
         badge: found.badge,
+        placement: found.placement,
         icon: found.icon,
         isActive: found.isActive,
         backgroundType: found.backgroundType,

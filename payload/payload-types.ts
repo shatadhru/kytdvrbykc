@@ -1029,6 +1029,10 @@ export interface Banner {
    */
   isActive?: boolean | null;
   /**
+   * Choose where this banner should be displayed.
+   */
+  placement?: ('global' | 'courses' | 'all') | null;
+  /**
    * The main message text displayed on the banner. Keep it concise for optimal mobile display.
    */
   content: string;
@@ -1779,6 +1783,7 @@ export interface CoordinatorsSelect<T extends boolean = true> {
 export interface BannersSelect<T extends boolean = true> {
   title?: T;
   isActive?: T;
+  placement?: T;
   content?: T;
   badge?: T;
   icon?: T;

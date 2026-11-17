@@ -74,15 +74,15 @@ export function CartDrawerItem({
 
   return (
     <div className="group relative flex items-center gap-3.5 rounded-xl border border-border/70 bg-card/60 p-3 backdrop-blur-xs transition-all hover:border-primary/40 hover:shadow-xs">
-      {/* Thumbnail */}
-      <div className="relative size-16 shrink-0 overflow-hidden rounded-lg border bg-muted">
+      {/* Thumbnail (16:9 Aspect Ratio) */}
+      <div className="relative w-24 aspect-video shrink-0 overflow-hidden rounded-lg border bg-muted">
         {imageUrl ? (
           <Image
             src={imageUrl}
             alt={title}
             fill
             className="object-cover"
-            sizes="64px"
+            sizes="96px"
           />
         ) : (
           <div className="flex size-full items-center justify-center text-muted-foreground bg-muted/60">
@@ -97,7 +97,7 @@ export function CartDrawerItem({
           <div className="min-w-0">
             {productSlug ? (
               <Link
-                href={`/store/${productSlug}`}
+                href={`/courses/${productSlug}`}
                 className="font-semibold text-xs sm:text-sm text-foreground hover:text-primary line-clamp-1 transition-colors"
               >
                 {title}

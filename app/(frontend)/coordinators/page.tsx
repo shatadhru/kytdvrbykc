@@ -27,7 +27,7 @@ import {
 } from 'lucide-react'
 import type { Coordinator as CoordinatorType } from '@/payload/payload-types'
 
-export const revalidate = 60 // ISR revalidation every 60s
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = 'আমাদের কো-অর্ডিনেটরবৃন্দ | Academic Coordinators'
@@ -69,11 +69,10 @@ function resolveCoordinatorImageUrl(image: CoordinatorType['image']): string | n
 }
 
 export default async function CoordinatorsPage() {
-  const payload = await getPayload({ config })
-
   // Query active coordinators from Payload CMS sorted by order
   let coordinators: CoordinatorType[] = []
   try {
+    const payload = await getPayload({ config })
     const result = await payload.find({
       collection: 'coordinators',
       where: {

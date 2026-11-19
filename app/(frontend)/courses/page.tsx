@@ -12,7 +12,7 @@ import { NoticeBanner, type BannerData } from '@/components/basic/banner/NoticeB
 import { GraduationCap, BookOpen } from 'lucide-react'
 import { SiteConfig, getPageTitle } from '@/config/site'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = 'সকল কোর্সসমূহ | Online Courses'
@@ -41,158 +41,160 @@ interface CoursesPageProps {
 
 export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   const { category = 'all', q = '', price = 'all', sort = 'newest' } = await searchParams
-  const payload = await getPayload({ config })
-
-  // 1. Fetch Categories for filter pills
-  const categoriesResult = await payload.find({
-    collection: 'categories',
-    limit: 50,
-    depth: 0,
-  })
-
-  const categories = categoriesResult.docs.map((cat: any) => ({
-    id: cat.id,
-    title: cat.title,
-    slug: cat.slug,
-  }))
-
-  // 2. Fetch admin-managed active offer banner for courses page
+  let categories: { id: string; title: string; slug: string }[] = []
+  let courses: any[] = []
   let offerBannerData: BannerData | null = null
-  try {
-    const now = new Date()
-    const bannersResult = await payload.find({
-      collection: 'banners',
-      where: {
-        and: [
-          { isActive: { equals: true } },
-          {
-            or: [
-              { placement: { equals: 'courses' } },
-              { placement: { equals: 'all' } },
-            ],
-          },
-        ],
-      },
-      sort: '-priority -updatedAt',
-      limit: 5,
-    })
-
-    const foundBanner = bannersResult.docs.find((doc: any) => {
-      if (doc.startDate && new Date(doc.startDate) > now) return false
-      if (doc.endDate && new Date(doc.endDate) < now) return false
-      return true
-    })
-
-    if (foundBanner) {
-      offerBannerData = {
-        id: String(foundBanner.id),
-        title: foundBanner.title,
-        content: foundBanner.content,
-        badge: foundBanner.badge || 'স্পেশাল অফার',
-        placement: foundBanner.placement,
-        icon: foundBanner.icon,
-        isActive: foundBanner.isActive,
-        backgroundType: foundBanner.backgroundType,
-        presetTheme: foundBanner.presetTheme || 'emerald',
-        customColor: foundBanner.customColor,
-        customGradient: foundBanner.customGradient,
-        textColor: foundBanner.textColor,
-        customTextColor: foundBanner.customTextColor,
-        isDismissible: foundBanner.isDismissible,
-        dismissExpiryDays: foundBanner.dismissExpiryDays,
-        isSticky: false,
-        link: foundBanner.link,
-        updatedAt: foundBanner.updatedAt,
-      }
-    }
-  } catch (err) {
-    console.warn('Could not query courses offer banner:', err)
-  }
-
-  // 3. Check user authentication and active enrollments in a single query
   const enrolledCourseIds = new Set<string>()
+
   try {
+    const payload = await getPayload({ config })
     const headersList = await headers()
     const session = await getServerSession(payload, headersList)
-    const userId = session?.user?.id
 
-    if (userId) {
-      const enrollmentsRes = await payload.find({
-        collection: 'enrollments' as any,
+    // 1. Fetch Categories for filter pills
+    const categoriesResult = await payload.find({
+      collection: 'categories',
+      limit: 50,
+      depth: 0,
+    })
+
+    categories = categoriesResult.docs.map((cat: any) => ({
+      id: cat.id,
+      title: cat.title,
+      slug: cat.slug,
+    }))
+
+    // 2. Fetch admin-managed active offer banner for courses page
+    try {
+      const now = new Date()
+      const bannersResult = await payload.find({
+        collection: 'banners',
         where: {
           and: [
-            { student: { equals: userId } },
-            { status: { equals: 'active' } },
+            { isActive: { equals: true } },
+            {
+              or: [
+                { placement: { equals: 'courses' } },
+                { placement: { equals: 'all' } },
+              ],
+            },
           ],
         },
-        limit: 100,
-        depth: 0,
-        overrideAccess: true,
+        sort: '-priority -updatedAt',
+        limit: 5,
       })
 
-      for (const doc of enrollmentsRes.docs as any[]) {
-        const cId = typeof doc.course === 'object' ? doc.course?.id : doc.course
-        if (cId) {
-          enrolledCourseIds.add(String(cId))
+      const found = bannersResult.docs.find((doc: any) => {
+        if (doc.startDate && new Date(doc.startDate) > now) return false
+        if (doc.endDate && new Date(doc.endDate) < now) return false
+        return true
+      })
+
+      if (found) {
+        offerBannerData = {
+          id: String(found.id),
+          title: found.title,
+          content: found.content,
+          badge: found.badge,
+          icon: found.icon,
+          isActive: found.isActive,
+          backgroundType: found.backgroundType,
+          presetTheme: found.presetTheme,
+          customColor: found.customColor,
+          customGradient: found.customGradient,
+          textColor: found.textColor,
+          customTextColor: found.customTextColor,
+          isDismissible: found.isDismissible,
+          dismissExpiryDays: found.dismissExpiryDays,
+          isSticky: false,
+          link: found.link,
+          updatedAt: found.updatedAt,
         }
       }
+    } catch {
+      // Non-blocking fallback if banners query fails
     }
-  } catch (err) {
-    console.warn('Could not check user enrollments on courses page:', err)
-  }
 
-  // 4. Build where filter for products/courses
-  const whereConditions: any[] = [
-    {
-      _status: { equals: 'published' },
-    },
-  ]
+    // 3. Single server-side query for logged-in user enrollments
+    if (session?.user?.id) {
+      try {
+        const userEnrollments = await payload.find({
+          collection: 'enrollments' as any,
+          where: {
+            and: [
+              { student: { equals: session.user.id } },
+              { status: { equals: 'active' } },
+            ],
+          },
+          depth: 0,
+          limit: 100,
+          overrideAccess: true,
+        })
 
-  if (q && q.trim()) {
-    whereConditions.push({
-      title: { contains: q.trim() },
-    })
-  }
+        for (const e of userEnrollments.docs as any[]) {
+          const cId = typeof e.course === 'object' && e.course ? e.course.id : e.course
+          if (cId) enrolledCourseIds.add(String(cId))
+        }
+      } catch {
+        // Fallback silently if enrollment check fails
+      }
+    }
 
-  if (category && category !== 'all') {
-    const targetCat = categoriesResult.docs.find(
-      (c: any) => c.slug === category || c.id === category
-    )
-    if (targetCat) {
+    // 4. Build where filter for products/courses
+    const whereConditions: any[] = [
+      {
+        _status: { equals: 'published' },
+      },
+    ]
+
+    if (q && q.trim()) {
       whereConditions.push({
-        categories: { contains: targetCat.id },
+        title: { contains: q.trim() },
       })
     }
-  }
 
-  if (price === 'free') {
-    whereConditions.push({
-      priceInBDT: { equals: 0 },
+    if (category && category !== 'all') {
+      const targetCat = categoriesResult.docs.find(
+        (c: any) => c.slug === category || c.id === category
+      )
+      if (targetCat) {
+        whereConditions.push({
+          categories: { contains: targetCat.id },
+        })
+      }
+    }
+
+    if (price === 'free') {
+      whereConditions.push({
+        priceInBDT: { equals: 0 },
+      })
+    } else if (price === 'paid') {
+      whereConditions.push({
+        priceInBDT: { greater_than: 0 },
+      })
+    }
+
+    // 5. Determine sort option
+    let sortOption = '-createdAt'
+    if (sort === 'price-asc') {
+      sortOption = 'priceInBDT'
+    } else if (sort === 'price-desc') {
+      sortOption = '-priceInBDT'
+    }
+
+    // 6. Fetch courses
+    const coursesResult = await payload.find({
+      collection: 'products',
+      where: whereConditions.length > 1 ? { and: whereConditions } : whereConditions[0],
+      depth: 2,
+      limit: 60,
+      sort: sortOption,
     })
-  } else if (price === 'paid') {
-    whereConditions.push({
-      priceInBDT: { greater_than: 0 },
-    })
+
+    courses = coursesResult.docs
+  } catch (error) {
+    console.error('Failed to fetch courses/categories from Payload:', error)
   }
-
-  // 5. Determine sort option
-  let sortOption = '-createdAt'
-  if (sort === 'price-asc') {
-    sortOption = 'priceInBDT'
-  } else if (sort === 'price-desc') {
-    sortOption = '-priceInBDT'
-  }
-
-  // 6. Fetch courses
-  const coursesResult = await payload.find({
-    collection: 'products',
-    where: whereConditions.length > 1 ? { and: whereConditions } : whereConditions[0],
-    depth: 2,
-    limit: 60,
-    sort: sortOption,
-  })
-
-  const courses = coursesResult.docs
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">

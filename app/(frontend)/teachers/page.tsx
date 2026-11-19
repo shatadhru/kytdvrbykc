@@ -27,7 +27,7 @@ import {
 } from 'lucide-react'
 import type { Teacher as TeacherType } from '@/payload/payload-types'
 
-export const revalidate = 60 // ISR revalidation every 60s
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = 'আমাদের শিক্ষকবৃন্দ | Faculty Members'
@@ -69,11 +69,10 @@ function resolveTeacherImageUrl(image: TeacherType['image']): string | null {
 }
 
 export default async function TeachersPage() {
-  const payload = await getPayload({ config })
-
   // Query active teachers from Payload CMS sorted by order
   let teachers: TeacherType[] = []
   try {
+    const payload = await getPayload({ config })
     const result = await payload.find({
       collection: 'teachers',
       where: {

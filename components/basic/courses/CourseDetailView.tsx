@@ -48,14 +48,64 @@ export interface CourseDetailViewProps {
   isEnrolled?: boolean
 }
 
+function extractRichTextString(desc: any): string | null {
+  if (!desc) return null
+  if (typeof desc === 'string') {
+    const trimmed = desc.trim()
+    return trimmed.length > 0 ? trimmed : null
+  }
+  if (typeof desc === 'object') {
+    // If Lexical AST
+    if (desc.root) {
+      const texts: string[] = []
+      const traverse = (node: any) => {
+        if (!node) return
+        if (node.text && typeof node.text === 'string') {
+          texts.push(node.text)
+        }
+        if (Array.isArray(node.children)) {
+          for (const child of node.children) {
+            traverse(child)
+          }
+        }
+      }
+      traverse(desc.root)
+      const res = texts.join(' ').replace(/\s+/g, ' ').trim()
+      if (res) return res
+    }
+  }
+  return null
+}
+
+function getTeacherImageUrl(teacher: any): string | null {
+  if (!teacher || typeof teacher !== 'object') return null
+  const img = teacher.image
+  if (!img) return null
+  if (typeof img === 'string') {
+    if (img.startsWith('http') || img.startsWith('/')) return img
+    const cld = extractCloudinarySecureUrl(img)
+    if (cld) return cld
+    return null
+  }
+  return (
+    extractCloudinarySecureUrl(img) ||
+    img.cloudinary?.secure_url ||
+    img.cloudinary?.url ||
+    img.secure_url ||
+    img.url ||
+    (typeof img.filename === 'string' ? `/api/media/file/${img.filename}` : null) ||
+    null
+  )
+}
+
 export function CourseDetailView({ course, isEnrolled = false }: CourseDetailViewProps) {
   const { cart, removeItem } = useCart()
   const lessons = course.lessons || []
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
 
-  const descriptionText =
-    course.meta?.description ||
-    (typeof course.description === 'string' ? course.description : '')
+  // Requirement 13: Content Section description must take precedence over meta description
+  const contentDescription = extractRichTextString(course.description)
+  const descriptionText = contentDescription || course.meta?.description || ''
   const isLongDescription = descriptionText.length > 180
   const displayedDescription =
     isLongDescription && !isDescriptionExpanded
@@ -214,7 +264,7 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
               </div>
             </div>
 
-            {/* Instructors */}
+            {/* Instructors with Photo (Requirement 14) */}
             {course.teachers && course.teachers.length > 0 && (
               <div className="pt-2">
                 <span className="text-xs font-bold text-foreground uppercase tracking-wider block mb-3">
@@ -223,15 +273,26 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
                 <div className="flex flex-wrap gap-4">
                   {course.teachers.map((teacher: any, idx: number) => {
                     const t = typeof teacher === 'object' ? teacher : { name: 'শিক্ষক' }
+                    const imgUrl = getTeacherImageUrl(t)
                     return (
-                      <div key={t.id || idx} className="flex items-center gap-2.5">
-                        <div className="size-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0 border border-primary/20">
-                          <GraduationCap className="size-4" />
+                      <div key={t.id || idx} className="flex items-center gap-3 bg-muted/40 rounded-xl p-2.5 border border-border/60">
+                        <div className="relative size-11 rounded-full overflow-hidden bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0 border-2 border-primary/25 shadow-xs">
+                          {imgUrl ? (
+                            <Image
+                              src={imgUrl}
+                              alt={t.name}
+                              fill
+                              className="object-cover"
+                              sizes="44px"
+                            />
+                          ) : (
+                            <GraduationCap className="size-5" />
+                          )}
                         </div>
                         <div>
-                          <span className="font-semibold text-xs text-foreground block">{t.name}</span>
+                          <span className="font-bold text-sm text-foreground block">{t.name}</span>
                           {t.designation && (
-                            <span className="text-[11px] text-muted-foreground block">{t.designation}</span>
+                            <span className="text-xs text-muted-foreground block">{t.designation}</span>
                           )}
                         </div>
                       </div>
@@ -435,21 +496,34 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
                             <span>{lesson.duration}</span>
                           </>
                         )}
-                        {lesson.classSlideUrl && (
-                          <a
-                            href={getDownloadUrl(lesson.classSlideUrl, lesson.classSlideName || 'Class-Slide')}
-                            download={lesson.classSlideName || 'Class-Slide.pptx'}
-                            className="inline-flex items-center gap-1 text-orange-600 dark:text-orange-400 hover:underline font-medium"
-                            title="ক্লাস স্লাইড ডাউনলোড করুন"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <span>•</span>
-                            <Presentation className="size-3" />
-                            <span>স্লাইড</span>
-                          </a>
+                        {(lesson.classSlideUrl || lesson.hasSlide) && (
+                          isEnrolled && lesson.classSlideUrl ? (
+                            <a
+                              href={getDownloadUrl(lesson.classSlideUrl, lesson.classSlideName || 'Class-Slide')}
+                              download={lesson.classSlideName || 'Class-Slide.pptx'}
+                              className="inline-flex items-center gap-1 text-orange-600 dark:text-orange-400 hover:underline font-medium"
+                              title="ক্লাস স্লাইড ডাউনলোড করুন"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <span>•</span>
+                              <Presentation className="size-3" />
+                              <span>স্লাইড</span>
+                            </a>
+                          ) : (
+                            <button
+                              type="button"
+                              disabled
+                              className="inline-flex items-center gap-1 text-muted-foreground/80 font-medium cursor-not-allowed opacity-75"
+                              title="স্লাইড শুধুমাত্র এনরোল্ড শিক্ষার্থীদের জন্য সংরক্ষিত"
+                            >
+                              <span>•</span>
+                              <Lock className="size-3 text-muted-foreground" />
+                              <span>স্লাইড (লক করা)</span>
+                            </button>
+                          )
                         )}
-                        {lesson.classNoteUrl && (
-                          isEnrolled ? (
+                        {(lesson.classNoteUrl || lesson.hasNote) && (
+                          isEnrolled && lesson.classNoteUrl ? (
                             <a
                               href={getDownloadUrl(lesson.classNoteUrl, lesson.classNoteName || 'Class-Note')}
                               download={lesson.classNoteName || 'Class-Note.pdf'}
@@ -462,14 +536,16 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
                               <span>নোট</span>
                             </a>
                           ) : (
-                            <span
-                              className="inline-flex items-center gap-1 text-muted-foreground/80 font-medium cursor-not-allowed"
-                              title="নোট শুধুমাত্র এনরোল্ড শিক্ষার্থীদের জন্য সংরক্ষিত"
+                            <button
+                              type="button"
+                              disabled
+                              className="inline-flex items-center gap-1 text-muted-foreground/80 font-medium cursor-not-allowed opacity-75"
+                              title="নোট শুধুমাত্র এনরোল্ড শিক্ষার্থীদের জন্য সংরক্ষিত (কোর্স কিনলে আনলক হবে)"
                             >
                               <span>•</span>
                               <Lock className="size-3 text-muted-foreground" />
                               <span>নোট (লক করা)</span>
-                            </span>
+                            </button>
                           )
                         )}
                       </div>

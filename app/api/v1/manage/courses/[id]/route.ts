@@ -75,6 +75,43 @@ export const PUT = requireApiKey(async (req: NextRequest, { params }: { params: 
     }
     if (body.introductoryVideo !== undefined) updateData.introductoryVideo = body.introductoryVideo
     if (body.status !== undefined) updateData._status = body.status
+    if (body.categories !== undefined) updateData.categories = body.categories
+    if (body.teachers !== undefined) updateData.teachers = body.teachers
+    if (body.description !== undefined) {
+      if (typeof body.description === 'string') {
+        updateData.description = {
+          root: {
+            type: 'root',
+            format: '',
+            indent: 0,
+            version: 1,
+            children: [
+              {
+                type: 'paragraph',
+                format: '',
+                indent: 0,
+                version: 1,
+                children: [
+                  {
+                    type: 'text',
+                    format: 0,
+                    detail: 0,
+                    mode: 'normal',
+                    style: '',
+                    text: body.description,
+                    version: 1,
+                  },
+                ],
+                direction: 'ltr',
+              },
+            ],
+            direction: 'ltr',
+          },
+        }
+      } else {
+        updateData.description = body.description
+      }
+    }
     if (body.meta !== undefined) updateData.meta = body.meta
     if (body.subjects !== undefined) updateData.subjects = body.subjects
     if (body.lessons !== undefined) updateData.lessons = body.lessons
@@ -84,6 +121,7 @@ export const PUT = requireApiKey(async (req: NextRequest, { params }: { params: 
       id: course.id,
       data: updateData,
       overrideAccess: true,
+      draft: false,
     })
 
     return NextResponse.json({

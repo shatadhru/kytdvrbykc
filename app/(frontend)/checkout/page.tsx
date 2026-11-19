@@ -42,6 +42,21 @@ function CheckoutContent() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSendingVerification, setIsSendingVerification] = useState(false)
   const [verificationSent, setVerificationSent] = useState(false)
+  const [enrolledCourseIds, setEnrolledCourseIds] = useState<string[]>([])
+
+  // Fetch student's existing enrollments to block duplicate purchase (Requirements 5 & 6)
+  React.useEffect(() => {
+    if (session?.user?.id) {
+      fetch("/api/user/enrollments")
+        .then((r) => r.json())
+        .then((data) => {
+          if (data?.success && Array.isArray(data.enrollments)) {
+            setEnrolledCourseIds(data.enrollments.map((e: any) => String(e.id)))
+          }
+        })
+        .catch(() => {})
+    }
+  }, [session?.user?.id])
 
   // Coupon state
   const [couponInput, setCouponInput] = useState("")
@@ -72,6 +87,12 @@ function CheckoutContent() {
   const discountAmount = appliedCoupon ? appliedCoupon.discountAmount : 0
   const finalAmount = Math.max(0, totalAmount - discountAmount)
   const isEmailUnverified = Boolean(session?.user && !session.user.emailVerified)
+
+  const alreadyEnrolledItems = items.filter((item) => {
+    const pid = String(typeof item.product === "object" && item.product ? item.product.id : item.product)
+    return enrolledCourseIds.includes(pid)
+  })
+  const hasAlreadyEnrolledCourse = alreadyEnrolledItems.length > 0
 
   const handleResendVerification = async () => {
     if (!session?.user?.email || isSendingVerification) return
@@ -154,6 +175,11 @@ function CheckoutContent() {
       return
     }
 
+    if (hasAlreadyEnrolledCourse) {
+      toast.error("আপনি ইতিমধ্যে এই কোর্সে ভর্তি আছেন। একই কোর্স পুনরায় কেনার প্রয়োজন নেই।")
+      return
+    }
+
     try {
       setIsSubmitting(true)
       const res = await fetch("/api/checkout/bkash", {
@@ -205,6 +231,11 @@ function CheckoutContent() {
       return
     }
 
+    if (hasAlreadyEnrolledCourse) {
+      toast.error("আপনি ইতিমধ্যে এই কোর্সে ভর্তি আছেন। একই কোর্স পুনরায় কেনার প্রয়োজন নেই।")
+      return
+    }
+
     if (finalAmount <= 0) {
       toast.info("প্রদেয় অর্থ ৳০। অনুগ্রহ করে বিনামূল্যে ভর্তি সম্পন্ন করুন বাটনে ক্লিক করুন।")
       return
@@ -252,6 +283,11 @@ function CheckoutContent() {
 
     if (isEmailUnverified) {
       toast.error("কোর্স কেনার পূর্বে আপনার ইমেইল ভেরিফাই করা আবশ্যক।")
+      return
+    }
+
+    if (hasAlreadyEnrolledCourse) {
+      toast.error("আপনি ইতিমধ্যে এই কোর্সে ভর্তি আছেন। একই কোর্স পুনরায় কেনার প্রয়োজন নেই।")
       return
     }
 
@@ -430,6 +466,31 @@ function CheckoutContent() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
+                  {hasAlreadyEnrolledCourse && (
+                    <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border-2 border-amber-500/40 text-amber-950 dark:text-amber-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <AlertCircle className="size-6 text-amber-600 dark:text-amber-400 shrink-0" />
+                        <div>
+                          <p className="font-bold text-sm text-amber-800 dark:text-amber-300">
+                            আপনি ইতিমধ্যে কার্টের একটি কোর্সে ভর্তি আছেন!
+                          </p>
+                          <p className="text-xs text-amber-700/90 dark:text-amber-300/80">
+                            আপনার কার্টে থাকা কোর্স আপনি আগেই কিনেছেন। একই কোর্স ২ বার কেনার প্রয়োজন নেই।
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        asChild
+                        size="sm"
+                        className="shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold cursor-pointer shadow-xs"
+                      >
+                        <Link href="/dashboard/my-courses">
+                          ক্লাসরুমে যান
+                        </Link>
+                      </Button>
+                    </div>
+                  )}
+
                   {finalAmount === 0 && (
                     <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border-2 border-emerald-500/40 text-emerald-950 dark:text-emerald-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
@@ -447,8 +508,8 @@ function CheckoutContent() {
                         type="button"
                         size="sm"
                         onClick={handleFreeEnrollment}
-                        disabled={isSubmitting || !session || isEmailUnverified}
-                        className="shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold cursor-pointer shadow-sm"
+                        disabled={isSubmitting || !session || isEmailUnverified || hasAlreadyEnrolledCourse}
+                        className="shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {isSubmitting ? (
                           <Loader2 className="size-4 animate-spin" />
@@ -492,7 +553,7 @@ function CheckoutContent() {
 
                       <Button
                         size="lg"
-                        disabled={isSubmitting || !session || isEmailUnverified || finalAmount <= 0}
+                        disabled={isSubmitting || !session || isEmailUnverified || finalAmount <= 0 || hasAlreadyEnrolledCourse}
                         onClick={handleBkashCheckout}
                         className="w-full font-semibold bg-[#E2136E] hover:bg-[#C90E60] text-white shadow-md transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       >
@@ -585,7 +646,7 @@ function CheckoutContent() {
                         <Button
                           type="submit"
                           size="lg"
-                          disabled={isSubmitting || !session || isEmailUnverified || finalAmount <= 0}
+                          disabled={isSubmitting || !session || isEmailUnverified || finalAmount <= 0 || hasAlreadyEnrolledCourse}
                           className="w-full font-semibold bg-[#F7941D] hover:bg-[#DE8214] text-white shadow-md transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {isSubmitting ? (

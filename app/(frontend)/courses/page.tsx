@@ -8,6 +8,7 @@ import Header from '@/components/basic/header'
 import { Footer } from '@/components/basic/footer'
 import { CourseCard } from '@/components/basic/courses/CourseCard'
 import { CourseFilters } from '@/components/basic/courses/CourseFilters'
+import { CoursePurchaseGuide } from '@/components/basic/courses/CoursePurchaseGuide'
 import { NoticeBanner, type BannerData } from '@/components/basic/banner/NoticeBanner'
 import { GraduationCap, BookOpen } from 'lucide-react'
 import { SiteConfig, getPageTitle } from '@/config/site'
@@ -44,12 +45,22 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   let categories: { id: string; title: string; slug: string }[] = []
   let courses: any[] = []
   let offerBannerData: BannerData | null = null
+  let siteSettings: any = null
   const enrolledCourseIds = new Set<string>()
 
   try {
     const payload = await getPayload({ config })
     const headersList = await headers()
     const session = await getServerSession(payload, headersList)
+
+    // 0. Fetch Site Settings for course purchase guide
+    try {
+      siteSettings = await payload.findGlobal({
+        slug: 'site-settings',
+      })
+    } catch {
+      // Non-blocking fallback
+    }
 
     // 1. Fetch Categories for filter pills
     const categoriesResult = await payload.find({
@@ -159,7 +170,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
       )
       if (targetCat) {
         whereConditions.push({
-          categories: { contains: targetCat.id },
+          categories: { in: [targetCat.id] },
         })
       }
     }
@@ -222,6 +233,9 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
               বেসিক থেকে শুরু করে পরীক্ষা প্রস্তুতি—যেকোনো ক্লাসের বিষয়ভিত্তিক ভিডিও লেকচার ও প্রিমিয়াম ক্লাস পেয়ে যান এক জায়গায়।
             </p>
           </div>
+
+          {/* Course Purchase Guide (Requirement 11) */}
+          <CoursePurchaseGuide guide={siteSettings?.coursePurchaseGuide} />
 
           {/* Filters & Search */}
           <CourseFilters

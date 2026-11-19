@@ -102,11 +102,13 @@ export function SignUpForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">Create an account</CardTitle>
-          <CardDescription>
-            Sign up with your Google account or email
+      <Card className="rounded-2xl border-2 border-emerald-500/25 border-b-4 border-b-emerald-600 bg-card shadow-lg">
+        <CardHeader className="text-center pb-4">
+          <CardTitle className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            নতুন শিক্ষার্থী নিবন্ধন
+          </CardTitle>
+          <CardDescription className="text-xs sm:text-sm text-muted-foreground mt-1">
+            গুগল একাউন্ট অথবা ইমেইল দিয়ে সহজে ফ্রি একাউন্ট তৈরি করুন
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -118,10 +120,10 @@ export function SignUpForm({
                   type="button"
                   disabled={isLoading || isGoogleLoading}
                   onClick={handleGoogleSignIn}
-                  className="w-full"
+                  className="w-full h-11 rounded-xl font-semibold border-border/80 hover:bg-muted/80 cursor-pointer shadow-xs"
                 >
                   {isGoogleLoading ? (
-                    <Loader2Icon className="mr-2 size-4 animate-spin" />
+                    <Loader2Icon className="mr-2 size-4 animate-spin text-primary" />
                   ) : (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -134,53 +136,56 @@ export function SignUpForm({
                       />
                     </svg>
                   )}
-                  {isGoogleLoading ? "Connecting to Google..." : "Continue with Google"}
+                  {isGoogleLoading ? "গুগলে যুক্ত হচ্ছে..." : "Google দিয়ে শুরু করুন"}
                 </Button>
               </Field>
-              <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
-                Or continue with email
+              <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card text-xs text-muted-foreground">
+                অথবা ইমেইল দিয়ে রেজিস্টার করুন
               </FieldSeparator>
               <Field>
-                <FieldLabel htmlFor="name">Full Name</FieldLabel>
+                <FieldLabel htmlFor="name" className="text-xs font-semibold">আপনার নাম</FieldLabel>
                 <Input
                   id="name"
                   type="text"
-                  placeholder="John Doe"
+                  placeholder="পুরো নাম লিখুন"
                   required
                   value={formData.name}
                   onChange={(e) =>
                     setFormdata({ ...formData, name: e.target.value })
                   }
                   disabled={isLoading}
+                  className="rounded-xl h-10"
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="email" className="text-xs font-semibold">ইমেইল ঠিকানা</FieldLabel>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="name@example.com"
                   required
                   value={formData.email}
                   onChange={(e) =>
                     setFormdata({ ...formData, email: e.target.value })
                   }
                   disabled={isLoading}
+                  className="rounded-xl h-10"
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="password">Password</FieldLabel>
-                <InputGroup>
+                <FieldLabel htmlFor="password" className="text-xs font-semibold">পাসওয়ার্ড</FieldLabel>
+                <InputGroup className="rounded-xl overflow-hidden">
                   <InputGroupInput
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Create a password"
+                    placeholder="কমপক্ষে ৮ অক্ষরের পাসওয়ার্ড"
                     required
                     value={formData.password}
                     onChange={(e) =>
                       setFormdata({ ...formData, password: e.target.value })
                     }
                     disabled={isLoading}
+                    className="h-10"
                   />
                   <InputGroupAddon align="inline-end">
                     <InputGroupButton
@@ -188,23 +193,27 @@ export function SignUpForm({
                       variant="ghost"
                       size="icon-xs"
                       onClick={() => setShowPassword((prev) => !prev)}
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখুন"}
                       disabled={isLoading}
                     >
-                      {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                      {showPassword ? <EyeOffIcon className="size-4" /> : <EyeIcon className="size-4" />}
                     </InputGroupButton>
                   </InputGroupAddon>
                 </InputGroup>
               </Field>
-              <Field>
-                <Button type="submit" disabled={isLoading} className="w-full">
-                  {isLoading && <Loader2Icon className="mr-2 size-4 animate-spin" />}
-                  {isLoading ? "Creating account..." : "Sign Up"}
+              <Field className="pt-1">
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md cursor-pointer transition-all"
+                >
+                  {isLoading && <Loader2Icon className="mr-2 size-4 animate-spin text-white" />}
+                  {isLoading ? "একাউন্ট তৈরি হচ্ছে..." : "নিবন্ধন সম্পন্ন করুন"}
                 </Button>
-                <FieldDescription className="text-center">
-                  Already have an account?{" "}
-                  <Link href="/auth/login" className="underline underline-offset-4 hover:text-primary">
-                    Login
+                <FieldDescription className="text-center text-xs mt-3">
+                  ইতিমধ্যে একাউন্ট আছে?{" "}
+                  <Link href="/auth/login" className="font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
+                    লগইন করুন
                   </Link>
                 </FieldDescription>
               </Field>
@@ -212,16 +221,16 @@ export function SignUpForm({
           </form>
         </CardContent>
       </Card>
-      <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our{" "}
+      <FieldDescription className="px-6 text-center text-[11px] text-muted-foreground">
+        নিবন্ধনের মাধ্যমে আপনি আমাদের{" "}
         <Link href="/auth/terms" className="underline underline-offset-4 hover:text-primary">
-          Terms of Service
+          ব্যবহারের শর্তাবলী
         </Link>{" "}
-        and{" "}
+        ও{" "}
         <Link href="/auth/privacy" className="underline underline-offset-4 hover:text-primary">
-          Privacy Policy
-        </Link>
-        .
+          গোপনীয়তা নীতি
+        </Link>{" "}
+        মেনে নিচ্ছেন।
       </FieldDescription>
     </div>
   )

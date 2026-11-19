@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 import { Button } from '@/components/ui/button'
-import { ShoppingBag, Check, Loader2 } from 'lucide-react'
+import { ShoppingBag, Check, Loader2, GraduationCap } from 'lucide-react'
 import { toast } from 'sonner'
 import { useCartDrawer } from './cart-drawer-context'
 import { cn } from '@/lib/utils'
@@ -30,6 +31,14 @@ export interface AddToCartButtonProps {
    * Optional product title for toast notification
    */
   productTitle?: string
+  /**
+   * Course slug for direct classroom link if enrolled
+   */
+  courseSlug?: string
+  /**
+   * Whether the current student is already actively enrolled in this course
+   */
+  isEnrolled?: boolean
   /**
    * Automatically opens the cart drawer after adding (default: true)
    */
@@ -75,6 +84,8 @@ export function AddToCartButton({
   quantity = 1,
   text = 'Add to Cart',
   productTitle,
+  courseSlug,
+  isEnrolled = false,
   openDrawer = true,
   iconOnly = false,
   showIcon = true,
@@ -84,16 +95,65 @@ export function AddToCartButton({
   disabled = false,
   onSuccess,
 }: AddToCartButtonProps) {
-  const { addItem, isLoading } = useCart()
+  const { addItem, isLoading, cart } = useCart()
   const { openDrawer: triggerDrawer } = useCartDrawer()
   const [isAdding, setIsAdding] = useState(false)
   const [justAdded, setJustAdded] = useState(false)
+
+  // If already enrolled, direct them to study (Requirement 6)
+  if (isEnrolled) {
+    if (iconOnly) {
+      return (
+        <Button
+          asChild
+          variant="default"
+          size={size === 'default' ? 'icon' : size}
+          className={cn('rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer', className)}
+        >
+          <Link href={courseSlug ? `/courses/${courseSlug}?learn=true` : '/dashboard/my-courses'} title="ক্লাশ শুরু করুন">
+            <GraduationCap className="size-4" />
+          </Link>
+        </Button>
+      )
+    }
+
+    return (
+      <Button
+        asChild
+        variant="default"
+        size={size}
+        className={cn(
+          'gap-2 rounded-xl font-semibold transition-all shadow-xs bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer',
+          className
+        )}
+      >
+        <Link href={courseSlug ? `/courses/${courseSlug}?learn=true` : '/dashboard/my-courses'}>
+          <GraduationCap className="size-4" />
+          <span>ক্লাশ শুরু করুন</span>
+        </Link>
+      </Button>
+    )
+  }
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
     if (!productId || isAdding || isLoading) return
+
+    // Prevent duplicate course in cart (Requirement 7)
+    const isAlreadyInCart = cart?.items?.some((item: any) => {
+      const prodId = typeof item.product === 'object' && item.product ? item.product.id : item.product
+      return String(prodId) === String(productId)
+    })
+
+    if (isAlreadyInCart) {
+      toast.info('এই কোর্সটি ইতিমধ্যে আপনার কার্টে যুক্ত আছে।')
+      if (openDrawer) {
+        triggerDrawer()
+      }
+      return
+    }
 
     setIsAdding(true)
     try {

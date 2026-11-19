@@ -147,8 +147,9 @@ export function CartDrawerItem({
             <button
               type="button"
               onClick={handleIncrement}
-              disabled={isUpdating}
-              className="size-6 rounded flex items-center justify-center hover:bg-muted text-foreground transition-colors disabled:opacity-50 cursor-pointer"
+              disabled={isUpdating || quantity >= 1}
+              className="size-6 rounded flex items-center justify-center hover:bg-muted text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+              title={quantity >= 1 ? "কোর্সের সর্বোচ্চ ১টি আসন নেওয়া যাবে" : "Increase quantity"}
               aria-label="Increase quantity"
             >
               <Plus className="size-3" />

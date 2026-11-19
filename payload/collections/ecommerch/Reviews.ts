@@ -3,9 +3,13 @@ import adminOnly from '@/payload/access/adminOnly'
 
 export const Reviews: CollectionConfig = {
   slug: 'reviews',
+  labels: {
+    singular: 'Review',
+    plural: 'Reviews',
+  },
   admin: {
     useAsTitle: 'title',
-    group: 'E-commerce',
+    group: 'Ecommerce',
     defaultColumns: ['title', 'rating', 'product', 'author', 'approved', 'createdAt'],
   },
   access: {

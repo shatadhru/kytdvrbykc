@@ -29,6 +29,11 @@ export const OrdersCollection: CollectionOverride = ({ defaultCollection }) => {
       ],
     },
 
+    labels: {
+      singular: 'Order',
+      plural: 'Orders',
+    },
+
     admin: {
       ...defaultCollection.admin,
       defaultColumns: ['createdAt', 'customerEmail', 'paymentMethod', 'paymentStatus', 'status'],

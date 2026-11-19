@@ -5,6 +5,10 @@ import type { CollectionConfig } from 'payload'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
+  labels: {
+    singular: 'Category',
+    plural: 'Categories',
+  },
   access: {
     create: adminOnly,
     delete: adminOnly,
@@ -13,7 +17,7 @@ export const Categories: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    group: 'Content',
+    group: 'Ecommerce',
   },
   fields: [
     {

@@ -207,32 +207,32 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         unreadCount={unreadCount}
       />
       <SidebarInset className="min-w-0 flex flex-col min-h-screen">
-        <header className="flex h-10 sm:h-12 shrink-0 items-center gap-1.5 sm:gap-2 border-b px-2.5 sm:px-4 bg-background/95 backdrop-blur z-20">
+        <header className="flex h-14 sm:h-16 shrink-0 items-center gap-2 sm:gap-3 border-b px-3 sm:px-5 bg-background/95 backdrop-blur z-20">
           {/* Mobile Brand Logo - Visible on mobile (< md), hidden on desktop */}
           <div className="flex md:hidden items-center pl-1">
-            <Logo href="/dashboard" size="xs" />
+            <Logo href="/dashboard" size="sm" />
           </div>
 
           {/* Desktop Breadcrumbs - Hidden on mobile, visible on desktop (md:flex) */}
           <Breadcrumb className="hidden md:flex min-w-0">
             <BreadcrumbList className="flex-nowrap">
               <BreadcrumbItem className="min-w-0">
-                <BreadcrumbLink href="/dashboard" className="truncate font-medium">
+                <BreadcrumbLink href="/dashboard" className="truncate font-semibold text-sm">
                   {workspace.name}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>ড্যাশবোর্ড</BreadcrumbPage>
+                <BreadcrumbPage className="font-semibold text-sm">ড্যাশবোর্ড</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
 
-          <div className="ml-auto flex items-center gap-1 sm:gap-2">
+          <div className="ml-auto flex items-center gap-1.5 sm:gap-2.5">
             {/* Dashboard Theme Switcher */}
             <HeaderThemeToggle
               size="icon-sm"
-              className="size-7 sm:size-8.5 rounded-lg sm:rounded-xl border border-border/80 bg-background/80 hover:bg-accent/60 shadow-xs"
+              className="size-8 sm:size-9 rounded-xl border border-border/80 bg-background/80 hover:bg-accent/60 shadow-xs"
             />
 
             {/* NOTIFICATION BELL WITH NUMBER SYSTEM */}
@@ -243,11 +243,11 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                 onClick={() => setIsNotifOpen(!isNotifOpen)}
                 aria-label={`Notifications, ${unreadCount} unread`}
                 className={cn(
-                  "relative inline-flex items-center justify-center size-7 sm:size-8.5 rounded-lg sm:rounded-xl border border-border/80 bg-background/80 hover:bg-accent/60 transition-all duration-200 shadow-xs",
+                  "relative inline-flex items-center justify-center size-8 sm:size-9 rounded-xl border border-border/80 bg-background/80 hover:bg-accent/60 transition-all duration-200 shadow-xs cursor-pointer",
                   isNotifOpen && "bg-accent/80 border-border"
                 )}
               >
-                <BellBoldDuotone size={16} className="text-purple-500 transition-transform duration-200 group-hover/button:scale-110 sm:scale-110" />
+                <BellBoldDuotone size={17} className="text-purple-500 transition-transform duration-200 group-hover/button:scale-110 sm:scale-110" />
                 {unreadCount > 0 && (
                   <span
                     className="absolute -top-1.5 -right-1.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-semibold text-white shadow-xs animate-in zoom-in-75 duration-200"
@@ -263,7 +263,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                 <>
                   {/* Mobile Backdrop overlay (starts below header to prevent blurring the header) */}
                   <div
-                    className="fixed inset-x-0 top-12 bottom-0 bg-black/30 z-40 sm:hidden"
+                    className="fixed inset-x-0 top-14 sm:top-16 bottom-0 bg-black/30 z-40 sm:hidden"
                     onClick={() => setIsNotifOpen(false)}
                   />
 

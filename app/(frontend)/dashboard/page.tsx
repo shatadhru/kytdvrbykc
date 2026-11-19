@@ -17,6 +17,7 @@ import {
 import { authClient } from "@/payload/auth/client"
 import { useActivities } from "@/lib/activity/activity-service"
 import { ActivityTimeline } from "@/components/basic/activity/ActivityTimeline"
+import { EnrolledCoursesHorizontalList } from "@/components/basic/dashboard/EnrolledCoursesHorizontalList"
 
 export default function DashboardPage() {
   const { data: session } = authClient.useSession()
@@ -70,6 +71,9 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Enrolled Courses Horizontal Card List (Requirement 17) */}
+      <EnrolledCoursesHorizontalList />
 
       {/* 2. Stats Section (Desktop/Tablet Only) */}
       <div className="hidden sm:grid sm:grid-cols-2 sm:gap-4">

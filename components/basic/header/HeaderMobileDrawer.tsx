@@ -24,6 +24,7 @@ import {
   ExternalLink,
   LayoutDashboard,
   User,
+  Bell,
   Database,
   LogOut,
   LogIn,
@@ -295,6 +296,21 @@ export function HeaderMobileDrawer({
                     <span>সেটিংস</span>
                   </Link>
                 </div>
+
+                {/* Mobile Notification Button (Requirement 15) */}
+                <Link
+                  href={config.auth.notificationsUrl || '/dashboard/notifications'}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center justify-between w-full px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-muted/60 hover:bg-muted text-foreground transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <Bell className="size-3.5 text-primary" />
+                    <span>নোটিফিকেশন</span>
+                  </div>
+                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-primary/10 text-primary">
+                    আপডেট
+                  </span>
+                </Link>
 
                 {isAdmin && (
                   <a

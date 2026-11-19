@@ -13,6 +13,7 @@ import { payloadEmailAdapter } from '@/utils/sendEmail/payloadAdapter'
 import { customAdminViews, generateAdminGlobals } from '@/config/adminCustomComponents'
 import { brandThemeConfig } from '@/config/brandTheme'
 import { Categories } from './collections/ecommerch/Categories'
+import { Subjects } from './collections/ecommerch/Subjects'
 import { Banners } from './collections/Banners'
 import { CookieConsent } from './globals/CookieConsent'
 import { Reviews } from './collections/ecommerch/Reviews'
@@ -72,6 +73,7 @@ export default buildConfig({
     Users,
     Media,
     Categories,
+    Subjects,
     Teachers,
     Coordinators,
     Banners,

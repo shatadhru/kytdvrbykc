@@ -336,6 +336,10 @@ export interface Product {
    */
   thumbnail: string | Media;
   /**
+   * Direct fallback image URL (e.g. from utmeducation.com)
+   */
+  thumbnailUrl?: string | null;
+  /**
    * Public preview / trailer video URL (YouTube, Vimeo, etc.)
    */
   introductoryVideo?: string | null;
@@ -555,6 +559,10 @@ export interface Product {
 export interface Media {
   id: string;
   alt: string;
+  /**
+   * Direct image URL if hosted externally (e.g. utmeducation.com or CDN)
+   */
+  externalUrl?: string | null;
   /**
    * Cloudinary Media Information
    */
@@ -1683,6 +1691,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  externalUrl?: T;
   cloudinary?:
     | T
     | {
@@ -2086,6 +2095,7 @@ export interface VariantOptionsSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
   thumbnail?: T;
+  thumbnailUrl?: T;
   introductoryVideo?: T;
   description?: T;
   gallery?:
@@ -2553,6 +2563,42 @@ export interface SiteSetting {
      */
     showProtectionNotice?: boolean | null;
   };
+  /**
+   * Configure the promotional announcement popup modal shown to visitors once.
+   */
+  promoModal?: {
+    enabled?: boolean | null;
+    /**
+     * Change this version string (e.g. v2, v3, ramadan-2026) to re-trigger the modal for all visitors.
+     */
+    version?: string | null;
+    title?: string | null;
+    description?: string | null;
+    image?: (string | null) | Media;
+    /**
+     * Direct image URL if not uploading media to CMS.
+     */
+    imageUrl?: string | null;
+    ctaText?: string | null;
+    ctaLink?: string | null;
+  };
+  /**
+   * Configure student support contact details and dashboard FAQs.
+   */
+  supportAndFaq?: {
+    hotline?: string | null;
+    hotlineHours?: string | null;
+    email?: string | null;
+    whatsapp?: string | null;
+    communityLink?: string | null;
+    faqs?:
+      | {
+          question: string;
+          answer: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2775,6 +2821,34 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         disableTextSelection?: T;
         exemptAdmins?: T;
         showProtectionNotice?: T;
+      };
+  promoModal?:
+    | T
+    | {
+        enabled?: T;
+        version?: T;
+        title?: T;
+        description?: T;
+        image?: T;
+        imageUrl?: T;
+        ctaText?: T;
+        ctaLink?: T;
+      };
+  supportAndFaq?:
+    | T
+    | {
+        hotline?: T;
+        hotlineHours?: T;
+        email?: T;
+        whatsapp?: T;
+        communityLink?: T;
+        faqs?:
+          | T
+          | {
+              question?: T;
+              answer?: T;
+              id?: T;
+            };
       };
   updatedAt?: T;
   createdAt?: T;

@@ -3,9 +3,13 @@ import adminOnly from '@/payload/access/adminOnly'
 
 export const Coupons: CollectionConfig = {
   slug: 'coupons',
+  labels: {
+    singular: 'Coupon',
+    plural: 'Coupons',
+  },
   admin: {
     useAsTitle: 'code',
-    group: 'E-commerce',
+    group: 'Ecommerce',
     defaultColumns: ['code', 'type', 'value', 'usageCount', 'maxUses', 'expiresAt', 'active'],
   },
   access: {

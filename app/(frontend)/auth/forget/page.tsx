@@ -67,14 +67,14 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader className="space-y-1 text-center">
-        <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-          <MailIcon className="h-6 w-6 text-primary" />
+    <Card className="w-full rounded-2xl border-2 border-emerald-500/25 border-b-4 border-b-emerald-600 bg-card shadow-lg">
+      <CardHeader className="space-y-1 text-center pb-3">
+        <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+          <MailIcon className="h-6 w-6" />
         </div>
-        <CardTitle className="text-2xl">Forgot Password</CardTitle>
-        <CardDescription>
-          Enter your email address and we&apos;ll send you a verification code
+        <CardTitle className="text-xl sm:text-2xl font-bold text-foreground">পাসওয়ার্ড পুনরুদ্ধার</CardTitle>
+        <CardDescription className="text-xs sm:text-sm text-muted-foreground">
+          আপনার নিবন্ধিত ইমেইল ঠিকানা দিন, আমরা একটি ভেরিফিকেশন কোড পাঠাবো
         </CardDescription>
       </CardHeader>
 
@@ -84,7 +84,7 @@ export default function ForgotPasswordPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="email">Email Address</FieldLabel>
+              <FieldLabel htmlFor="email" className="text-xs font-semibold">ইমেইল ঠিকানা</FieldLabel>
               <Input
                 id="email"
                 type="email"
@@ -93,36 +93,41 @@ export default function ForgotPasswordPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isLoading}
+                className="rounded-xl h-10"
               />
-              <FieldDescription>
-                We will send a reset code to this email if it is registered
+              <FieldDescription className="text-[11px] text-muted-foreground mt-1">
+                একাউন্ট থাকলে এই ইমেইলে একটি ৬-সংখ্যার ওটিপি কোড যাবে
               </FieldDescription>
             </Field>
           </FieldGroup>
 
-          <Button type="submit" disabled={isLoading} className="w-full">
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full h-11 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md cursor-pointer transition-all"
+          >
             {isLoading ? (
               <>
-                <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-                Sending code...
+                <Loader2Icon className="mr-2 h-4 w-4 animate-spin text-white" />
+                কোড পাঠানো হচ্ছে...
               </>
             ) : (
               <>
-                Send Reset Code <ArrowRightIcon className="ml-2 h-4 w-4" />
+                রিসেট কোড পাঠান <ArrowRightIcon className="ml-2 h-4 w-4" />
               </>
             )}
           </Button>
         </form>
       </CardContent>
 
-      <CardFooter className="flex justify-center">
-        <p className="text-sm text-muted-foreground">
-          Remember your password?{" "}
+      <CardFooter className="flex justify-center pt-0">
+        <p className="text-xs text-muted-foreground">
+          পাসওয়ার্ড মনে পড়েছে?{" "}
           <Link
             href="/auth/login"
-            className="text-primary underline underline-offset-4 hover:opacity-80"
+            className="font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
           >
-            Sign in
+            লগইন করুন
           </Link>
         </p>
       </CardFooter>

@@ -1,8 +1,9 @@
 "use client";
 
+import React, { useState } from "react";
 import GhostFibers from "./GhostFibers";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, PlayCircle } from "lucide-react";
+import { ArrowRight, PlayCircle, Loader2, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { Pattern } from "./c-carousel-5";
 import { AnimatedBadge } from "../shadcn-space/badge/badge-08";
@@ -10,6 +11,12 @@ import { useRouter } from "next/navigation";
 
 function Hero() {
   const router = useRouter();
+  const [isNavigatingToCourses, setIsNavigatingToCourses] = useState(false);
+
+  const handleCoursesClick = () => {
+    setIsNavigatingToCourses(true);
+    router.push("/courses");
+  };
 
   return (
     <section className="relative h-[680px] overflow-hidden sm:h-[780px]">
@@ -77,26 +84,37 @@ function Hero() {
           </div>
 
           <div className="mt-4 flex flex-wrap justify-center gap-2.5 sm:mt-5 sm:gap-4">
-            <div className="relative inline-flex overflow-hidden rounded-xl p-[1px] shadow-[0_4px_14px_0_rgba(0,118,255,0.39)] hover:shadow-[0_6px_20px_rgba(0,118,255,0.25)] transition-all duration-200">
-              <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#FF0000_0%,#ffffff_50%,#ffffff_75%,#fafafa_100%)]" />
+            <div className="relative inline-flex overflow-hidden rounded-xl p-[1px] shadow-[0_4px_20px_0_rgba(16,185,129,0.35)] hover:shadow-[0_6px_25px_rgba(16,185,129,0.5)] transition-all duration-300">
+              <span className="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#10b981_0%,#38bdf8_50%,#10b981_100%)]" />
               <Button
-                onClick={() => router.push("/courses")}
+                onClick={handleCoursesClick}
+                disabled={isNavigatingToCourses}
                 size="lg"
-                className="relative h-10 rounded-[10px] bg-primary px-5 text-xs font-medium text-white hover:bg-primary/90 active:scale-[0.98] sm:h-11 sm:px-7 sm:text-sm transition-all duration-200 ease-linear cursor-pointer"
+                className="relative h-11 rounded-[11px] bg-gradient-to-r from-emerald-600 to-teal-600 px-6 text-xs sm:text-sm font-bold text-white hover:from-emerald-500 hover:to-teal-500 active:scale-[0.98] transition-all duration-200 cursor-pointer shadow-md"
               >
-                প্রিমিয়াম কোর্স সমূহ
-                <ArrowRight className="ml-1.5 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                {isNavigatingToCourses ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin text-white" />
+                    <span>কোর্সে নেওয়া হচ্ছে...</span>
+                  </>
+                ) : (
+                  <>
+                    <GraduationCap className="mr-2 h-4 w-4" />
+                    <span>প্রিমিয়াম কোর্স সমূহ</span>
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </>
+                )}
               </Button>
             </div>
 
             <Button
-              onClick={() => router.push("/demo")}
-              variant="secondary"
+              onClick={() => router.push("/courses")}
+              variant="outline"
               size="lg"
-              className="h-10 rounded-xl px-4 text-xs font-semibold sm:h-11 sm:px-6 sm:text-sm"
+              className="h-11 rounded-xl px-5 text-xs sm:text-sm font-semibold border-white/20 bg-black/40 text-white backdrop-blur-md hover:bg-white/10 hover:border-white/40 cursor-pointer shadow-xs"
             >
-              কোর্সে ভর্তি প্রক্রিয়া
-              <PlayCircle className="ml-1 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              কোর্স কেনার গাইড
+              <PlayCircle className="ml-1.5 h-4 w-4 text-emerald-400" />
             </Button>
           </div>
         </div>

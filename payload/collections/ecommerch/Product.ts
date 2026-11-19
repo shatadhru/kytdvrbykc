@@ -244,8 +244,14 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
   return {
     ...defaultCollection,
 
+    labels: {
+      singular: 'Course',
+      plural: 'Courses',
+    },
+
     admin: {
       ...defaultCollection?.admin,
+      group: 'Ecommerce',
       defaultColumns: ['title', 'priceInBDT', '_status'],
       livePreview: {
         url: ({ data }) => generatePreviewPath({ slug: data?.slug }),
@@ -505,6 +511,31 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
                   initCollapsed: false,
                 },
                 fields: [
+                  {
+                    type: 'row',
+                    fields: [
+                      {
+                        name: 'subjectRef',
+                        type: 'relationship',
+                        relationTo: 'subjects' as any,
+                        label: 'মাস্টার সাবজেক্ট লিংক (Master Subject Reference)',
+                        admin: {
+                          width: '50%',
+                          description: 'কেন্দ্রীয় সাবজেক্ট নির্বাচন করুন (ঐচ্ছিক)। এটি সিলেক্ট থাকলে মূল সাবজেক্ট আপডেটে এই কোর্সও আপডেট হবে।',
+                        },
+                      },
+                      {
+                        name: 'overrideSubjectLessons',
+                        type: 'checkbox',
+                        label: 'কাস্টম ক্লাস ওভাররাইড (Disconnect from Master Updates)',
+                        defaultValue: false,
+                        admin: {
+                          width: '50%',
+                          description: 'যদি এই কোর্সের জন্য আলাদা কাস্টম ক্লাস সাজাতে চান এবং মূল সাবজেক্ট থেকে অটো-সিঙ্ক বন্ধ রাখতে চান।',
+                        },
+                      },
+                    ],
+                  },
                   {
                     type: 'row',
                     fields: [

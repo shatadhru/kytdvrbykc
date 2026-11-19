@@ -35,28 +35,38 @@ export function getProductUnitPrice(product: any, variant?: any): number {
   return 0
 }
 
-export function getProductImageUrl(product: any): string | null {
-  if (!product || typeof product === 'string') return null
+export function getProductImageUrl(product: any): string {
+  if (!product) return '/images/course-placeholder.jpg'
+
+  // If product is just a string (ID or URL)
+  if (typeof product === 'string') {
+    if (product.startsWith('http') || product.startsWith('/')) return product
+    return '/images/course-placeholder.jpg'
+  }
+
   const img =
     product.thumbnail ||
     product.thumbnailUrl ||
     product.image ||
     product.featuredImage ||
+    product.banner ||
     (product.gallery && product.gallery[0]?.image)
 
-  if (!img) return null
+  if (!img) return '/images/course-placeholder.jpg'
+
   if (typeof img === 'string') {
     if (img.startsWith('http') || img.startsWith('/')) return img
-    return null
+    return '/images/course-placeholder.jpg'
   }
-  return (
+
+  const resolved =
     img.cloudinary?.secure_url ||
     img.cloudinary?.url ||
     img.secure_url ||
     img.url ||
     img.externalUrl ||
     img.thumbnailURL ||
-    (typeof img.filename === 'string' ? `/api/media/file/${img.filename}` : null) ||
-    null
-  )
+    (typeof img.filename === 'string' ? `/api/media/file/${img.filename}` : null)
+
+  return resolved || '/images/course-placeholder.jpg'
 }

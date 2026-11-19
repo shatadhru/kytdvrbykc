@@ -24,6 +24,11 @@ import {
   LogIn,
   ArrowRight,
   Loader2,
+  BookOpen,
+  Receipt,
+  FileText,
+  Activity,
+  HelpCircle,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { HeaderAuthConfig } from '@/config/header'
@@ -170,11 +175,11 @@ export function HeaderUserMenu({
           align="end"
           side="bottom"
           sideOffset={8}
-          className="w-56 p-1.5 shadow-lg border border-border/60 bg-popover/95 backdrop-blur-md rounded-xl"
+          className="w-64 p-1.5 shadow-xl border border-border/70 bg-popover/98 backdrop-blur-md rounded-2xl"
         >
           {/* User profile card in dropdown */}
-          <div className="flex items-center gap-2.5 p-2 rounded-lg bg-muted/40 mb-1">
-            <Avatar className="size-8 shrink-0 border border-border/50">
+          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-muted/50 mb-1">
+            <Avatar className="size-8.5 shrink-0 border border-border/50">
               <AvatarImage src={userImage} alt={userName} />
               <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
                 {userInitials}
@@ -182,7 +187,7 @@ export function HeaderUserMenu({
             </Avatar>
             <div className="flex flex-col min-w-0 flex-1">
               <div className="flex items-center gap-1.5">
-                <span className="text-xs font-semibold text-foreground truncate">
+                <span className="text-xs font-bold text-foreground truncate">
                   {userName}
                 </span>
                 {isAdmin ? (
@@ -203,35 +208,82 @@ export function HeaderUserMenu({
 
           <DropdownMenuSeparator className="my-1" />
 
-          {/* Quick Links */}
+          {/* Quick Links & Essentials (Requirement 20) */}
           <DropdownMenuGroup>
             <DropdownMenuItem
               onClick={() => router.push(authConfig.dashboardUrl)}
-              className="gap-2 text-xs py-1.5 font-medium cursor-pointer"
+              className="gap-2.5 text-xs py-1.5 font-medium cursor-pointer rounded-lg"
             >
-              <LayoutDashboard className="size-3.5 text-muted-foreground" />
+              <LayoutDashboard className="size-4 text-primary" />
               <span>ড্যাশবোর্ড</span>
             </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={() => router.push('/dashboard/my-courses')}
+              className="gap-2.5 text-xs py-1.5 font-medium cursor-pointer rounded-lg"
+            >
+              <BookOpen className="size-4 text-emerald-600 dark:text-emerald-400" />
+              <span>আমার কোর্সসমূহ</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={() => router.push('/dashboard/orders')}
+              className="gap-2.5 text-xs py-1.5 font-medium cursor-pointer rounded-lg"
+            >
+              <Receipt className="size-4 text-sky-600 dark:text-sky-400" />
+              <span>পেমেন্ট রসিদ ও অর্ডার</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={() => router.push('/dashboard/files')}
+              className="gap-2.5 text-xs py-1.5 font-medium cursor-pointer rounded-lg"
+            >
+              <FileText className="size-4 text-amber-600 dark:text-amber-400" />
+              <span>ডাউনলোডকৃত ফাইল ও নোট</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={() => router.push('/dashboard/activity')}
+              className="gap-2.5 text-xs py-1.5 font-medium cursor-pointer rounded-lg"
+            >
+              <Activity className="size-4 text-purple-600 dark:text-purple-400" />
+              <span>অগ্রগতি ও পরিসংখ্যান</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+
+          <DropdownMenuSeparator className="my-1" />
+
+          <DropdownMenuGroup>
             <DropdownMenuItem
               onClick={() => router.push(authConfig.profileUrl)}
-              className="gap-2 text-xs py-1.5 font-medium cursor-pointer"
+              className="gap-2.5 text-xs py-1.5 font-medium cursor-pointer rounded-lg"
             >
-              <User className="size-3.5 text-muted-foreground" />
-              <span>প্রোফাইল ও সেটিংস</span>
+              <User className="size-4 text-muted-foreground" />
+              <span>প্রোফাইল সেটিংস</span>
             </DropdownMenuItem>
+
             <DropdownMenuItem
               onClick={() => router.push(authConfig.notificationsUrl)}
-              className="gap-2 text-xs py-1.5 font-medium cursor-pointer"
+              className="gap-2.5 text-xs py-1.5 font-medium cursor-pointer rounded-lg"
             >
-              <Bell className="size-3.5 text-muted-foreground" />
+              <Bell className="size-4 text-muted-foreground" />
               <span>নোটিফিকেশন</span>
             </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={() => router.push('/contact')}
+              className="gap-2.5 text-xs py-1.5 font-medium cursor-pointer rounded-lg"
+            >
+              <HelpCircle className="size-4 text-muted-foreground" />
+              <span>হেল্পলাইন ও সাপোর্ট</span>
+            </DropdownMenuItem>
+
             {isAdmin && (
               <DropdownMenuItem
                 onClick={() => window.open(authConfig.adminUrl, '_blank')}
-                className="gap-2 text-xs py-1.5 font-medium text-primary cursor-pointer"
+                className="gap-2.5 text-xs py-1.5 font-semibold text-primary cursor-pointer rounded-lg"
               >
-                <Database className="size-3.5 text-primary" />
+                <Database className="size-4 text-primary" />
                 <span>এডমিন প্যানেল</span>
               </DropdownMenuItem>
             )}
@@ -244,9 +296,9 @@ export function HeaderUserMenu({
             <DropdownMenuItem
               variant="destructive"
               onClick={handleSignOut}
-              className="gap-2 text-xs py-1.5 font-medium text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer"
+              className="gap-2.5 text-xs py-1.5 font-semibold text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer rounded-lg"
             >
-              <LogOut className="size-3.5" />
+              <LogOut className="size-4" />
               <span>লগআউট</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>

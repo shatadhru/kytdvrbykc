@@ -222,38 +222,34 @@ export default async function CoursePage({ params, searchParams }: Props) {
       }
     }
 
-    // Resolve Slide
+    // Resolve Slide & Note (Strict Anti-Piracy: strictly restricted to enrolled students only!)
     let classSlideUrl: string | undefined = undefined
     let classSlideName: string = 'Class-Slide.pptx'
-
-    const slideId = getDocId(l.classSlide)
-    const slideDoc = (slideId && mediaMap[slideId]) || (typeof l.classSlide === 'object' ? l.classSlide : null)
-    if (slideDoc) {
-      classSlideUrl = slideDoc.url || slideDoc.cloudinary?.secure_url
-      classSlideName = slideDoc.filename || slideDoc.alt || 'Class-Slide.pptx'
-    } else if (typeof l.classSlideUrl === 'string' && l.classSlideUrl.trim()) {
-      classSlideUrl = l.classSlideUrl.trim()
-      classSlideName = 'Class-Slide.pptx'
-    } else if (typeof l.classSlide === 'string' && (l.classSlide.startsWith('http') || l.classSlide.startsWith('/'))) {
-      classSlideUrl = l.classSlide.trim()
-      classSlideName = 'Class-Slide.pptx'
-    }
-
-    // Resolve Note
     let classNoteUrl: string | undefined = undefined
     let classNoteName: string = 'Class-Note.pdf'
 
-    const noteId = getDocId(l.classNote)
-    const noteDoc = (noteId && mediaMap[noteId]) || (typeof l.classNote === 'object' ? l.classNote : null)
-    if (noteDoc) {
-      classNoteUrl = noteDoc.url || noteDoc.cloudinary?.secure_url
-      classNoteName = noteDoc.filename || noteDoc.alt || 'Class-Note.pdf'
-    } else if (typeof l.classNoteUrl === 'string' && l.classNoteUrl.trim()) {
-      classNoteUrl = l.classNoteUrl.trim()
-      classNoteName = 'Class-Note.pdf'
-    } else if (typeof l.classNote === 'string' && (l.classNote.startsWith('http') || l.classNote.startsWith('/'))) {
-      classNoteUrl = l.classNote.trim()
-      classNoteName = 'Class-Note.pdf'
+    if (isEnrolled) {
+      const slideId = getDocId(l.classSlide)
+      const slideDoc = (slideId && mediaMap[slideId]) || (typeof l.classSlide === 'object' ? l.classSlide : null)
+      if (slideDoc) {
+        classSlideUrl = slideDoc.url || slideDoc.cloudinary?.secure_url
+        classSlideName = slideDoc.filename || slideDoc.alt || 'Class-Slide.pptx'
+      } else if (typeof l.classSlideUrl === 'string' && l.classSlideUrl.trim()) {
+        classSlideUrl = l.classSlideUrl.trim()
+      } else if (typeof l.classSlide === 'string' && (l.classSlide.startsWith('http') || l.classSlide.startsWith('/'))) {
+        classSlideUrl = l.classSlide.trim()
+      }
+
+      const noteId = getDocId(l.classNote)
+      const noteDoc = (noteId && mediaMap[noteId]) || (typeof l.classNote === 'object' ? l.classNote : null)
+      if (noteDoc) {
+        classNoteUrl = noteDoc.url || noteDoc.cloudinary?.secure_url
+        classNoteName = noteDoc.filename || noteDoc.alt || 'Class-Note.pdf'
+      } else if (typeof l.classNoteUrl === 'string' && l.classNoteUrl.trim()) {
+        classNoteUrl = l.classNoteUrl.trim()
+      } else if (typeof l.classNote === 'string' && (l.classNote.startsWith('http') || l.classNote.startsWith('/'))) {
+        classNoteUrl = l.classNote.trim()
+      }
     }
 
     // Resolve Quranic Motivational Verse (if set)
@@ -349,10 +345,12 @@ export default async function CoursePage({ params, searchParams }: Props) {
         l.isFreePreview && l.youtubeVideoIdOrUrl
           ? encryptVideoUrl(l.youtubeVideoIdOrUrl, { classId: l.id, expiresInMs: 4 * 60 * 60 * 1000 })
           : undefined,
-      classSlideUrl: resolvedLesson?.classSlideUrl,
-      classNoteUrl: resolvedLesson?.classNoteUrl,
+      classSlideUrl: isEnrolled ? resolvedLesson?.classSlideUrl : undefined,
+      classNoteUrl: isEnrolled ? resolvedLesson?.classNoteUrl : undefined,
       classSlideName: resolvedLesson?.classSlideName,
       classNoteName: resolvedLesson?.classNoteName,
+      hasNote: Boolean(l.classNote || l.classNoteUrl),
+      hasSlide: Boolean(l.classSlide || l.classSlideUrl),
       quranVerse: resolvedLesson?.quranVerse,
     }
   })

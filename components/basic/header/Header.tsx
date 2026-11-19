@@ -274,11 +274,13 @@ export function Header({
           {/* Custom Injected Actions */}
           {customActions}
 
-          {/* Notification Bell (Normal Icon with Mobile Drawer & Desktop Dropdown) */}
+          {/* Notification Bell (Hidden on mobile top header per Requirement 15, shown on desktop) */}
           {shouldShowNotifications && (
-            <HeaderNotifications
-              notificationsUrl={config.auth.notificationsUrl || '/dashboard/notifications'}
-            />
+            <div className="hidden sm:inline-flex items-center">
+              <HeaderNotifications
+                notificationsUrl={config.auth.notificationsUrl || '/dashboard/notifications'}
+              />
+            </div>
           )}
 
           {/* Shopping Cart Icon Trigger */}

@@ -715,6 +715,42 @@ export const SiteSettings: GlobalConfig = {
         },
       ],
     },
+    {
+      name: "coursePurchaseGuide",
+      type: "group",
+      label: "Course Purchase Guide (Video)",
+      admin: {
+        description: "YouTube guide video explaining how to purchase courses on delowarsir.io",
+      },
+      fields: [
+        {
+          name: "enabled",
+          type: "checkbox",
+          label: "Show Course Purchase Guide on Courses Page",
+          defaultValue: true,
+        },
+        {
+          name: "title",
+          type: "text",
+          label: "Section Title",
+          defaultValue: "কোর্স কেনার সহজ নিয়ম ও ভিডিও নির্দেশিকা",
+        },
+        {
+          name: "subtitle",
+          type: "text",
+          label: "Section Subtitle",
+          defaultValue: "কিভাবে খুব সহজে বিকাশ বা নগদে পেমেন্ট করে ক্লাসে যুক্ত হবেন দেখে নিন",
+        },
+        {
+          name: "youtubeUrl",
+          type: "text",
+          label: "YouTube Video URL or Video ID",
+          admin: {
+            placeholder: "https://www.youtube.com/watch?v=... or YouTube Video ID",
+          },
+        },
+      ],
+    },
   ],
   hooks: {
     afterChange: [

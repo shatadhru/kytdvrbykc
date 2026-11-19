@@ -64,6 +64,48 @@ export async function POST(req: NextRequest) {
       )
       .filter(Boolean)
 
+    // Check if user is already enrolled in any of these courses (Requirements 5 & 6)
+    const existingEnrollments = await payload.find({
+      collection: "enrollments" as any,
+      where: {
+        and: [
+          { student: { equals: session.user.id } },
+          { course: { in: productIds } },
+          { status: { equals: "active" } },
+        ],
+      },
+      limit: 10,
+      depth: 1,
+    })
+
+    if (existingEnrollments.docs.length > 0) {
+      const alreadyEnrolledCourse = existingEnrollments.docs[0].course as any
+      const courseTitle = alreadyEnrolledCourse?.title || "এই"
+      return NextResponse.json(
+        {
+          error: `আপনি ইতিমধ্যে '${courseTitle}' কোর্সে ভর্তি আছেন। একই কোর্স পুনরায় কেনার প্রয়োজন নেই।`,
+        },
+        { status: 400 }
+      )
+    }
+
+    // Check for duplicate course items in cart (Requirements 5 & 7)
+    const seenPids = new Set<string>()
+    for (const item of items) {
+      const pid = String(
+        typeof item.product === "object" && item.product !== null
+          ? item.product.id
+          : item.product
+      )
+      if (seenPids.has(pid)) {
+        return NextResponse.json(
+          { error: "একই কোর্স একাধিকবার কেনার সুযোগ নেই।" },
+          { status: 400 }
+        )
+      }
+      seenPids.add(pid)
+    }
+
     const productsRes = await payload.find({
       collection: "products",
       where: {

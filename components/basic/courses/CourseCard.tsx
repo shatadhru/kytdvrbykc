@@ -27,6 +27,56 @@ export interface CourseCardProps {
   isEnrolled?: boolean
 }
 
+function extractRichTextString(desc: any): string | null {
+  if (!desc) return null
+  if (typeof desc === 'string') {
+    const trimmed = desc.trim()
+    return trimmed.length > 0 ? trimmed : null
+  }
+  if (typeof desc === 'object') {
+    // If Lexical AST
+    if (desc.root) {
+      const texts: string[] = []
+      const traverse = (node: any) => {
+        if (!node) return
+        if (node.text && typeof node.text === 'string') {
+          texts.push(node.text)
+        }
+        if (Array.isArray(node.children)) {
+          for (const child of node.children) {
+            traverse(child)
+          }
+        }
+      }
+      traverse(desc.root)
+      const res = texts.join(' ').replace(/\s+/g, ' ').trim()
+      if (res) return res
+    }
+  }
+  return null
+}
+
+function getTeacherImageUrl(teacher: any): string | null {
+  if (!teacher || typeof teacher !== 'object') return null
+  const img = teacher.image
+  if (!img) return null
+  if (typeof img === 'string') {
+    if (img.startsWith('http') || img.startsWith('/')) return img
+    const cld = extractCloudinarySecureUrl(img)
+    if (cld) return cld
+    return null
+  }
+  return (
+    extractCloudinarySecureUrl(img) ||
+    img.cloudinary?.secure_url ||
+    img.cloudinary?.url ||
+    img.secure_url ||
+    img.url ||
+    (typeof img.filename === 'string' ? `/api/media/file/${img.filename}` : null) ||
+    null
+  )
+}
+
 export function CourseCard({ course, isEnrolled = false }: CourseCardProps) {
   const thumbObj = typeof course.thumbnail === 'object' && course.thumbnail ? course.thumbnail : null
   const thumbnailUrl =
@@ -65,9 +115,10 @@ export function CourseCard({ course, isEnrolled = false }: CourseCardProps) {
   }
 
   const price = course.priceInBDT ?? 0
-  const descriptionText =
-    course.meta?.description ||
-    (typeof course.description === 'string' ? course.description : null)
+
+  // Requirement 13: Content Section description must take precedence over meta description
+  const contentDescription = extractRichTextString(course.description)
+  const descriptionText = contentDescription || course.meta?.description || null
 
   return (
     <Card className="flex flex-col h-full overflow-hidden border border-border/80 bg-card py-0 gap-0 hover:shadow-lg hover:border-primary/40 transition-all duration-200 group">
@@ -116,17 +167,30 @@ export function CourseCard({ course, isEnrolled = false }: CourseCardProps) {
 
       {/* Content */}
       <CardContent className="flex flex-col flex-1 p-4 sm:p-5">
-        {/* Teacher Badges (Pills) */}
+        {/* Teacher Badges (Pills) with Photo (Requirement 14) */}
         {course.teachers && course.teachers.length > 0 && (
           <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
             {course.teachers.slice(0, 2).map((teacher: any, idx: number) => {
               const name = typeof teacher === 'object' ? teacher.name : 'প্রশিক্ষক'
+              const imgUrl = getTeacherImageUrl(teacher)
               return (
                 <span
                   key={teacher.id || idx}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/10 text-primary border border-primary/20"
+                  className="inline-flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/10 text-primary border border-primary/20"
                 >
-                  <GraduationCap className="size-3" />
+                  {imgUrl ? (
+                    <span className="relative size-4 rounded-full overflow-hidden shrink-0 border border-primary/30">
+                      <Image
+                        src={imgUrl}
+                        alt={name}
+                        fill
+                        className="object-cover"
+                        sizes="16px"
+                      />
+                    </span>
+                  ) : (
+                    <GraduationCap className="size-3" />
+                  )}
                   <span className="truncate max-w-[120px]">{name}</span>
                 </span>
               )

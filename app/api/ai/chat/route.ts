@@ -342,10 +342,10 @@ ${catalogSummary}
       })
     }
 
-    const selectedModel = aiSettings?.model || 'gemini-3.5-flash'
+    const selectedModel = aiSettings?.model || 'gemini-3.5-flash-lite'
     const modelsToTry = [selectedModel]
+    if (!modelsToTry.includes('gemini-3.5-flash-lite')) modelsToTry.unshift('gemini-3.5-flash-lite')
     if (!modelsToTry.includes('gemini-3.5-flash')) modelsToTry.push('gemini-3.5-flash')
-    if (!modelsToTry.includes('gemini-3.5-flash-lite')) modelsToTry.push('gemini-3.5-flash-lite')
 
     // Format chat contents for Gemini REST API
     const contents: any[] = []
@@ -386,7 +386,7 @@ ${catalogSummary}
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestPayload),
-            signal: AbortSignal.timeout(18000),
+            signal: AbortSignal.timeout(9000),
           })
 
           if (!res.ok) {

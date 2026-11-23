@@ -2,6 +2,7 @@ import React from 'react'
 import Header from '@/components/basic/header'
 import { Footer } from '@/components/basic/footer'
 import Hero from '@/components/Home/Hero'
+import { FeaturedCourses } from '@/components/Home/FeaturedCourses'
 import Teacher from '@/components/Home/Teacher'
 import Learning from '@/components/Home/Learning'
 import FreeResourses from '@/components/Home/FreeResourses'
@@ -13,6 +14,7 @@ export default function HomePage() {
       <Header />
       <main className="flex-1">
         <Hero />
+        <FeaturedCourses />
         <Teacher />
         <Learning />
         <FreeResourses />

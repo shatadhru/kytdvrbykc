@@ -306,6 +306,9 @@ export default async function CoursePage({ params, searchParams }: Props) {
       classNoteUrl,
       classSlideName,
       classNoteName,
+      hasSlide: Boolean(l.classSlide || l.classSlideUrl),
+      hasNote: Boolean(l.classNote || l.classNoteUrl),
+      isEnrolled,
       quranVerse,
     }
   })

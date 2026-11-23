@@ -31,7 +31,9 @@ export const Media: CollectionConfig = {
           doc.url = doc.cloudinary.secure_url
         } else if (doc?.externalUrl) {
           doc.url = doc.externalUrl
-        } else if (doc?.url && typeof doc.url === 'string' && doc.url.startsWith('http')) {
+        } else if (doc?.filename) {
+          doc.url = `/media/${doc.filename}`
+        } else if (doc?.url && typeof doc.url === 'string') {
           doc.url = doc.url
         }
         return doc

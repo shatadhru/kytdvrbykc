@@ -100,7 +100,7 @@ export function Learning() {
             {learningSteps.map((step) => (
               <Card
                 key={step.number}
-                className="group  h-full overflow-hidden rounded-2xl border-border bg-card p-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md sm:rounded-3xl"
+                className="group h-full overflow-hidden rounded-2xl sm:rounded-3xl border-2 border-emerald-500/20 border-b-4 border-b-emerald-600 bg-card p-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-md"
               >
                 <CardContent className="flex h-full flex-col p-0">
                   {/* Image */}

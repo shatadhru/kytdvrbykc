@@ -1,0 +1,5 @@
+$app = App\Models\Application::where('uuid', 'rs00nzpehzyvnvjaspafa97v')->first();
+echo "GIT_COMMIT_SHA: " . ($app->git_commit_sha ?? 'HEAD') . PHP_EOL;
+echo "GIT_BRANCH: " . ($app->git_branch ?? '') . PHP_EOL;
+echo "GIT_REPO: " . ($app->git_repository ?? '') . PHP_EOL;
+

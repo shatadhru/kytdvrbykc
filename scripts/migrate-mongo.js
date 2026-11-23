@@ -143,3 +143,4 @@ for (const course of allCourses) {
 }
 
 print(`Successfully updated ${count} courses!`)
+

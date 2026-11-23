@@ -1,0 +1,8 @@
+$d = App\Models\ApplicationDeploymentQueue::latest()->first();
+if ($d) {
+    echo "ID: " . $d->id . " Status: " . $d->status . " Commit: " . $d->commit . " App: " . $d->application_name . PHP_EOL;
+    echo "Logs: " . substr($d->logs ?? '', -500) . PHP_EOL;
+} else {
+    echo "No deployments found" . PHP_EOL;
+}
+

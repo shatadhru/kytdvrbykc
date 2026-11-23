@@ -54,14 +54,14 @@ export function Teacher() {
         </div>
 
         {/* Teacher Card */}
-        <Card className="mx-auto mt-8 max-w-6xl overflow-hidden rounded-2xl border-border bg-card p-0 shadow-sm sm:mt-12 sm:rounded-3xl">
+        <Card className="mx-auto mt-8 max-w-6xl overflow-hidden rounded-2xl sm:rounded-3xl border-2 border-emerald-500/25 border-b-4 border-b-emerald-600 bg-card p-0 shadow-sm sm:mt-12">
           <CardContent className="p-0">
             <div className="grid lg:grid-cols-[0.85fr_1.15fr]">
               {/* Teacher Image */}
               <div className="relative min-h-[300px] overflow-hidden bg-muted/40 sm:min-h-[460px] lg:min-h-[600px]">
                 {/* Decorative circles */}
-                <div className="absolute -left-16 -top-16 size-48 rounded-full bg-primary/10" />
-                <div className="absolute -bottom-20 -right-20 size-64 rounded-full bg-primary/10" />
+                <div className="absolute -left-16 -top-16 size-48 rounded-full bg-emerald-500/10" />
+                <div className="absolute -bottom-20 -right-20 size-64 rounded-full bg-sky-500/10" />
 
                 <div className="absolute inset-x-6 bottom-0 top-6 overflow-hidden rounded-t-2xl sm:inset-x-8 sm:top-8 sm:rounded-t-3xl">
                   <Image
@@ -79,13 +79,13 @@ export function Teacher() {
               <div className="flex flex-col justify-center p-5 sm:p-8 lg:p-12">
                 {/* Role Badges */}
                 <div className="flex flex-wrap items-center gap-2">
-                  <Badge className="rounded-full bg-primary px-2.5 py-0.5 text-[11px] text-primary-foreground hover:bg-primary/90 sm:px-3 sm:py-1 sm:text-xs">
-                    ফাউন্ডার ও সিইও
+                  <Badge className="rounded-full bg-emerald-600 px-3 py-0.5 text-xs font-bold text-white shadow-2xs hover:bg-emerald-500">
+                    ফাউন্ডার ও প্রধান শিক্ষক
                   </Badge>
 
                   <Badge
-                    variant="secondary"
-                    className="rounded-full px-2.5 py-0.5 text-[11px] sm:px-3 sm:py-1 sm:text-xs"
+                    variant="outline"
+                    className="rounded-full border-sky-500/30 bg-sky-500/10 px-3 py-0.5 text-xs font-bold text-sky-600 dark:text-sky-400"
                   >
                     ইউনিক টিচিং মেথড
                   </Badge>
@@ -93,19 +93,19 @@ export function Teacher() {
 
                 {/* Name */}
                 <h3 className="mt-4 text-2xl font-bold tracking-tight text-card-foreground sm:mt-5 sm:text-3xl lg:text-4xl">
-                  দেলোয়ার হোসেন
+                  দেলোয়ার স্যার
                 </h3>
 
-                <div className="mt-2.5 h-1 w-14 rounded-full bg-primary sm:mt-3 sm:w-16" />
+                <div className="mt-2.5 h-1 w-14 rounded-full bg-emerald-600 sm:mt-3 sm:w-16" />
 
                 {/* Description */}
                 <div className="mt-4 space-y-3 text-xs leading-6 text-muted-foreground sm:mt-6 sm:space-y-4 sm:text-sm sm:leading-7 lg:text-base">
                   <p>
                     <span className="font-semibold text-foreground">
-                      দেলোয়ার হোসেন
+                      দেলোয়ার স্যার
                     </span>
-                    , ফাউন্ডার ও সিইও{" "}
-                    <span className="font-semibold text-primary">
+                    , ফাউন্ডার ও প্রধান শিক্ষক{" "}
+                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">
                       ইউনিক টিচিং মেথড
                     </span>
                     , ২০১৭ সাল থেকে শিক্ষার্থীদের জন্য জটিল বিষয়গুলো সহজ ও
@@ -126,29 +126,29 @@ export function Teacher() {
 
                 {/* Stats */}
                 <div className="mt-6 grid grid-cols-2 gap-2.5 sm:mt-8 sm:gap-4">
-                  <div className="rounded-xl border border-border bg-muted/40 p-3 sm:rounded-2xl sm:p-4">
-                    <div className="flex items-center gap-1.5 text-primary sm:gap-2">
+                  <div className="rounded-xl border border-emerald-500/20 border-b-2 sm:border-b-4 border-b-emerald-600 bg-card p-3 sm:rounded-2xl sm:p-4">
+                    <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 sm:gap-2">
                       <Users className="size-4 sm:size-5" />
                       <span className="text-lg font-bold sm:text-xl lg:text-2xl text-card-foreground">
                         ৫,৫৪,০০০+
                       </span>
                     </div>
 
-                    <p className="mt-0.5 text-[11px] text-muted-foreground sm:mt-1 sm:text-xs">
-                      শিক্ষার্থী
+                    <p className="mt-0.5 text-[11px] text-muted-foreground sm:mt-1 sm:text-xs font-medium">
+                      সফল শিক্ষার্থী
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-border bg-muted/40 p-3 sm:rounded-2xl sm:p-4">
-                    <div className="flex items-center gap-1.5 text-primary sm:gap-2">
+                  <div className="rounded-xl border border-sky-500/20 border-b-2 sm:border-b-4 border-b-sky-600 bg-card p-3 sm:rounded-2xl sm:p-4">
+                    <div className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 sm:gap-2">
                       <PlayCircle className="size-4 sm:size-5" />
                       <span className="text-lg font-bold sm:text-xl lg:text-2xl text-card-foreground">
                         ৬২২+
                       </span>
                     </div>
 
-                    <p className="mt-0.5 text-[11px] text-muted-foreground sm:mt-1 sm:text-xs">
-                      শিক্ষামূলক ভিডিও
+                    <p className="mt-0.5 text-[11px] text-muted-foreground sm:mt-1 sm:text-xs font-medium">
+                      রেকর্ডেড ও লাইভ ক্লাস
                     </p>
                   </div>
                 </div>

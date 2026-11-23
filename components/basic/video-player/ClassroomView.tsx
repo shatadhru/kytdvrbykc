@@ -58,6 +58,9 @@ export interface ClassroomClassItem {
   classNoteUrl?: string | null
   classSlideName?: string | null
   classNoteName?: string | null
+  hasSlide?: boolean
+  hasNote?: boolean
+  isEnrolled?: boolean
   quranVerse?: QuranVerseData | null
 }
 
@@ -368,31 +371,50 @@ export default function ClassroomView({
                   </span>
                 </>
               )}
-              {(cls.classSlideUrl || cls.classNoteUrl) && (
+              {(cls.classSlideUrl || cls.classNoteUrl || cls.hasSlide || cls.hasNote) && (
                 <div
                   className="flex items-center gap-1.5 mt-1"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  {cls.classSlideUrl && (
+                  {cls.classSlideUrl ? (
                     <a
                       href={getDownloadUrl(cls.classSlideUrl, cls.classSlideName || 'Class-Slide')}
                       download={cls.classSlideName || 'Class-Slide.pptx'}
                       className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-500/20 font-medium transition-colors"
-                      title="স্লাইড ডাউনলোড"
+                      title="স্লাইড ডাউনলোড করুন"
                     >
                       <Presentation className="size-2.5" /> স্লাইড
                     </a>
-                  )}
-                  {cls.classNoteUrl && (
+                  ) : cls.hasSlide ? (
+                    <button
+                      type="button"
+                      disabled
+                      className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground/75 font-medium cursor-not-allowed opacity-75"
+                      title="স্লাইড শুধুমাত্র এনরোল্ড শিক্ষার্থীদের জন্য সংরক্ষিত"
+                    >
+                      <Lock className="size-2.5" /> স্লাইড (লক)
+                    </button>
+                  ) : null}
+
+                  {cls.classNoteUrl ? (
                     <a
                       href={getDownloadUrl(cls.classNoteUrl, cls.classNoteName || 'Class-Note')}
                       download={cls.classNoteName || 'Class-Note.pdf'}
                       className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20 font-medium transition-colors"
-                      title="নোট ডাউনলোড"
+                      title="নোট ডাউনলোড করুন"
                     >
                       <FileText className="size-2.5" /> নোট
                     </a>
-                  )}
+                  ) : cls.hasNote ? (
+                    <button
+                      type="button"
+                      disabled
+                      className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground/75 font-medium cursor-not-allowed opacity-75"
+                      title="নোট শুধুমাত্র এনরোল্ড শিক্ষার্থীদের জন্য সংরক্ষিত (কোর্স কিনলে আনলক হবে)"
+                    >
+                      <Lock className="size-2.5" /> নোট (লক)
+                    </button>
+                  ) : null}
                 </div>
               )}
             </div>

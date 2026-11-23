@@ -78,7 +78,7 @@ export function FreeResourses() {
           {freeResources.map((resource) => (
             <Card
               key={resource.name}
-              className="group overflow-hidden rounded-2xl border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md sm:rounded-3xl"
+              className="group overflow-hidden rounded-2xl sm:rounded-3xl border-2 border-sky-500/20 border-b-4 border-b-sky-600 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-sky-500/40 hover:shadow-md"
             >
               <CardContent className="p-0">
                 {/* Image */}

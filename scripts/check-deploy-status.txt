@@ -1,8 +1,3 @@
-$d = App\Models\ApplicationDeploymentQueue::latest()->first();
-if ($d) {
-    echo "ID: " . $d->id . " Status: " . $d->status . " Commit: " . $d->commit . " App: " . $d->application_name . PHP_EOL;
-    echo "Logs: " . substr($d->logs ?? '', -500) . PHP_EOL;
-} else {
-    echo "No deployments found" . PHP_EOL;
-}
-
+$app = App\Models\Application::where('uuid', 'rs00nzpehzyvnvjaspafa97v')->first();
+$d = App\Models\ApplicationDeploymentQueue::where('application_id', $app->id)->latest()->first();
+echo "STATUS: " . $d->status . " | COMMIT: " . $d->commit . " | CREATED: " . $d->created_at . PHP_EOL;

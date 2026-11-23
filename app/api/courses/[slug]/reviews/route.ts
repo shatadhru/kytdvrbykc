@@ -110,6 +110,13 @@ export async function POST(
     const courseId = courseRes.docs[0].id
     const isEnrolled = await checkUserEnrollment(payload, session.user.id, String(courseId))
 
+    if (!isEnrolled) {
+      return NextResponse.json(
+        { success: false, error: 'শুধুমাত্র এই কোর্সে ভর্তি থাকা শিক্ষার্থীরা রিভিউ দিতে পারবেন।' },
+        { status: 403 }
+      )
+    }
+
     // Create review
     const newReview = await payload.create({
       collection: 'reviews',
@@ -120,7 +127,7 @@ export async function POST(
         rating: numRating,
         author: session.user.name || 'শিক্ষার্থী',
         authorEmail: session.user.email || undefined,
-        verified: isEnrolled,
+        verified: true,
         approved: true, // auto-approve so students see their reviews immediately
       },
     })

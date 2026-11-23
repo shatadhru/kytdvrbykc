@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import CourseVideoPlayer from '@/components/basic/video/CourseVideoPlayer'
 import {
   Play,
@@ -105,6 +106,18 @@ export default function ClassroomView({
     () => new Set(initialCompletedLessons)
   )
   const [mobileCurriculumOpen, setMobileCurriculumOpen] = useState(false)
+  const searchParams = useSearchParams()
+  const requestedLessonId = searchParams?.get('lessonId')
+
+  // Auto-select requested lesson from URL query if provided
+  useEffect(() => {
+    if (requestedLessonId) {
+      const target = classes.find((c) => c.id === requestedLessonId)
+      if (target) {
+        handleSelectClass(target)
+      }
+    }
+  }, [requestedLessonId, classes])
 
   // Load saved progress from server on mount
   useEffect(() => {

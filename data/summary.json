@@ -1,5 +1,5 @@
 {
-    "exported_at": "2026-11-15T05:15:32+00:00",
+    "exported_at": "2026-11-23T05:57:08+00:00",
     "source_domain": "utmeducation.com",
     "database": "wordpress (mariadb)",
     "counts": {
@@ -9,7 +9,7 @@
         "cb_collections": 16,
         "cb_lessons": 279,
         "quizzes": 3,
-        "users": 2087,
-        "enrollments": 1353
+        "users": 2109,
+        "enrollments": 1358
     }
 }

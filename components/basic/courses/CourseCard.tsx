@@ -1,11 +1,15 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { BookOpen, Users, ArrowRight, GraduationCap, Award, CheckCircle2 } from 'lucide-react'
+import { BookOpen, Users, ArrowRight, GraduationCap, Award, CheckCircle2, Loader2, ShoppingBag } from 'lucide-react'
 import { extractCloudinarySecureUrl } from '@/utils/cloudinary'
+import { AddToCartButton } from '@/components/basic/cart/AddToCartButton'
 
 export interface CourseCardProps {
   course: {
@@ -78,6 +82,16 @@ function getTeacherImageUrl(teacher: any): string | null {
 }
 
 export function CourseCard({ course, isEnrolled = false }: CourseCardProps) {
+  const router = useRouter()
+  const [isNavigating, setIsNavigating] = useState(false)
+
+  const handleNavigate = (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (isNavigating) return
+    setIsNavigating(true)
+    router.push(`/courses/${course.slug}`)
+  }
+
   const thumbObj = typeof course.thumbnail === 'object' && course.thumbnail ? course.thumbnail : null
   const thumbnailUrl =
     (typeof course.thumbnail === 'string' && (course.thumbnail.startsWith('http') || course.thumbnail.startsWith('/'))
@@ -123,7 +137,10 @@ export function CourseCard({ course, isEnrolled = false }: CourseCardProps) {
   return (
     <Card className="flex flex-col h-full overflow-hidden border border-border/80 bg-card py-0 gap-0 hover:shadow-lg hover:border-primary/40 transition-all duration-200 group">
       {/* Thumbnail Area */}
-      <div className="relative aspect-video w-full overflow-hidden bg-muted">
+      <div
+        onClick={handleNavigate}
+        className="relative aspect-video w-full overflow-hidden bg-muted cursor-pointer"
+      >
         {thumbnailUrl && (thumbnailUrl.startsWith('http') || thumbnailUrl.startsWith('/')) ? (
           <Image
             src={thumbnailUrl}
@@ -205,14 +222,18 @@ export function CourseCard({ course, isEnrolled = false }: CourseCardProps) {
 
         {/* Title */}
         <h3 className="font-heading font-bold text-base sm:text-lg text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
-          <Link href={`/courses/${course.slug}`}>
+          <Link
+            href={`/courses/${course.slug}`}
+            onClick={handleNavigate}
+            className={isNavigating ? 'pointer-events-none opacity-80' : ''}
+          >
             {course.title}
           </Link>
         </h3>
 
-        {/* Half-line truncated description */}
+        {/* Description: 2-line smooth summary */}
         {descriptionText && (
-          <p className="mt-2 text-xs text-muted-foreground line-clamp-1 leading-relaxed">
+          <p className="mt-2 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
             {descriptionText}
           </p>
         )}
@@ -232,39 +253,101 @@ export function CourseCard({ course, isEnrolled = false }: CourseCardProps) {
         </div>
 
         {/* Bottom CTA Row */}
-        <div className="mt-auto pt-4 border-t border-border/60 flex items-center justify-between">
+        <div className="mt-auto pt-4 border-t border-border/60 flex items-center justify-between gap-2">
           <div className="flex flex-col">
             <span className="text-base sm:text-lg font-black text-foreground tracking-tight">
               {price === 0 ? 'ফ্রি' : `৳ ${price.toLocaleString('bn-BD')}`}
             </span>
           </div>
 
-          {isEnrolled ? (
-            <Button
-              asChild
-              size="sm"
-              className="gap-1.5 px-3 bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs shadow-xs"
-            >
-              <Link href={`/courses/${course.slug}`}>
-                <GraduationCap className="size-3.5" />
-                <span>ক্লাশ শুরু করুন</span>
-              </Link>
-            </Button>
-          ) : (
-            <Button
-              asChild
-              size="sm"
-              variant="outline"
-              className="gap-1 px-3 text-primary hover:bg-primary/10 font-bold text-xs group-hover:translate-x-0.5 transition-transform"
-            >
-              <Link href={`/courses/${course.slug}`}>
-                <span>বিস্তারিত</span>
-                <ArrowRight className="size-3.5" />
-              </Link>
-            </Button>
-          )}
+          <div className="flex items-center gap-2">
+            {isEnrolled ? (
+              <Button
+                asChild
+                size="sm"
+                className="gap-1.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs"
+              >
+                <Link href={`/courses/${course.slug}`}>
+                  <GraduationCap className="size-3.5" />
+                  <span>ক্লাসরুমে যান</span>
+                </Link>
+              </Button>
+            ) : price === 0 ? (
+              <Button
+                size="sm"
+                onClick={handleNavigate}
+                disabled={isNavigating}
+                className="gap-1 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs cursor-pointer"
+              >
+                {isNavigating ? (
+                  <Loader2 className="size-3.5 animate-spin" />
+                ) : (
+                  <>
+                    <span>ফ্রি শুরু করুন</span>
+                    <ArrowRight className="size-3.5" />
+                  </>
+                )}
+              </Button>
+            ) : (
+              <>
+                <AddToCartButton
+                  productId={course.id}
+                  productTitle={course.title}
+                  courseSlug={course.slug}
+                  isEnrolled={false}
+                  text="কার্ট"
+                  size="sm"
+                  className="h-8 text-xs font-bold px-2.5 rounded-lg"
+                />
+
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleNavigate}
+                  disabled={isNavigating}
+                  className="gap-1 px-2.5 text-primary hover:bg-primary/10 font-bold text-xs group-hover:translate-x-0.5 transition-transform cursor-pointer"
+                >
+                  {isNavigating ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : (
+                    <>
+                      <span>বিস্তারিত</span>
+                      <ArrowRight className="size-3.5" />
+                    </>
+                  )}
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
+  )
+}
+
+export function CourseCardSkeleton() {
+  return (
+    <div className="flex flex-col h-full overflow-hidden rounded-xl border border-border/70 bg-card animate-pulse">
+      <div className="aspect-video w-full bg-muted/80" />
+      <div className="flex flex-col flex-1 p-4 sm:p-5 space-y-3">
+        <div className="flex gap-2">
+          <div className="h-4 w-20 bg-muted rounded-full" />
+        </div>
+        <div className="h-5 w-4/5 bg-muted rounded" />
+        <div className="h-3.5 w-full bg-muted/60 rounded" />
+        <div className="h-3.5 w-2/3 bg-muted/60 rounded" />
+        <div className="flex gap-2 pt-2">
+          <div className="h-5 w-20 bg-muted/70 rounded-md" />
+          <div className="h-5 w-20 bg-muted/70 rounded-md" />
+        </div>
+        <div className="mt-auto pt-4 border-t border-border/60 flex items-center justify-between">
+          <div className="h-6 w-16 bg-muted rounded" />
+          <div className="flex gap-2">
+            <div className="h-8 w-16 bg-muted rounded-lg" />
+            <div className="h-8 w-20 bg-muted rounded-lg" />
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

@@ -16,6 +16,7 @@ import {
   Loader2,
   User,
   ThumbsUp,
+  Lock,
 } from 'lucide-react'
 
 interface CourseReviewsSectionProps {
@@ -67,6 +68,11 @@ export function CourseReviewsSection({
 
     if (!session?.user?.id) {
       toast.error('রিভিউ প্রদান করতে অনুগ্রহ করে আগে লগইন করুন।')
+      return
+    }
+
+    if (!isEnrolled) {
+      toast.error('শুধুমাত্র এই কোর্সে ভর্তি থাকা শিক্ষার্থীরা রিভিউ দিতে পারবেন।')
       return
     }
 
@@ -171,19 +177,26 @@ export function CourseReviewsSection({
       </div>
 
       {/* Review Submission Toggle / Button */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
         <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
           সকল রিভিউ ({reviews.length})
         </span>
 
-        <Button
-          size="sm"
-          variant={showForm ? 'outline' : 'default'}
-          onClick={() => setShowForm(!showForm)}
-          className="text-xs font-semibold h-8"
-        >
-          {showForm ? 'ফর্ম বন্ধ করুন' : 'একটি রিভিউ দিন'}
-        </Button>
+        {isEnrolled ? (
+          <Button
+            size="sm"
+            variant={showForm ? 'outline' : 'default'}
+            onClick={() => setShowForm(!showForm)}
+            className="text-xs font-semibold h-8 cursor-pointer"
+          >
+            {showForm ? 'ফর্ম বন্ধ করুন' : 'একটি রিভিউ দিন'}
+          </Button>
+        ) : (
+          <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/60 border border-border/70 px-3 py-1.5 rounded-lg">
+            <Lock className="size-3.5 text-muted-foreground shrink-0" />
+            <span>শুধুমাত্র এই কোর্সে ভর্তি থাকা শিক্ষার্থীরা রিভিউ দিতে পারবেন।</span>
+          </div>
+        )}
       </div>
 
       {/* Review Submission Form */}

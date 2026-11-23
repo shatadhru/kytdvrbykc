@@ -21,6 +21,8 @@ import {
   Mail,
   Phone,
   Globe,
+  Download,
+  QrCode,
 } from "lucide-react"
 import { SiteConfig } from "@/config/site"
 
@@ -359,13 +361,56 @@ export function InvoiceReceiptModal({
             </div>
           </div>
 
+          {/* Official Paid Seal & QR Code Verification */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl border bg-muted/20">
+            {/* QR Code */}
+            <div className="flex items-center gap-3">
+              <div className="size-16 rounded-lg border bg-white p-1 flex items-center justify-center shadow-xs shrink-0">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(`https://delowarsir.io/verify/invoice/${invoiceNumber}`)}`}
+                  alt="Invoice QR Code"
+                  className="size-full object-contain"
+                />
+              </div>
+              <div className="space-y-0.5 text-left">
+                <p className="text-xs font-bold text-foreground flex items-center gap-1">
+                  <QrCode className="size-3.5 text-primary" />
+                  ডিজিটাল যাচাইকরণ (QR Code)
+                </p>
+                <p className="text-[10px] text-muted-foreground">
+                  মোবাইল দিয়ে স্ক্যান করে ইনভয়েসের সত্যতা যাচাই করুন
+                </p>
+                <p className="text-[9px] font-mono text-muted-foreground/80">
+                  ID: {invoiceNumber}
+                </p>
+              </div>
+            </div>
+
+            {/* Official Paid Seal */}
+            {isPaid ? (
+              <div className="relative border-4 border-double border-emerald-600 dark:border-emerald-500 rounded-xl px-4 py-2 text-center rotate-[-4deg] shadow-xs bg-emerald-500/10 shrink-0">
+                <div className="flex items-center justify-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-black text-sm tracking-widest uppercase">
+                  <CheckCircle2 className="size-4" />
+                  <span>PAID • পরিশোধিত</span>
+                </div>
+                <p className="text-[9px] font-bold text-emerald-700 dark:text-emerald-400 tracking-wider uppercase mt-0.5">
+                  UNIQUE TEACHING METHOD
+                </p>
+              </div>
+            ) : (
+              <div className="border-2 border-dashed border-amber-500 rounded-xl px-3 py-1.5 text-center text-amber-600 text-xs font-bold shrink-0">
+                {paymentMethodLabel} — অপেক্ষমাণ
+              </div>
+            )}
+          </div>
+
           {/* Footer note & Verification */}
           <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-[11px] text-muted-foreground border-t">
             <div className="flex items-center gap-1.5">
               <ShieldCheck className="size-4 text-emerald-600 shrink-0" />
               <span>এটি কম্পিউটার জেনারেটেড ডিজিটাল ইনভয়েস। কোনো ম্যানুয়াল স্বাক্ষরের প্রয়োজন নেই।</span>
             </div>
-            <span className="font-mono text-[10px]">UTM Security Verified</span>
+            <span className="font-mono text-[10px]">SCALVIO GUARD Verified</span>
           </div>
         </div>
 
@@ -386,10 +431,10 @@ export function InvoiceReceiptModal({
             type="button"
             size="sm"
             onClick={handlePrint}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold cursor-pointer shadow-sm"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold cursor-pointer shadow-sm gap-1.5"
           >
-            <Printer className="size-4 mr-1.5" />
-            প্রিন্ট / রসিদ ডাউনলোড
+            <Download className="size-4" />
+            <span>ইনভয়েস ডাউনলোড / প্রিন্ট (PDF)</span>
           </Button>
         </DialogFooter>
       </DialogContent>

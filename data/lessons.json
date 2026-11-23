@@ -66524,7 +66524,7 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/z3ZozB35OdQ?si=yudqhKMWuqBaWmOC",
-            "duration_sec": "3041",
+            "duration_sec": "3040.761",
             "playtime": "50:41",
             "raw_video_data": {
                 "source": "youtube",
@@ -66542,7 +66542,7 @@
                     "minutes": "50",
                     "seconds": "41"
                 },
-                "duration_sec": "3041",
+                "duration_sec": "3040.761",
                 "playtime": "50:41"
             }
         },
@@ -66565,8 +66565,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/J6VDmGDZMTs?si=2LlgjFOurlJvUcL8",
-            "duration_sec": "3533",
-            "playtime": "58:53",
+            "duration_sec": "3532.061",
+            "playtime": "58:52",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -66581,10 +66581,10 @@
                 "runtime": {
                     "hours": "00",
                     "minutes": "58",
-                    "seconds": "53"
+                    "seconds": "52"
                 },
-                "duration_sec": "3533",
-                "playtime": "58:53"
+                "duration_sec": "3532.061",
+                "playtime": "58:52"
             }
         },
         "class_links_in_content": [],
@@ -66773,7 +66773,7 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/jozY9nQwpd4",
-            "duration_sec": "5780",
+            "duration_sec": "5779.721",
             "playtime": "1:36:20",
             "raw_video_data": {
                 "source": "youtube",
@@ -66791,7 +66791,7 @@
                     "minutes": "36",
                     "seconds": "20"
                 },
-                "duration_sec": "5780",
+                "duration_sec": "5779.721",
                 "playtime": "1:36:20"
             }
         },
@@ -81514,7 +81514,7 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/MuP9PTitEqc",
-            "duration_sec": "4293",
+            "duration_sec": "4292.961",
             "playtime": "1:11:33",
             "raw_video_data": {
                 "source": "youtube",
@@ -81532,7 +81532,7 @@
                     "minutes": "11",
                     "seconds": "33"
                 },
-                "duration_sec": "4293",
+                "duration_sec": "4292.961",
                 "playtime": "1:11:33"
             }
         },
@@ -81557,7 +81557,7 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/E9NZnbhTEXU",
-            "duration_sec": "3031.841",
+            "duration_sec": "3032",
             "playtime": "50:32",
             "raw_video_data": {
                 "source": "youtube",
@@ -81575,7 +81575,7 @@
                     "minutes": "50",
                     "seconds": "32"
                 },
-                "duration_sec": "3031.841",
+                "duration_sec": "3032",
                 "playtime": "50:32"
             }
         },
@@ -81600,8 +81600,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/Ivl45L5v2qI",
-            "duration_sec": "2352",
-            "playtime": "39:12",
+            "duration_sec": "2351.481",
+            "playtime": "39:11",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -81616,10 +81616,10 @@
                 "runtime": {
                     "hours": "00",
                     "minutes": "39",
-                    "seconds": "12"
+                    "seconds": "11"
                 },
-                "duration_sec": "2352",
-                "playtime": "39:12"
+                "duration_sec": "2351.481",
+                "playtime": "39:11"
             }
         },
         "class_links_in_content": [
@@ -81643,8 +81643,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/w2zp8_K9M6Q",
-            "duration_sec": "7668",
-            "playtime": "2:07:48",
+            "duration_sec": "7667.121",
+            "playtime": "2:07:47",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -81659,10 +81659,10 @@
                 "runtime": {
                     "hours": "2",
                     "minutes": "07",
-                    "seconds": "48"
+                    "seconds": "47"
                 },
-                "duration_sec": "7668",
-                "playtime": "2:07:48"
+                "duration_sec": "7667.121",
+                "playtime": "2:07:47"
             }
         },
         "class_links_in_content": [
@@ -81776,8 +81776,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/OKppAVyrxnw",
-            "duration_sec": "14285.161",
-            "playtime": "3:58:05",
+            "duration_sec": "14286",
+            "playtime": "3:58:06",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -81792,10 +81792,10 @@
                 "runtime": {
                     "hours": "3",
                     "minutes": "58",
-                    "seconds": "05"
+                    "seconds": "06"
                 },
-                "duration_sec": "14285.161",
-                "playtime": "3:58:05"
+                "duration_sec": "14286",
+                "playtime": "3:58:06"
             }
         },
         "class_links_in_content": [
@@ -81819,7 +81819,7 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/ZWN5RW7keTY?si=9ug-bb-eNthbujff",
-            "duration_sec": "17030.761",
+            "duration_sec": "17031",
             "playtime": "4:43:51",
             "raw_video_data": {
                 "source": "youtube",
@@ -81837,7 +81837,7 @@
                     "minutes": "43",
                     "seconds": "51"
                 },
-                "duration_sec": "17030.761",
+                "duration_sec": "17031",
                 "playtime": "4:43:51"
             }
         },
@@ -81905,8 +81905,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/IljEUgxWCBE",
-            "duration_sec": "7288",
-            "playtime": "2:01:28",
+            "duration_sec": "7287.221",
+            "playtime": "2:01:27",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -81921,10 +81921,10 @@
                 "runtime": {
                     "hours": "2",
                     "minutes": "01",
-                    "seconds": "28"
+                    "seconds": "27"
                 },
-                "duration_sec": "7288",
-                "playtime": "2:01:28"
+                "duration_sec": "7287.221",
+                "playtime": "2:01:27"
             }
         },
         "class_links_in_content": [
@@ -82120,8 +82120,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/RSzVRALsrgY",
-            "duration_sec": "18173",
-            "playtime": "5:02:53",
+            "duration_sec": "18172.241",
+            "playtime": "5:02:52",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -82136,10 +82136,10 @@
                 "runtime": {
                     "hours": "5",
                     "minutes": "02",
-                    "seconds": "53"
+                    "seconds": "52"
                 },
-                "duration_sec": "18173",
-                "playtime": "5:02:53"
+                "duration_sec": "18172.241",
+                "playtime": "5:02:52"
             }
         },
         "class_links_in_content": [
@@ -82512,7 +82512,7 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/ZWN5RW7keTY?si=9ug-bb-eNthbujff",
-            "duration_sec": "17030.766666666666",
+            "duration_sec": "17030.761",
             "playtime": "4:43:51",
             "raw_video_data": {
                 "source": "youtube",
@@ -82530,7 +82530,7 @@
                     "minutes": "43",
                     "seconds": "51"
                 },
-                "duration_sec": "17030.766666666666",
+                "duration_sec": "17030.761",
                 "playtime": "4:43:51"
             }
         },
@@ -84301,7 +84301,7 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/4AEdMgNfZmo",
-            "duration_sec": "12599.841",
+            "duration_sec": "12600",
             "playtime": "3:30:00",
             "raw_video_data": {
                 "source": "youtube",
@@ -84319,7 +84319,7 @@
                     "minutes": "30",
                     "seconds": "00"
                 },
-                "duration_sec": "12599.841",
+                "duration_sec": "12600",
                 "playtime": "3:30:00"
             }
         },
@@ -84344,7 +84344,7 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/HAmkAvPOzok?si=QYaWTNZnnoL6xrXd",
-            "duration_sec": "24527",
+            "duration_sec": "24526.901",
             "playtime": "6:48:47",
             "raw_video_data": {
                 "source": "youtube",
@@ -84362,7 +84362,7 @@
                     "minutes": "48",
                     "seconds": "47"
                 },
-                "duration_sec": "24527",
+                "duration_sec": "24526.901",
                 "playtime": "6:48:47"
             }
         },
@@ -84473,8 +84473,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/UovwRhhsxcs?si=KppfNP-kSDv6m_46",
-            "duration_sec": "12819.361",
-            "playtime": "3:33:39",
+            "duration_sec": "12820",
+            "playtime": "3:33:40",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -84489,10 +84489,10 @@
                 "runtime": {
                     "hours": "3",
                     "minutes": "33",
-                    "seconds": "39"
+                    "seconds": "40"
                 },
-                "duration_sec": "12819.361",
-                "playtime": "3:33:39"
+                "duration_sec": "12820",
+                "playtime": "3:33:40"
             }
         },
         "class_links_in_content": [],
@@ -84858,8 +84858,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/UovwRhhsxcs?si=KppfNP-kSDv6m_46",
-            "duration_sec": "12820",
-            "playtime": "3:33:40",
+            "duration_sec": "12819.361",
+            "playtime": "3:33:39",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -84874,10 +84874,10 @@
                 "runtime": {
                     "hours": "3",
                     "minutes": "33",
-                    "seconds": "40"
+                    "seconds": "39"
                 },
-                "duration_sec": "12820",
-                "playtime": "3:33:40"
+                "duration_sec": "12819.361",
+                "playtime": "3:33:39"
             }
         },
         "class_links_in_content": [],
@@ -84899,8 +84899,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/RSzVRALsrgY",
-            "duration_sec": "18172.241",
-            "playtime": "5:02:52",
+            "duration_sec": "18173",
+            "playtime": "5:02:53",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -84915,10 +84915,10 @@
                 "runtime": {
                     "hours": "5",
                     "minutes": "02",
-                    "seconds": "52"
+                    "seconds": "53"
                 },
-                "duration_sec": "18172.241",
-                "playtime": "5:02:52"
+                "duration_sec": "18173",
+                "playtime": "5:02:53"
             }
         },
         "class_links_in_content": [
@@ -85190,8 +85190,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/bQG_EnAyzd8",
-            "duration_sec": null,
-            "playtime": null,
+            "duration_sec": "14546.301",
+            "playtime": "4:02:26",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -85204,10 +85204,12 @@
                 "source_vimeo": "",
                 "source_embedded": "",
                 "runtime": {
-                    "hours": "0",
-                    "minutes": "0",
-                    "seconds": "0"
-                }
+                    "hours": "4",
+                    "minutes": "02",
+                    "seconds": "26"
+                },
+                "duration_sec": "14546.301",
+                "playtime": "4:02:26"
             }
         },
         "class_links_in_content": [
@@ -85231,8 +85233,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/UovwRhhsxcs?si=KppfNP-kSDv6m_46",
-            "duration_sec": null,
-            "playtime": null,
+            "duration_sec": "12819.361",
+            "playtime": "3:33:39",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -85245,10 +85247,12 @@
                 "source_vimeo": "",
                 "source_embedded": "",
                 "runtime": {
-                    "hours": "0",
-                    "minutes": "0",
-                    "seconds": "0"
-                }
+                    "hours": "3",
+                    "minutes": "33",
+                    "seconds": "39"
+                },
+                "duration_sec": "12819.361",
+                "playtime": "3:33:39"
             }
         },
         "class_links_in_content": [],
@@ -85270,8 +85274,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/RSzVRALsrgY",
-            "duration_sec": null,
-            "playtime": null,
+            "duration_sec": "18173",
+            "playtime": "5:02:53",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -85284,10 +85288,12 @@
                 "source_vimeo": "",
                 "source_embedded": "",
                 "runtime": {
-                    "hours": "0",
-                    "minutes": "0",
-                    "seconds": "0"
-                }
+                    "hours": "5",
+                    "minutes": "02",
+                    "seconds": "53"
+                },
+                "duration_sec": "18173",
+                "playtime": "5:02:53"
             }
         },
         "class_links_in_content": [
@@ -88190,8 +88196,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/mnQSkra7at8",
-            "duration_sec": "6473",
-            "playtime": "1:47:53",
+            "duration_sec": "6472.201",
+            "playtime": "1:47:52",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -88206,10 +88212,10 @@
                 "runtime": {
                     "hours": "1",
                     "minutes": "47",
-                    "seconds": "53"
+                    "seconds": "52"
                 },
-                "duration_sec": "6473",
-                "playtime": "1:47:53"
+                "duration_sec": "6472.201",
+                "playtime": "1:47:52"
             }
         },
         "class_links_in_content": [
@@ -88448,8 +88454,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/UovwRhhsxcs?si=KppfNP-kSDv6m_46",
-            "duration_sec": "12819.361",
-            "playtime": "3:33:39",
+            "duration_sec": "12820",
+            "playtime": "3:33:40",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -88464,10 +88470,10 @@
                 "runtime": {
                     "hours": "3",
                     "minutes": "33",
-                    "seconds": "39"
+                    "seconds": "40"
                 },
-                "duration_sec": "12819.361",
-                "playtime": "3:33:39"
+                "duration_sec": "12820",
+                "playtime": "3:33:40"
             }
         },
         "class_links_in_content": [],
@@ -88489,8 +88495,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/RSzVRALsrgY",
-            "duration_sec": "18172.241",
-            "playtime": "5:02:52",
+            "duration_sec": "18173",
+            "playtime": "5:02:53",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -88505,10 +88511,10 @@
                 "runtime": {
                     "hours": "5",
                     "minutes": "02",
-                    "seconds": "52"
+                    "seconds": "53"
                 },
-                "duration_sec": "18172.241",
-                "playtime": "5:02:52"
+                "duration_sec": "18173",
+                "playtime": "5:02:53"
             }
         },
         "class_links_in_content": [
@@ -88532,7 +88538,7 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/6L4dyD_SPpI",
-            "duration_sec": "5104",
+            "duration_sec": "5103.941",
             "playtime": "1:25:04",
             "raw_video_data": {
                 "source": "youtube",
@@ -88550,7 +88556,7 @@
                     "minutes": "25",
                     "seconds": "04"
                 },
-                "duration_sec": "5104",
+                "duration_sec": "5103.941",
                 "playtime": "1:25:04"
             }
         },
@@ -88575,8 +88581,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/mnQSkra7at8",
-            "duration_sec": "6473",
-            "playtime": "1:47:53",
+            "duration_sec": "6472.201",
+            "playtime": "1:47:52",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -88591,10 +88597,10 @@
                 "runtime": {
                     "hours": "1",
                     "minutes": "47",
-                    "seconds": "53"
+                    "seconds": "52"
                 },
-                "duration_sec": "6473",
-                "playtime": "1:47:53"
+                "duration_sec": "6472.201",
+                "playtime": "1:47:52"
             }
         },
         "class_links_in_content": [
@@ -88747,8 +88753,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/EQmCAeYZC-0",
-            "duration_sec": "15043",
-            "playtime": "4:10:43",
+            "duration_sec": "15042.401",
+            "playtime": "4:10:42",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -88763,10 +88769,10 @@
                 "runtime": {
                     "hours": "4",
                     "minutes": "10",
-                    "seconds": "43"
+                    "seconds": "42"
                 },
-                "duration_sec": "15043",
-                "playtime": "4:10:43"
+                "duration_sec": "15042.401",
+                "playtime": "4:10:42"
             }
         },
         "class_links_in_content": [
@@ -88874,8 +88880,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/RSzVRALsrgY",
-            "duration_sec": "18173",
-            "playtime": "5:02:53",
+            "duration_sec": "18172.241",
+            "playtime": "5:02:52",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -88890,10 +88896,10 @@
                 "runtime": {
                     "hours": "5",
                     "minutes": "02",
-                    "seconds": "53"
+                    "seconds": "52"
                 },
-                "duration_sec": "18173",
-                "playtime": "5:02:53"
+                "duration_sec": "18172.241",
+                "playtime": "5:02:52"
             }
         },
         "class_links_in_content": [
@@ -90208,7 +90214,7 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/jmUWCjhKBD4",
-            "duration_sec": "5755.661",
+            "duration_sec": "5756",
             "playtime": "1:35:56",
             "raw_video_data": {
                 "source": "youtube",
@@ -90226,7 +90232,7 @@
                     "minutes": "35",
                     "seconds": "56"
                 },
-                "duration_sec": "5755.661",
+                "duration_sec": "5756",
                 "playtime": "1:35:56"
             }
         },
@@ -90636,8 +90642,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/w2zp8_K9M6Q",
-            "duration_sec": "7668",
-            "playtime": "2:07:48",
+            "duration_sec": "7667.121",
+            "playtime": "2:07:47",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -90652,10 +90658,10 @@
                 "runtime": {
                     "hours": "2",
                     "minutes": "07",
-                    "seconds": "48"
+                    "seconds": "47"
                 },
-                "duration_sec": "7668",
-                "playtime": "2:07:48"
+                "duration_sec": "7667.121",
+                "playtime": "2:07:47"
             }
         },
         "class_links_in_content": [
@@ -90769,8 +90775,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/OKppAVyrxnw",
-            "duration_sec": "14286",
-            "playtime": "3:58:06",
+            "duration_sec": "14285.161",
+            "playtime": "3:58:05",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -90785,10 +90791,10 @@
                 "runtime": {
                     "hours": "3",
                     "minutes": "58",
-                    "seconds": "06"
+                    "seconds": "05"
                 },
-                "duration_sec": "14286",
-                "playtime": "3:58:06"
+                "duration_sec": "14285.161",
+                "playtime": "3:58:05"
             }
         },
         "class_links_in_content": [
@@ -92708,7 +92714,7 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://www.youtube.com/watch?v=Iy5GN98WvAM",
-            "duration_sec": "9566.801",
+            "duration_sec": "9567",
             "playtime": "2:39:27",
             "raw_video_data": {
                 "source": "youtube",
@@ -92726,7 +92732,7 @@
                     "minutes": "39",
                     "seconds": "27"
                 },
-                "duration_sec": "9566.801",
+                "duration_sec": "9567",
                 "playtime": "2:39:27"
             }
         },
@@ -93052,7 +93058,7 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/E9NZnbhTEXU",
-            "duration_sec": "3032",
+            "duration_sec": "3031.841",
             "playtime": "50:32",
             "raw_video_data": {
                 "source": "youtube",
@@ -93070,7 +93076,7 @@
                     "minutes": "50",
                     "seconds": "32"
                 },
-                "duration_sec": "3032",
+                "duration_sec": "3031.841",
                 "playtime": "50:32"
             }
         },
@@ -93271,8 +93277,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/OKppAVyrxnw",
-            "duration_sec": "14286",
-            "playtime": "3:58:06",
+            "duration_sec": "14285.161",
+            "playtime": "3:58:05",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -93287,10 +93293,10 @@
                 "runtime": {
                     "hours": "3",
                     "minutes": "58",
-                    "seconds": "06"
+                    "seconds": "05"
                 },
-                "duration_sec": "14286",
-                "playtime": "3:58:06"
+                "duration_sec": "14285.161",
+                "playtime": "3:58:05"
             }
         },
         "class_links_in_content": [
@@ -93443,8 +93449,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/gzyUtQR4lhE",
-            "duration_sec": "5196.041",
-            "playtime": "1:26:36",
+            "duration_sec": "5197",
+            "playtime": "1:26:37",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -93459,10 +93465,10 @@
                 "runtime": {
                     "hours": "1",
                     "minutes": "26",
-                    "seconds": "36"
+                    "seconds": "37"
                 },
-                "duration_sec": "5196.041",
-                "playtime": "1:26:36"
+                "duration_sec": "5197",
+                "playtime": "1:26:37"
             }
         },
         "class_links_in_content": [
@@ -93486,8 +93492,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/0wHLqAalNL8",
-            "duration_sec": "6543.301",
-            "playtime": "1:49:03",
+            "duration_sec": "6544",
+            "playtime": "1:49:04",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -93502,10 +93508,10 @@
                 "runtime": {
                     "hours": "1",
                     "minutes": "49",
-                    "seconds": "03"
+                    "seconds": "04"
                 },
-                "duration_sec": "6543.301",
-                "playtime": "1:49:03"
+                "duration_sec": "6544",
+                "playtime": "1:49:04"
             }
         },
         "class_links_in_content": [
@@ -93529,7 +93535,7 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/nlD_W30Yh1E",
-            "duration_sec": "5612.701",
+            "duration_sec": "5613",
             "playtime": "1:33:33",
             "raw_video_data": {
                 "source": "youtube",
@@ -93547,7 +93553,7 @@
                     "minutes": "33",
                     "seconds": "33"
                 },
-                "duration_sec": "5612.701",
+                "duration_sec": "5613",
                 "playtime": "1:33:33"
             }
         },
@@ -93658,7 +93664,7 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://www.youtube.com/watch?v=gbE7RiNS4zI",
-            "duration_sec": "13108",
+            "duration_sec": "13107.661",
             "playtime": "3:38:28",
             "raw_video_data": {
                 "source": "youtube",
@@ -93676,7 +93682,7 @@
                     "minutes": "38",
                     "seconds": "28"
                 },
-                "duration_sec": "13108",
+                "duration_sec": "13107.661",
                 "playtime": "3:38:28"
             }
         },
@@ -94439,8 +94445,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/OKppAVyrxnw",
-            "duration_sec": null,
-            "playtime": null,
+            "duration_sec": "14285.161",
+            "playtime": "3:58:05",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -94453,10 +94459,12 @@
                 "source_vimeo": "",
                 "source_embedded": "",
                 "runtime": {
-                    "hours": "0",
-                    "minutes": "0",
-                    "seconds": "0"
-                }
+                    "hours": "3",
+                    "minutes": "58",
+                    "seconds": "05"
+                },
+                "duration_sec": "14285.161",
+                "playtime": "3:58:05"
             }
         },
         "class_links_in_content": [
@@ -94480,8 +94488,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/ZWN5RW7keTY?si=9ug-bb-eNthbujff",
-            "duration_sec": null,
-            "playtime": null,
+            "duration_sec": "17031",
+            "playtime": "4:43:51",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -94494,10 +94502,12 @@
                 "source_vimeo": "",
                 "source_embedded": "",
                 "runtime": {
-                    "hours": "0",
-                    "minutes": "0",
-                    "seconds": "0"
-                }
+                    "hours": "4",
+                    "minutes": "43",
+                    "seconds": "51"
+                },
+                "duration_sec": "17031",
+                "playtime": "4:43:51"
             }
         },
         "class_links_in_content": [
@@ -95938,8 +95948,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/Oweyj2kB14g",
-            "duration_sec": "6509",
-            "playtime": "1:48:29",
+            "duration_sec": "6508.441",
+            "playtime": "1:48:28",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -95954,10 +95964,10 @@
                 "runtime": {
                     "hours": "1",
                     "minutes": "48",
-                    "seconds": "29"
+                    "seconds": "28"
                 },
-                "duration_sec": "6509",
-                "playtime": "1:48:29"
+                "duration_sec": "6508.441",
+                "playtime": "1:48:28"
             }
         },
         "class_links_in_content": [
@@ -96153,8 +96163,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/fw2i9GqUXiQ",
-            "duration_sec": "17518.101",
-            "playtime": "4:51:58",
+            "duration_sec": "17519",
+            "playtime": "4:51:59",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -96169,10 +96179,10 @@
                 "runtime": {
                     "hours": "4",
                     "minutes": "51",
-                    "seconds": "58"
+                    "seconds": "59"
                 },
-                "duration_sec": "17518.101",
-                "playtime": "4:51:58"
+                "duration_sec": "17519",
+                "playtime": "4:51:59"
             }
         },
         "class_links_in_content": [
@@ -96455,8 +96465,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/Oweyj2kB14g",
-            "duration_sec": "6508.441",
-            "playtime": "1:48:28",
+            "duration_sec": "6509",
+            "playtime": "1:48:29",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -96471,10 +96481,10 @@
                 "runtime": {
                     "hours": "1",
                     "minutes": "48",
-                    "seconds": "28"
+                    "seconds": "29"
                 },
-                "duration_sec": "6508.441",
-                "playtime": "1:48:28"
+                "duration_sec": "6509",
+                "playtime": "1:48:29"
             }
         },
         "class_links_in_content": [
@@ -98002,8 +98012,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/xadE09oniCg",
-            "duration_sec": null,
-            "playtime": null,
+            "duration_sec": "4608",
+            "playtime": "1:16:48",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -98016,10 +98026,12 @@
                 "source_vimeo": "",
                 "source_embedded": "",
                 "runtime": {
-                    "hours": "0",
-                    "minutes": "0",
-                    "seconds": "0"
-                }
+                    "hours": "1",
+                    "minutes": "16",
+                    "seconds": "48"
+                },
+                "duration_sec": "4608",
+                "playtime": "1:16:48"
             }
         },
         "class_links_in_content": [
@@ -98207,8 +98219,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://www.youtube.com/watch?v=OPvJd3NEVjw",
-            "duration_sec": null,
-            "playtime": null,
+            "duration_sec": "11352.401",
+            "playtime": "3:09:12",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -98221,10 +98233,12 @@
                 "source_vimeo": "",
                 "source_embedded": "",
                 "runtime": {
-                    "hours": "0",
-                    "minutes": "0",
-                    "seconds": "0"
-                }
+                    "hours": "3",
+                    "minutes": "09",
+                    "seconds": "12"
+                },
+                "duration_sec": "11352.401",
+                "playtime": "3:09:12"
             }
         },
         "class_links_in_content": [
@@ -98371,8 +98385,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/68LPnpoJChM?si=CAPWB2Ei8iUeqmQN",
-            "duration_sec": null,
-            "playtime": null,
+            "duration_sec": "8198",
+            "playtime": "2:16:38",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -98385,10 +98399,12 @@
                 "source_vimeo": "",
                 "source_embedded": "",
                 "runtime": {
-                    "hours": "0",
-                    "minutes": "0",
-                    "seconds": "0"
-                }
+                    "hours": "2",
+                    "minutes": "16",
+                    "seconds": "38"
+                },
+                "duration_sec": "8198",
+                "playtime": "2:16:38"
             }
         },
         "class_links_in_content": [
@@ -98412,8 +98428,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/LTdCO70lS-I",
-            "duration_sec": null,
-            "playtime": null,
+            "duration_sec": "8486.601",
+            "playtime": "2:21:27",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -98426,10 +98442,12 @@
                 "source_vimeo": "",
                 "source_embedded": "",
                 "runtime": {
-                    "hours": "0",
-                    "minutes": "0",
-                    "seconds": "0"
-                }
+                    "hours": "2",
+                    "minutes": "21",
+                    "seconds": "27"
+                },
+                "duration_sec": "8486.601",
+                "playtime": "2:21:27"
             }
         },
         "class_links_in_content": [
@@ -99880,8 +99898,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/MxGxB4LjyBg?si=NOSKJf4nqB-5uZ5e",
-            "duration_sec": "108",
-            "playtime": "1:48",
+            "duration_sec": "107.061",
+            "playtime": "1:47",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -99896,10 +99914,10 @@
                 "runtime": {
                     "hours": "00",
                     "minutes": "1",
-                    "seconds": "48"
+                    "seconds": "47"
                 },
-                "duration_sec": "108",
-                "playtime": "1:48"
+                "duration_sec": "107.061",
+                "playtime": "1:47"
             }
         },
         "class_links_in_content": [],
@@ -99962,8 +99980,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/MxGxB4LjyBg?si=NOSKJf4nqB-5uZ5e",
-            "duration_sec": null,
-            "playtime": null,
+            "duration_sec": "107.061",
+            "playtime": "1:47",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -99976,10 +99994,12 @@
                 "source_vimeo": "",
                 "source_embedded": "",
                 "runtime": {
-                    "hours": "0",
-                    "minutes": "0",
-                    "seconds": "0"
-                }
+                    "hours": "00",
+                    "minutes": "1",
+                    "seconds": "47"
+                },
+                "duration_sec": "107.061",
+                "playtime": "1:47"
             }
         },
         "class_links_in_content": [],
@@ -100001,8 +100021,8 @@
         "video": {
             "source": "youtube",
             "youtube_url": "https://youtu.be/MxGxB4LjyBg?si=NOSKJf4nqB-5uZ5e",
-            "duration_sec": "107.061",
-            "playtime": "1:47",
+            "duration_sec": "108",
+            "playtime": "1:48",
             "raw_video_data": {
                 "source": "youtube",
                 "source_video_id": "",
@@ -100017,10 +100037,10 @@
                 "runtime": {
                     "hours": "00",
                     "minutes": "1",
-                    "seconds": "47"
+                    "seconds": "48"
                 },
-                "duration_sec": "107.061",
-                "playtime": "1:47"
+                "duration_sec": "108",
+                "playtime": "1:48"
             }
         },
         "class_links_in_content": [],

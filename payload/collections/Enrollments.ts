@@ -3,8 +3,8 @@ import type { CollectionConfig } from 'payload'
 export const Enrollments: CollectionConfig = {
   slug: 'enrollments',
   labels: {
-    singular: 'এনরোলমেন্ট (Enrollment)',
-    plural: 'এনরোলমেন্টসমূহ (Enrollments)',
+    singular: 'Enrollment',
+    plural: 'Enrollments',
   },
   admin: {
     useAsTitle: 'id',

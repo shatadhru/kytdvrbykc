@@ -23,8 +23,7 @@ export interface AddToCartButtonProps {
    */
   quantity?: number
   /**
-   * Button text label (defaults to "Add to Cart")
-   * Can be customized via props (e.g. "Buy Now", "Order Now", etc.)
+   * Button text label (defaults to "কার্টে যোগ করুন")
    */
   text?: string
   /**
@@ -75,14 +74,14 @@ export interface AddToCartButtonProps {
 
 /**
  * Reusable Add to Cart button powered securely by Payload CMS Ecommerce.
- * Supports configurable text via props (defaults to "Add to Cart"),
- * loading feedback, and automatic slide drawer opening.
+ * Supports configurable text via props (defaults to "কার্টে যোগ করুন"),
+ * loading feedback, double-click prevention, and automatic slide drawer opening.
  */
 export function AddToCartButton({
   productId,
   variantId,
   quantity = 1,
-  text = 'Add to Cart',
+  text = 'কার্টে যোগ করুন',
   productTitle,
   courseSlug,
   isEnrolled = false,
@@ -108,9 +107,9 @@ export function AddToCartButton({
           asChild
           variant="default"
           size={size === 'default' ? 'icon' : size}
-          className={cn('rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer', className)}
+          className={cn('rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer shadow-xs', className)}
         >
-          <Link href={courseSlug ? `/courses/${courseSlug}?learn=true` : '/dashboard/my-courses'} title="ক্লাশ শুরু করুন">
+          <Link href={courseSlug ? `/courses/${courseSlug}?learn=true` : '/dashboard/my-courses'} title="ইতিমধ্যে ভর্তি সম্পন্ন • ক্লাসরুমে যান">
             <GraduationCap className="size-4" />
           </Link>
         </Button>
@@ -129,7 +128,7 @@ export function AddToCartButton({
       >
         <Link href={courseSlug ? `/courses/${courseSlug}?learn=true` : '/dashboard/my-courses'}>
           <GraduationCap className="size-4" />
-          <span>ক্লাশ শুরু করুন</span>
+          <span>ক্লাসরুমে যান</span>
         </Link>
       </Button>
     )
@@ -163,15 +162,12 @@ export function AddToCartButton({
           product: productId,
           ...(variantId ? { variant: variantId } : {}),
         },
-        quantity
+        1 // Always 1 seat per course purchase
       )
 
       setJustAdded(true)
       toast.success(
-        productTitle ? `Added "${productTitle}" to cart` : 'Item added to cart',
-        {
-          description: `Quantity: ${quantity}`,
-        }
+        productTitle ? `"${productTitle}" কার্টে যুক্ত হয়েছে` : 'কোর্সটি সফলভাবে কার্টে যুক্ত হয়েছে'
       )
 
       onSuccess?.()
@@ -185,7 +181,7 @@ export function AddToCartButton({
         setJustAdded(false)
       }, 2000)
     } catch (error) {
-      toast.error('Failed to add item to cart. Please try again.')
+      toast.error('কার্টে যুক্ত করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।')
       console.error('AddToCart error:', error)
     } finally {
       setIsAdding(false)
@@ -201,11 +197,11 @@ export function AddToCartButton({
         size={size === 'default' ? 'icon' : size}
         onClick={handleAddToCart}
         disabled={disabled || effectiveLoading}
-        className={cn('rounded-xl transition-all cursor-pointer', className)}
-        aria-label={`Add ${productTitle || 'item'} to cart`}
+        className={cn('rounded-xl transition-all cursor-pointer', effectiveLoading && 'pointer-events-none opacity-80', className)}
+        aria-label={`কার্টে যোগ করুন: ${productTitle || 'কোর্স'}`}
       >
         {effectiveLoading ? (
-          <Loader2 className="size-4 animate-spin" />
+          <Loader2 className="size-4 animate-spin text-primary" />
         ) : justAdded ? (
           <Check className="size-4 text-emerald-500 animate-in zoom-in" />
         ) : (
@@ -223,6 +219,7 @@ export function AddToCartButton({
       disabled={disabled || effectiveLoading}
       className={cn(
         'gap-2 rounded-xl font-semibold transition-all shadow-xs cursor-pointer',
+        effectiveLoading && 'pointer-events-none opacity-80',
         variant === 'default' &&
           !justAdded &&
           'bg-primary hover:bg-primary/90 text-primary-foreground',
@@ -237,7 +234,7 @@ export function AddToCartButton({
       ) : (
         showIcon && <ShoppingBag className="size-4" />
       )}
-      <span>{justAdded ? 'Added!' : text}</span>
+      <span>{justAdded ? 'যুক্ত হয়েছে!' : text}</span>
     </Button>
   )
 }

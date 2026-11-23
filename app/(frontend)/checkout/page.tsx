@@ -813,9 +813,9 @@ function CheckoutContent() {
                     )}
                   </div>
                 </CardContent>
-                <CardFooter className="bg-muted/20 border-t py-3 px-6 text-[11px] text-muted-foreground flex items-center justify-center gap-1.5">
-                  <Lock className="size-3.5 text-primary" />
-                  <span>Payload CMS Secure Checkout Gateway</span>
+                <CardFooter className="bg-emerald-500/5 border-t border-emerald-500/20 py-3 px-6 text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center justify-center gap-1.5 shadow-2xs">
+                  <ShieldCheck className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                  <span>SCALVIO GUARD Protected • Licensed & Secured Payment Gateway</span>
                 </CardFooter>
               </Card>
             </div>

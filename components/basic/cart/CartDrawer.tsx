@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect, useRef } from 'react'
 import { useCart, useCurrency } from '@payloadcms/plugin-ecommerce/client/react'
 import {
   Sheet,
@@ -26,6 +26,8 @@ import { CartDrawerItem } from './CartDrawerItem'
 import { formatPrice } from './cart-utils'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
+import { authClient } from '@/payload/auth/client'
+import { toast } from 'sonner'
 
 export interface CartDrawerProps {
   checkoutUrl?: string
@@ -35,12 +37,15 @@ export interface CartDrawerProps {
 
 export function CartDrawer({
   checkoutUrl = '/checkout',
-  shoppingUrl = '/blog',
+  shoppingUrl = '/courses',
   className,
 }: CartDrawerProps) {
   const { isOpen, setIsOpen, closeDrawer } = useCartDrawer()
-  const { cart, clearCart, isLoading } = useCart()
+  const { cart, clearCart, removeItem, isLoading } = useCart()
   const { currency } = useCurrency()
+  const { data: session } = authClient.useSession()
+  const router = useRouter()
+  const checkedRef = useRef(false)
 
   const items = (cart?.items || []) as Array<{
     id?: string | null
@@ -48,6 +53,33 @@ export function CartDrawer({
     variant?: any
     quantity: number
   }>
+
+  // Auto-remove already enrolled courses from cart (Requirement 6 & 7)
+  useEffect(() => {
+    if (!session?.user?.id || items.length === 0) return
+
+    fetch('/api/user/enrollments')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.enrollments)) {
+          const enrolledProductIds = new Set(
+            data.enrollments.map((enr: any) => String(enr.id || enr.courseId))
+          )
+
+          for (const item of items) {
+            const prodId = typeof item.product === 'object' && item.product ? item.product.id : item.product
+            if (prodId && enrolledProductIds.has(String(prodId))) {
+              if (item.id) {
+                removeItem(item.id).catch(() => {})
+                const title = typeof item.product === 'object' ? item.product.title : 'কোর্স'
+                toast.info(`"${title}" কোর্সটিতে আপনি ইতিমধ্যে ভর্তি আছেন, তাই কার্ট থেকে সরিয়ে নেওয়া হয়েছে।`)
+              }
+            }
+          }
+        }
+      })
+      .catch((err) => console.warn('Could not verify cart enrollments:', err))
+  }, [session?.user?.id, items, removeItem])
 
   const totalCount = useMemo(() => {
     return items.reduce((acc, item) => acc + (item.quantity || 0), 0)
@@ -79,8 +111,6 @@ export function CartDrawer({
   const currencySymbol = currency?.symbol || '৳'
   const formattedSubtotal = formatPrice(subtotal, currencySymbol, currency?.decimals || 0)
 
-
-  const router = useRouter()
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent
@@ -95,18 +125,18 @@ export function CartDrawer({
           className
         )}
       >
-        {/* Header */}
+        {/* Header (100% Bangla) */}
         <SheetHeader className="flex flex-row items-center justify-between border-b border-border/60 px-5 py-4 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20 shadow-2xs">
+            <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs">
               <ShoppingBag className="size-4" />
             </div>
             <div>
               <SheetTitle className="text-base font-bold text-foreground">
-                Shopping Cart
+                আপনার কার্ট
               </SheetTitle>
               <SheetDescription className="text-xs text-muted-foreground">
-                {totalCount} {totalCount === 1 ? 'item' : 'items'} in your cart
+                {totalCount} টি কোর্স কার্টে রয়েছে
               </SheetDescription>
             </div>
           </div>
@@ -118,11 +148,11 @@ export function CartDrawer({
                 size="sm"
                 onClick={() => clearCart()}
                 disabled={isLoading}
-                className="text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-8 px-2 gap-1"
-                title="Clear all items"
+                className="text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-8 px-2 gap-1 cursor-pointer"
+                title="সব কোর্স কার্ট থেকে মুছুন"
               >
                 <Trash2 className="size-3.5" />
-                <span className="hidden sm:inline">Clear</span>
+                <span className="hidden sm:inline">সব মুছুন</span>
               </Button>
             )}
 
@@ -133,7 +163,7 @@ export function CartDrawer({
               size="icon-sm"
               onClick={closeDrawer}
               className="rounded-lg text-muted-foreground hover:text-foreground cursor-pointer"
-              aria-label="Close cart drawer"
+              aria-label="কার্ট বন্ধ করুন"
             >
               <X className="size-4" />
             </Button>
@@ -144,24 +174,24 @@ export function CartDrawer({
         <div className="flex-1 overflow-y-auto px-5 py-4">
           {items.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center px-4 py-16">
-              <div className="flex size-20 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20 text-primary mb-4 shadow-xs">
+              <div className="flex size-20 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 mb-4 shadow-xs">
                 <PackageOpen className="size-10 stroke-[1.5]" />
               </div>
-              <h3 className="font-bold text-lg text-foreground">Your cart is empty</h3>
+              <h3 className="font-bold text-lg text-foreground">আপনার কার্ট খালি</h3>
               <p className="mt-1.5 text-xs text-muted-foreground max-w-[260px] leading-relaxed">
-                You haven&apos;t added any items to your cart yet. Explore our products and articles to get started!
+                আপনি এখনো কোনো কোর্স কার্টে যুক্ত করেননি। দেলোয়ার স্যারের স্পেশাল কোর্সসমূহ দেখে পছন্দমতো কোর্স যুক্ত করুন!
               </p>
               <Button
                 variant="outline"
                 size="sm"
-                className="mt-6 rounded-xl text-xs font-semibold gap-1.5"
+                className="mt-6 rounded-xl text-xs font-bold gap-1.5 cursor-pointer border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10"
                 onClick={() => {
                   closeDrawer()
                   router.push(shoppingUrl)
                 }}
               >
-                  Start Exploring
-                  <ArrowRight className="size-3.5" />
+                কোর্সসমূহ দেখুন
+                <ArrowRight className="size-3.5" />
               </Button>
             </div>
           ) : (
@@ -185,22 +215,22 @@ export function CartDrawer({
         {/* Footer: Subtotal & Checkout */}
         {items.length > 0 && (
           <SheetFooter className="border-t border-border/60 bg-muted/20 px-5 py-4 flex flex-col gap-3 shrink-0">
-            {/* Payload CMS Security Guarantee */}
-            <div className="flex items-center gap-2 rounded-lg bg-primary/10 border border-primary/20 px-3 py-2 text-xs text-primary font-medium">
-              <ShieldCheck className="size-4 shrink-0 text-primary" />
-              <span>Encrypted & secure checkout via Payload CMS</span>
+            {/* SCALVIO GUARD Security Guarantee */}
+            <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 border border-emerald-500/25 px-3 py-2 text-xs text-emerald-600 dark:text-emerald-400 font-semibold shadow-2xs">
+              <ShieldCheck className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+              <span className="leading-tight">SCALVIO GUARD Protected • Licensed & Secured Payment Gateway</span>
             </div>
 
             {/* Subtotal */}
             <div className="flex items-center justify-between text-sm pt-1">
-              <span className="text-muted-foreground font-medium">Subtotal</span>
-              <span className="font-bold text-lg text-foreground tabular-nums">
+              <span className="text-muted-foreground font-semibold">মোট মূল্য (সাবটোটাল)</span>
+              <span className="font-black text-lg text-foreground tabular-nums">
                 {formattedSubtotal}
               </span>
             </div>
 
             <p className="text-[11px] text-muted-foreground">
-              Taxes and shipping fees calculated at checkout.
+              এককালীন পেমেন্টে আজীবন ক্লাসরুম অ্যাক্সেস ও পরীক্ষার সুযোগ পাবেন।
             </p>
 
             {/* Checkout Button */}
@@ -210,10 +240,10 @@ export function CartDrawer({
                 closeDrawer()
                 router.push(checkoutUrl)
               }}
-              className="w-full gap-2 rounded-xl font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-all hover:shadow-lg cursor-pointer"
+              className="w-full gap-2 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md transition-all hover:shadow-lg cursor-pointer"
             >
               <Lock className="size-4" />
-              <span>Proceed to Checkout</span>
+              <span>পেমেন্ট সম্পন্ন করতে এগিয়ে যান</span>
               <ArrowRight className="size-4 ml-auto" />
             </Button>
 
@@ -228,7 +258,7 @@ export function CartDrawer({
               }}
               className="w-full py-1 text-center text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
-              Continue Shopping
+              আরও কোর্স দেখুন
             </Button>
           </SheetFooter>
         )}

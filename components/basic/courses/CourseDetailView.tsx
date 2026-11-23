@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
 import {
   BookOpen,
@@ -99,6 +100,7 @@ function getTeacherImageUrl(teacher: any): string | null {
 }
 
 export function CourseDetailView({ course, isEnrolled = false }: CourseDetailViewProps) {
+  const router = useRouter()
   const { cart, removeItem } = useCart()
   const lessons = course.lessons || []
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
@@ -106,10 +108,10 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
   // Requirement 13: Content Section description must take precedence over meta description
   const contentDescription = extractRichTextString(course.description)
   const descriptionText = contentDescription || course.meta?.description || ''
-  const isLongDescription = descriptionText.length > 180
+  const isLongDescription = descriptionText.length > 250
   const displayedDescription =
     isLongDescription && !isDescriptionExpanded
-      ? `${descriptionText.slice(0, 180)}...`
+      ? `${descriptionText.slice(0, 250)}...`
       : descriptionText
 
   // If user is already enrolled, automatically remove this course from their cart
@@ -552,19 +554,19 @@ export function CourseDetailView({ course, isEnrolled = false }: CourseDetailVie
                     </div>
                   </div>
 
-                  {isFree ? (
+                  {isEnrolled || isFree ? (
                     <Button
                       type="button"
                       size="sm"
-                      variant={isPlaying ? 'default' : 'outline'}
-                      onClick={() => handleSelectFreeLesson(lesson)}
-                      className="shrink-0 text-xs h-7 px-3 gap-1.5"
+                      variant="outline"
+                      onClick={() => router.push(`/courses/${course.slug}?learn=1&lessonId=${lesson.id}`)}
+                      className="shrink-0 text-xs h-7 px-3 gap-1.5 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 font-bold cursor-pointer"
                     >
                       <Play className="size-3 fill-current" />
-                      {isPlaying ? 'চলছে' : 'প্লে করুন'}
+                      <span>প্লে করুন</span>
                     </Button>
                   ) : (
-                    <span className="text-[11px] text-muted-foreground shrink-0 flex items-center gap-1">
+                    <span className="text-[11px] text-muted-foreground shrink-0 flex items-center gap-1 font-medium bg-muted/60 px-2 py-0.5 rounded">
                       <Lock className="size-3" />
                       লক করা
                     </span>

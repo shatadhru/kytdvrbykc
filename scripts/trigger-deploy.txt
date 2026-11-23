@@ -1,4 +1,6 @@
 $app = App\Models\Application::where('uuid', 'rs00nzpehzyvnvjaspafa97v')->first();
+$app->git_commit_sha = 'HEAD';
+$app->save();
 $deployment_uuid = (string) Illuminate\Support\Str::uuid();
 queue_application_deployment(application: $app, deployment_uuid: $deployment_uuid, force_rebuild: true);
 echo "REBUILD_QUEUED: " . $deployment_uuid . PHP_EOL;

@@ -46,29 +46,7 @@ async function getLmsCourseCatalogSummary(payload: any): Promise<string> {
         (thumbObj?.filename ? `/api/media/file/${thumbObj.filename}` : '') ||
         ''
 
-      const lessonTitles: string[] = []
-      if (Array.isArray(doc.lessons)) {
-        for (const l of doc.lessons) {
-          if (l.title) lessonTitles.push(l.title.trim())
-        }
-      }
-      if (Array.isArray(doc.subjects)) {
-        for (const s of doc.subjects) {
-          const sTitle = s.title || ''
-          if (Array.isArray(s.lessons)) {
-            for (const sl of s.lessons) {
-              if (sl.title) lessonTitles.push(`${sTitle ? sTitle + ': ' : ''}${sl.title.trim()}`)
-            }
-          }
-        }
-      }
-
-      const lessonListPreview =
-        lessonTitles.length > 0
-          ? `ক্লাসসমূহ (${lessonTitles.length}টি): ` + lessonTitles.slice(0, 15).join('; ') + (lessonTitles.length > 15 ? '...' : '')
-          : 'ক্লাসের তথ্য ড্যাশবোর্ডে পাওয়া যাবে'
-
-      lines.push(`• [কোর্স] ${title} | slug: "${slug}" | image: "${imageUrl}" | ফি: ৳${price} | ক্যাটাগরি: ${categories || 'সাধারণ'} | ${lessonListPreview}`)
+      lines.push(`• [কোর্স] ${title} | slug: "${slug}" | image: "${imageUrl}" | ফি: ৳${price} | ক্যাটাগরি: ${categories || 'সাধারণ'}`)
     }
 
     cachedCatalog = lines.join('\n')
@@ -386,7 +364,7 @@ ${catalogSummary}
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestPayload),
-            signal: AbortSignal.timeout(9000),
+            signal: AbortSignal.timeout(25000),
           })
 
           if (!res.ok) {

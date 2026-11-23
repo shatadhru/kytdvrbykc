@@ -1,36 +1,24 @@
-"use client"
 
-import React, { useState } from "react"
-import GhostFibers from "./GhostFibers"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, PlayCircle, Loader2, GraduationCap } from "lucide-react"
-import Link from "next/link"
-import { Pattern } from "./c-carousel-5"
-import { AnimatedBadge } from "../shadcn-space/badge/badge-08"
-import { useRouter } from "next/navigation"
+import GhostFibers from './GhostFibers'
+import { Pattern } from './c-carousel-5'
+import { Button } from '@/components/ui/button'
+import { ArrowRight, PlayCircle } from 'lucide-react'
+import { AnimatedBadge } from '@/components/shadcn-space/badge/badge-08'
+import Link from 'next/link'
 
-export default function Hero() {
-  const router = useRouter()
-  const [isNavigatingToCourses, setIsNavigatingToCourses] = useState(false)
-
-  const handleCoursesClick = () => {
-    setIsNavigatingToCourses(true)
-    router.push("/courses")
-  }
-
+function Hero() {
   return (
-    <section className="relative min-h-[720px] overflow-hidden sm:min-h-[820px] bg-black py-10 sm:py-14 border-b border-red-950/40">
-      {/* Background Animated Ghost Fibers */}
-      <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden bg-black">
+    <section className="relative h-[680px] overflow-hidden sm:h-[750px]">
+      {/* Background */}
+      <div className="absolute inset-0">
         <GhostFibers
-          lineColor="#ef4444"
-          glowColor="#991b1b"
-          backdropColor="#000000"
+          lineColor="#FF0201"
+          glowColor="#6366F1"
           speed={0.2}
-          scale={2.2}
+          scale={2}
           rotation={-90}
           rotationSpeed={0.25}
-          layers={3}
+          layers={2}
           waveAmplitude={0.015}
           waveFrequency={3.7}
           waveSpeed={0.2}
@@ -42,87 +30,70 @@ export default function Hero() {
           lineSpacing={2}
           lineSharpness={16}
           glowFalloff={10}
-          glowIntensity={0.9}
-          brightness={2.2}
-          blueBoost={0.0}
-          vignette={0.85}
+          glowIntensity={0.65}
+          brightness={2}
+          blueBoost={1.25}
+          vignette={0.8}
           grain={0.05}
           dpr={1}
           lightMode={false}
           fps={60}
           paused={false}
-          className="h-full w-full opacity-85"
         />
-        {/* Radial vignette overlay so text & controls remain razor sharp */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_65%_at_50%_35%,rgba(0,0,0,0.3)_0%,rgba(0,0,0,0.85)_80%,#000000_100%)]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex items-center justify-center px-4 sm:px-6">
+      <div className="absolute inset-0 z-10 flex items-center justify-center px-5 sm:px-6">
         <div className="mx-auto max-w-4xl text-center">
-          {/* 1. Admission Announcement Pill */}
-          <div className="mb-2 sm:mb-3 flex justify-center">
-            <AnimatedBadge
-              label="এস এস সি - ২০২৮ ব্যাচ ভর্তি চলছে"
-              className="text-xs sm:text-sm border-red-500/30 bg-black/60 text-white backdrop-blur-md hover:border-red-500/60 shadow-[0_0_15px_rgba(239,68,68,0.25)]"
-            />
+          <div className="mb-3">
+            <AnimatedBadge label="এস এস সি - ২০২৮ ব্যাচ ভর্তি চলছে" />
           </div>
 
-          {/* 2. Main Headline */}
-          <h1 className="text-3xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-white">
-            <span className="drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">ঘরে বসেই শুরু হোক</span>
+          <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
+            <span className="text-white">
+              ঘরে বসেই শুরু হোক
+            </span>
+
             <br />
-            <span className="bg-gradient-to-r from-red-500 via-rose-400 to-red-600 bg-clip-text text-transparent drop-shadow-sm font-extrabold">
+
+            <span className="text-gray-100">
               আপনার সাফল্যের প্রস্তুতি
             </span>
           </h1>
 
-          {/* 3. Subheading */}
-          <p className="mx-auto mt-3 max-w-2xl text-xs leading-5 text-gray-200 sm:mt-4 sm:text-base sm:leading-7 lg:text-lg drop-shadow-sm">
-            মুখস্থ নয়, বুঝে শেখার মাধ্যমে প্রতিটি বিষয়কে সহজ করে তুলতে{" "}
-            <span className="px-1.5 font-bold text-white bg-red-600/30 border border-red-500/30 rounded-md mx-1">
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-300 sm:mt-6 sm:text-lg">
+            মুখস্থ নয়, বুঝে শেখার মাধ্যমে প্রতিটি বিষয়কে সহজ করে তুলতে
+            <span className="px-1 font-semibold text-white">
               ইউনিক টিচিং মেথড
-            </span>{" "}
+            </span>
             আপনার পাশে।
           </p>
 
-          {/* 4. Hero Carousel (Pattern) */}
-          <div className="mt-4 sm:mt-6">
+          <div className="mt-6">
             <Pattern />
           </div>
 
-          {/* 5. CTA Buttons (Strictly Red & White) */}
-          <div className="mt-4 sm:mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <div className="mt-5 flex flex-wrap justify-center gap-3 sm:gap-4">
             <Button
-              onClick={handleCoursesClick}
-              disabled={isNavigatingToCourses}
+              asChild
               size="lg"
-              className="h-11 sm:h-12 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs sm:text-sm border-b-4 border-b-red-800 active:translate-y-0.5 shadow-lg shadow-red-950/50 hover:shadow-red-600/30 transition-all px-6 cursor-pointer"
+              className="h-11 sm:h-12 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs sm:text-sm border-b-4 border-b-red-800 active:translate-y-0.5 shadow-lg shadow-red-950/60 hover:shadow-red-600/30 transition-all px-6 cursor-pointer"
             >
-              {isNavigatingToCourses ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin text-white" />
-                  <span className="text-white">কোর্সে নেওয়া হচ্ছে...</span>
-                </>
-              ) : (
-                <>
-                  <GraduationCap className="mr-2 h-4 w-4 text-white" />
-                  <span className="text-white">প্রিমিয়াম কোর্সসমূহ দেখুন</span>
-                  <ArrowRight className="ml-2 h-4 w-4 text-white" />
-                </>
-              )}
+              <Link href="/courses" className="flex items-center gap-2">
+                <span>প্রিমিয়াম কোর্স সমূহ</span>
+                <ArrowRight className="size-4" />
+              </Link>
             </Button>
 
             <Button
               asChild
               variant="outline"
               size="lg"
-              className="h-11 sm:h-12 rounded-xl border border-white/30 bg-black/50 hover:bg-white/10 text-white font-semibold text-xs sm:text-sm shadow-sm backdrop-blur-md transition-all px-5 cursor-pointer"
+              className="h-11 sm:h-12 rounded-xl border-2 border-red-500/70 bg-red-950/20 hover:bg-red-600 hover:border-red-600 hover:text-white text-red-100 font-semibold text-xs sm:text-sm shadow-sm backdrop-blur-md transition-all px-5 cursor-pointer"
             >
-              <Link href="/courses">
-                <PlayCircle className="mr-2 h-4 w-4 text-red-500" />
-                <span className="text-white">কোর্স কেনার গাইড</span>
+              <Link href="/courses" className="flex items-center gap-2">
+                <PlayCircle className="size-4 text-red-400" />
+                <span>কোর্সে ভর্তি প্রক্রিয়া</span>
               </Link>
             </Button>
           </div>
@@ -131,3 +102,5 @@ export default function Hero() {
     </section>
   )
 }
+
+export default Hero

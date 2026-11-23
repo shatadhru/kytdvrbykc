@@ -43,7 +43,10 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
 
   return (
     <html lang="bn" suppressHydrationWarning className={`${solaimanLipi.variable}`}>
-      <body className={`${solaimanLipi.className} min-h-screen overflow-x-hidden antialiased font-sans`}>
+      <body
+        suppressHydrationWarning
+        className={`${solaimanLipi.className} min-h-screen overflow-x-hidden antialiased font-sans`}
+      >
         <main className="min-h-screen overflow-x-hidden flex flex-col">
           <Providor>
             <NoticeBannerSlot />

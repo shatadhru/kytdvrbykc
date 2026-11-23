@@ -75,6 +75,7 @@ export interface Config {
     users: User;
     media: Media;
     categories: Category;
+    subjects: Subject;
     teachers: Teacher;
     coordinators: Coordinator;
     banners: Banner;
@@ -88,6 +89,9 @@ export interface Config {
     'lesson-comments': LessonComment;
     'exam-submissions': ExamSubmission;
     'lesson-reports': LessonReport;
+    'hero-slides': HeroSlide;
+    resources: Resource;
+    faqs: Faq;
     sessions: Session;
     accounts: Account;
     verifications: Verification;
@@ -118,6 +122,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    subjects: SubjectsSelect<false> | SubjectsSelect<true>;
     teachers: TeachersSelect<false> | TeachersSelect<true>;
     coordinators: CoordinatorsSelect<false> | CoordinatorsSelect<true>;
     banners: BannersSelect<false> | BannersSelect<true>;
@@ -131,6 +136,9 @@ export interface Config {
     'lesson-comments': LessonCommentsSelect<false> | LessonCommentsSelect<true>;
     'exam-submissions': ExamSubmissionsSelect<false> | ExamSubmissionsSelect<true>;
     'lesson-reports': LessonReportsSelect<false> | LessonReportsSelect<true>;
+    'hero-slides': HeroSlidesSelect<false> | HeroSlidesSelect<true>;
+    resources: ResourcesSelect<false> | ResourcesSelect<true>;
+    faqs: FaqsSelect<false> | FaqsSelect<true>;
     sessions: SessionsSelect<false> | SessionsSelect<true>;
     accounts: AccountsSelect<false> | AccountsSelect<true>;
     verifications: VerificationsSelect<false> | VerificationsSelect<true>;
@@ -153,6 +161,7 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     'site-settings': SiteSetting;
+    'ai-settings': AiSetting;
     'cookie-consent': CookieConsent;
     'sales-analytics': SalesAnalytic;
     notifications: Notification;
@@ -160,6 +169,7 @@ export interface Config {
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'ai-settings': AiSettingsSelect<false> | AiSettingsSelect<true>;
     'cookie-consent': CookieConsentSelect<false> | CookieConsentSelect<true>;
     'sales-analytics': SalesAnalyticsSelect<false> | SalesAnalyticsSelect<true>;
     notifications: NotificationsSelect<false> | NotificationsSelect<true>;
@@ -377,6 +387,14 @@ export interface Product {
    */
   subjects?:
     | {
+        /**
+         * কেন্দ্রীয় সাবজেক্ট নির্বাচন করুন (ঐচ্ছিক)। এটি সিলেক্ট থাকলে মূল সাবজেক্ট আপডেটে এই কোর্সও আপডেট হবে।
+         */
+        subjectRef?: (string | null) | Subject;
+        /**
+         * যদি এই কোর্সের জন্য আলাদা কাস্টম ক্লাস সাজাতে চান এবং মূল সাবজেক্ট থেকে অটো-সিঙ্ক বন্ধ রাখতে চান।
+         */
+        overrideSubjectLessons?: boolean | null;
         subjectName: string;
         subjectSlug?: string | null;
         description?: string | null;
@@ -541,6 +559,10 @@ export interface Product {
     description?: string | null;
     image?: (string | null) | Media;
   };
+  /**
+   * Visibility status of the course
+   */
+  _status?: ('published' | 'draft') | null;
   categories?: (string | Category)[] | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
@@ -550,7 +572,6 @@ export interface Product {
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -827,6 +848,102 @@ export interface Coordinator {
    */
   generateSlug?: boolean | null;
   slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Master subjects and centralized curriculum for courses (e.g. Physics, Chemistry, Math).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subjects".
+ */
+export interface Subject {
+  id: string;
+  name: string;
+  slug: string;
+  code?: string | null;
+  description?: string | null;
+  icon?: (string | null) | Media;
+  /**
+   * Order of subject in curriculum lists
+   */
+  order?: number | null;
+  /**
+   * এই বিষয়ের মূল লেকচার তালিকা। এটি আপডেট করলে যেসব কোর্সে এই সাবজেক্ট সংযুক্ত রয়েছে এবং ওভাররাইড বন্ধ আছে, সেগুলো স্বয়ংক্রিয়ভাবে আপডেট হবে।
+   */
+  lessons?:
+    | {
+        lessonTitle: string;
+        moduleName?: string | null;
+        duration?: string | null;
+        /**
+         * Sequential order of the class
+         */
+        order?: number | null;
+        /**
+         * Allow non-enrolled students to watch this lesson
+         */
+        isFreePreview?: boolean | null;
+        /**
+         * যদি এই লেকচারটি নির্দিষ্ট বিষয়ের অধীনে থাকে।
+         */
+        subjectName?: string | null;
+        subjectSlug?: string | null;
+        /**
+         * Admin-only hidden field for piracy protection. Hidden from public and non-admin queries.
+         */
+        youtubeVideoIdOrUrl?: string | null;
+        /**
+         * লেকচারের প্রেজেন্টেশন স্লাইড (.pptx) ফাইল আপলোড করুন।
+         */
+        classSlide?: (string | null) | Media;
+        /**
+         * লেকচার নোট (PDF, DOCX, PPTX) ফাইল আপলোড করুন।
+         */
+        classNote?: (string | null) | Media;
+        /**
+         * স্লাইডের সরাসরি ডাউনলোড বা ড্রাইভ লিংক (যদি ক্লাউড স্টোরেজে থাকে)।
+         */
+        classSlideUrl?: string | null;
+        /**
+         * নোটের সরাসরি ডাউনলোড বা ভিউ লিংক (যদি ক্লাউড স্টোরেজে থাকে)।
+         */
+        classNoteUrl?: string | null;
+        /**
+         * ক্লাস শুরুর সময় শিক্ষার্থীকে অনুপ্রেরণামূলক পপআপ দেখাতে একটি কুরআনের আয়াত নির্বাচন করুন।
+         */
+        quranVersePreset?:
+          | (
+              | 'none'
+              | 'verse-inshirah-5-6'
+              | 'verse-taha-114'
+              | 'verse-baqarah-286'
+              | 'verse-ali-imran-139'
+              | 'verse-rad-28'
+              | 'verse-talaq-3'
+              | 'verse-ankabut-69'
+              | 'verse-baqarah-153'
+              | 'verse-najm-39'
+              | 'verse-zumar-53'
+              | 'verse-inshirah-7-8'
+              | 'verse-yusuf-87'
+              | 'verse-baqarah-186'
+              | 'verse-baqarah-216'
+              | 'verse-fatihah-5'
+              | 'verse-mujadila-11'
+              | 'verse-shura-19'
+              | 'verse-tawbah-51'
+              | 'verse-qasas-24'
+              | 'verse-balad-4'
+              | 'custom'
+            )
+          | null;
+        customVerseSurah?: string | null;
+        customVerseArabic?: string | null;
+        customVerseBangla?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1442,6 +1559,82 @@ export interface LessonReport {
   createdAt: string;
 }
 /**
+ * Manage slide images for the Homepage Hero Carousel. Defaults are shown if empty.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hero-slides".
+ */
+export interface HeroSlide {
+  id: string;
+  /**
+   * Internal reference and image alt tag (e.g. "SSC-27 Chemistry Course").
+   */
+  title: string;
+  /**
+   * Upload banner image to Media library (recommended: 16:9 ratio, 1536x864 or 960x540).
+   */
+  image?: (string | null) | Media;
+  /**
+   * Direct Cloudinary or image CDN link if not uploading a media file.
+   */
+  imageUrl?: string | null;
+  /**
+   * Where clicking the slide leads to (e.g. /video, /courses, or a course link).
+   */
+  link?: string | null;
+  /**
+   * Lower numbers display first.
+   */
+  order?: number | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Manage free resources, study materials, PDFs, and video lectures.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resources".
+ */
+export interface Resource {
+  id: string;
+  title: string;
+  description?: string | null;
+  /**
+   * e.g. এস এস সি - ২০২৭, এস এস সি - ২০২৮, এইচ এস সি - ২০২৭, এইচ এস সি - ২০২৮, ইত্যাদি।
+   */
+  category?: string | null;
+  type?: ('video' | 'pdf' | 'exam' | 'link') | null;
+  image?: (string | null) | Media;
+  imageUrl?: string | null;
+  /**
+   * Link to free class (/video), PDF drive link, or lesson link.
+   */
+  url: string;
+  badge?: string | null;
+  order?: number | null;
+  isFeatured?: boolean | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Frequently Asked Questions (FAQ) displayed on Homepage and Support.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqs".
+ */
+export interface Faq {
+  id: string;
+  question: string;
+  answer: string;
+  order?: number | null;
+  showOnHome?: boolean | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Auto-generated from Better Auth schema (session)
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1529,6 +1722,10 @@ export interface PayloadLockedDocument {
         value: string | Category;
       } | null)
     | ({
+        relationTo: 'subjects';
+        value: string | Subject;
+      } | null)
+    | ({
         relationTo: 'teachers';
         value: string | Teacher;
       } | null)
@@ -1579,6 +1776,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'lesson-reports';
         value: string | LessonReport;
+      } | null)
+    | ({
+        relationTo: 'hero-slides';
+        value: string | HeroSlide;
+      } | null)
+    | ({
+        relationTo: 'resources';
+        value: string | Resource;
+      } | null)
+    | ({
+        relationTo: 'faqs';
+        value: string | Faq;
       } | null)
     | ({
         relationTo: 'sessions';
@@ -1730,6 +1939,41 @@ export interface CategoriesSelect<T extends boolean = true> {
   title?: T;
   generateSlug?: T;
   slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subjects_select".
+ */
+export interface SubjectsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  code?: T;
+  description?: T;
+  icon?: T;
+  order?: T;
+  lessons?:
+    | T
+    | {
+        lessonTitle?: T;
+        moduleName?: T;
+        duration?: T;
+        order?: T;
+        isFreePreview?: T;
+        subjectName?: T;
+        subjectSlug?: T;
+        youtubeVideoIdOrUrl?: T;
+        classSlide?: T;
+        classNote?: T;
+        classSlideUrl?: T;
+        classNoteUrl?: T;
+        quranVersePreset?: T;
+        customVerseSurah?: T;
+        customVerseArabic?: T;
+        customVerseBangla?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1987,6 +2231,52 @@ export interface LessonReportsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hero-slides_select".
+ */
+export interface HeroSlidesSelect<T extends boolean = true> {
+  title?: T;
+  image?: T;
+  imageUrl?: T;
+  link?: T;
+  order?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "resources_select".
+ */
+export interface ResourcesSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  category?: T;
+  type?: T;
+  image?: T;
+  imageUrl?: T;
+  url?: T;
+  badge?: T;
+  order?: T;
+  isFeatured?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqs_select".
+ */
+export interface FaqsSelect<T extends boolean = true> {
+  question?: T;
+  answer?: T;
+  order?: T;
+  showOnHome?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "sessions_select".
  */
 export interface SessionsSelect<T extends boolean = true> {
@@ -2109,6 +2399,8 @@ export interface ProductsSelect<T extends boolean = true> {
   subjects?:
     | T
     | {
+        subjectRef?: T;
+        overrideSubjectLessons?: T;
         subjectName?: T;
         subjectSlug?: T;
         description?: T;
@@ -2167,13 +2459,13 @@ export interface ProductsSelect<T extends boolean = true> {
         description?: T;
         image?: T;
       };
+  _status?: T;
   categories?: T;
   generateSlug?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
   deletedAt?: T;
-  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2599,6 +2891,61 @@ export interface SiteSetting {
         }[]
       | null;
   };
+  /**
+   * YouTube guide video explaining how to purchase courses on delowarsir.io
+   */
+  coursePurchaseGuide?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    subtitle?: string | null;
+    youtubeUrl?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Manage Gemini API keys, Puchu AI persona, daily limits, and support links.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ai-settings".
+ */
+export interface AiSetting {
+  id: string;
+  /**
+   * Toggle the floating AI chat widget on or off on the homepage.
+   */
+  enabled?: boolean | null;
+  botName?: string | null;
+  botSubtitle?: string | null;
+  /**
+   * Control how Puchu AI behaves, greets students, and answers questions.
+   */
+  systemPrompt?: string | null;
+  /**
+   * Add 1 to 5 Google Gemini API keys. The system auto-rotates and fails over if quota is exceeded.
+   */
+  geminiKeys?:
+    | {
+        key: string;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Default LLM model for Puchu AI chat generation.
+   */
+  model?: ('gemini-3.5-flash' | 'gemini-3.5-flash-lite' | 'gemini-3.8-flash' | 'gemini-2.5-flash') | null;
+  /**
+   * Default: 3 questions per day for free visitors and non-enrolled students.
+   */
+  unpaidDailyLimit?: number | null;
+  /**
+   * Default: 20 questions per day for students enrolled in at least one course.
+   */
+  enrolledDailyLimit?: number | null;
+  limitReachedMessage?: string | null;
+  whatsappNumber?: string | null;
+  messengerLink?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2850,6 +3197,40 @@ export interface SiteSettingsSelect<T extends boolean = true> {
               id?: T;
             };
       };
+  coursePurchaseGuide?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        subtitle?: T;
+        youtubeUrl?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ai-settings_select".
+ */
+export interface AiSettingsSelect<T extends boolean = true> {
+  enabled?: T;
+  botName?: T;
+  botSubtitle?: T;
+  systemPrompt?: T;
+  geminiKeys?:
+    | T
+    | {
+        key?: T;
+        label?: T;
+        id?: T;
+      };
+  model?: T;
+  unpaidDailyLimit?: T;
+  enrolledDailyLimit?: T;
+  limitReachedMessage?: T;
+  whatsappNumber?: T;
+  messengerLink?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

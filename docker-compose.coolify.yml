@@ -1,0 +1,67 @@
+# ==============================================================================
+# Coolify Production Docker Compose for NextLoad LMS (Next.js + Payload CMS)
+# ==============================================================================
+# Use this compose file directly in Coolify under:
+# Projects > New Resource > Docker Compose
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # NextLoad LMS Core Application (Next.js 16 + Payload CMS 3.0)
+  # ----------------------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+      - NEXT_TELEMETRY_DISABLED=1
+      # Note: Set your production secrets & URLs in Coolify's Environment Variables tab
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-https://delowarsir.io}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL:-https://delowarsir.io}
+      - DATABASE_URL=${DATABASE_URL:-mongodb://mongodb:27017/nextload}
+      - PAYLOAD_SECRET=${PAYLOAD_SECRET}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+    volumes:
+      # Persistent question bank SQLite DB and seed datasets
+      - lms_data:/app/data
+      # Local media uploads directory
+      - lms_media:/app/media
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  # ----------------------------------------------------------------------------
+  # Self-Hosted MongoDB (Optional - if not using MongoDB Atlas)
+  # ----------------------------------------------------------------------------
+  mongodb:
+    image: mongo:7-jammy
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-change-me-in-production}
+      MONGO_INITDB_DATABASE: nextload
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  lms_data:
+  lms_media:
+  mongodb_data:

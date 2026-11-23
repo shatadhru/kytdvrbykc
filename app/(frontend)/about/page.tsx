@@ -141,7 +141,7 @@ export default function AboutPage() {
                 <div className="absolute bottom-4 left-4 right-4 text-white">
                   <Badge className="bg-primary text-xs">প্রতিষ্ঠাতার বাণী</Badge>
                   <h3 className="mt-2 text-xl font-bold drop-shadow-xs">দেলোয়ার হোসেন</h3>
-                  <p className="text-xs text-white/90">ফাউন্ডার ও প্রধান শিক্ষক, ইউনিক টিচিং মেথড</p>
+                  <p className="text-xs text-white/90">ফাউন্ডার ও পরিচালক, ইউনিক টিচিং মেথড</p>
                 </div>
               </div>
 

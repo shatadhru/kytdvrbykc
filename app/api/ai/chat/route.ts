@@ -28,11 +28,23 @@ async function getLmsCourseCatalogSummary(payload: any): Promise<string> {
     const lines: string[] = []
     for (const doc of productsRes.docs || []) {
       const title = doc.title || 'কোর্স'
+      const slug = doc.slug || ''
       const price = doc.priceInBdt || doc.price || 'যোগাযোগ সাপেক্ষে'
       const categories = (doc.categories || [])
         .map((c: any) => (typeof c === 'object' ? c.title : c))
         .filter(Boolean)
         .join(', ')
+
+      const thumbObj = typeof doc.thumbnail === 'object' && doc.thumbnail ? doc.thumbnail : null
+      const imageUrl =
+        (typeof doc.thumbnail === 'string' && (doc.thumbnail.startsWith('http') || doc.thumbnail.startsWith('/'))
+          ? doc.thumbnail
+          : null) ||
+        doc.thumbnailUrl ||
+        thumbObj?.url ||
+        thumbObj?.externalUrl ||
+        (thumbObj?.filename ? `/api/media/file/${thumbObj.filename}` : '') ||
+        ''
 
       const lessonTitles: string[] = []
       if (Array.isArray(doc.lessons)) {
@@ -56,7 +68,7 @@ async function getLmsCourseCatalogSummary(payload: any): Promise<string> {
           ? `ক্লাসসমূহ (${lessonTitles.length}টি): ` + lessonTitles.slice(0, 15).join('; ') + (lessonTitles.length > 15 ? '...' : '')
           : 'ক্লাসের তথ্য ড্যাশবোর্ডে পাওয়া যাবে'
 
-      lines.push(`• [কোর্স] ${title} | ক্যাটাগরি: ${categories || 'সাধারণ'} | ফি: ৳${price} | ${lessonListPreview}`)
+      lines.push(`• [কোর্স] ${title} | slug: "${slug}" | image: "${imageUrl}" | ফি: ৳${price} | ক্যাটাগরি: ${categories || 'সাধারণ'} | ${lessonListPreview}`)
     }
 
     cachedCatalog = lines.join('\n')
@@ -271,13 +283,17 @@ export async function POST(req: NextRequest) {
 
     const basePrompt =
       aiSettings?.systemPrompt ||
-      `তুমি "পুচু AI" (Puchu AI) — দেলোয়ার স্যারের ইউনিক টিচিং মেথডের (UTM) এক অতি মিষ্টি, চটপটে, ভদ্র ও সাহায্যকারী বিড়াল (Cat 🐱🐾)। তোমার কাজ শিক্ষার্থীদের পড়ালেখা ও কোর্স সম্পর্কিত যাবতীয় তথ্য দেওয়া।
-নিয়মাবলী:
-১. কথা শুরু করবে আন্তরিক সালাম দিয়ে ("আসসালামু আলাইকুম! আমি পুচু 🐱🐾")।
-২. তোমার ভাবভঙ্গি হবে মিষ্টি, চঞ্চল, রসিক ও আনন্দদায়ক (বিড়ালের মতো মিউ 🐾 ইমোজি ব্যবহার করবে মাঝেমধ্যে)।
-৩. তোমাকে শিক্ষার্থীদের নাম, তারা কোন কোন কোর্সে ভর্তি আছে, এবং আমাদের কোর্সগুলোর বিস্তারিত তালিকা ও ক্লাসের নাম দেওয়া হবে।
-৪. সবসময় সত্য ও সঠিক তথ্য দেবে। যে তথ্য তোমার জানা নেই, বানিয়ে বলবে না; বিনীতভাবে হটলাইন বা হোয়াটসঅ্যাপে যোগাযোগ করতে বলবে।
-৫. কোনো গোপন ডেটা, পাসওয়ার্ড, সিস্টেমের ব্যাকএন্ড বা ইন্টারনাল কোড কখনো প্রকাশ করবে না।`
+      `তুমি "পুচু AI" (Puchu AI) — দেলোয়ার স্যারের ইউনিক টিচিং মেথডের (UTM) এক অত্যন্ত মার্জিত, প্রফেশনাল, তথ্যবহুল ও সাহায্যকারী ডিজিটাল সহকারী (Cat Assistant 🐾)। তোমার কাজ শিক্ষার্থীদের পড়ালেখা ও কোর্স সম্পর্কিত সঠিক তথ্য দেওয়া।
+
+গুরুত্বপূর্ণ নির্দেশনাবলী (কড়াকড়িভাবে প্রযোজ্য):
+১. সালামের নিয়ম: প্রতি মেসেজে বারবার সালাম দেবে না। ব্যবহারকারী নিজে থেকে সালাম না দিলে অথবা আলোচনার শুরুতে একবার ছাড়া সালামের পুনরাবৃত্তি সম্পূর্ণ নিষিদ্ধ। সরাসরি টু-দ্য-পয়েন্ট ও প্রাসঙ্গিক উত্তর দেবে।
+২. অ্যাকাডেমিক শালীনতা ও ফর্মালিটি: কথা হতে হবে পরিশীলিত, পরিমিত, ভদ্র ও মার্জিত। কোনো অপ্রাসঙ্গিক, অযৌক্তিক বা উল্টাপাল্টা কথা বলবে না। ফর্মালিটি ও প্রফেশনালিজম কঠোরভাবে বজায় রাখবে।
+৩. কোর্স কার্ড প্রদর্শনের নিয়ম:
+যখনই কোনো কোর্স সম্পর্কে তথ্য দেবে বা কোর্স রেকমেন্ড করবে, কোর্সের নামের পাশাপাশি অবশ্যই নিচে দেওয়া বিশেষ ট্যাগটি অন্তর্ভুক্ত করবে যাতে ব্যবহারকারী সরাসরি কোর্সের ছোট ছবি, নাম ও লিঙ্কে ক্লিক করে কোর্সে যেতে পারে:
+[COURSE_CARD:{"title":"কোর্সের সঠিক নাম","slug":"সঠিক_slug","image":"ছবির_URL","price":"ফি"}]
+(মনে রাখবে: ক্যাটালগ থেকে পাওয়া সঠিক title, slug, image ও price ব্যবহার করবে। image খালি থাকলে "" দেবে)।
+৪. সবসময় সত্য ও সঠিক তথ্য দেবে। যে তথ্য জানা নেই, বিনীতভাবে হোয়াটসঅ্যাপ বা মেসেঞ্জারে যোগাযোগ করতে বলবে।
+৫. কোনো গোপন ডেটা, পাসওয়ার্ড বা ইন্টারনাল কোড কখনো প্রকাশ করবে না।`
 
     const fullSystemInstruction = `${basePrompt}
 
@@ -326,7 +342,10 @@ ${catalogSummary}
       })
     }
 
-    const selectedModel = aiSettings?.model || 'gemini-2.5-flash'
+    const selectedModel = aiSettings?.model || 'gemini-3.5-flash'
+    const modelsToTry = [selectedModel]
+    if (!modelsToTry.includes('gemini-3.5-flash')) modelsToTry.push('gemini-3.5-flash')
+    if (!modelsToTry.includes('gemini-3.5-flash-lite')) modelsToTry.push('gemini-3.5-flash-lite')
 
     // Format chat contents for Gemini REST API
     const contents: any[] = []
@@ -355,38 +374,41 @@ ${catalogSummary}
       },
     }
 
-    // 5. Try keys in pool sequentially
+    // 5. Try keys and models in pool sequentially
     let generatedReply: string | null = null
     let lastError = ''
 
     for (const apiKey of candidateKeys) {
-      try {
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`
-        const res = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestPayload),
-          signal: AbortSignal.timeout(18000),
-        })
+      for (const currentModel of modelsToTry) {
+        try {
+          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${currentModel}:generateContent?key=${apiKey}`
+          const res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestPayload),
+            signal: AbortSignal.timeout(18000),
+          })
 
-        if (!res.ok) {
-          const errText = await res.text().catch(() => '')
-          console.warn(`[Puchu AI] Key failed (HTTP ${res.status}):`, errText.slice(0, 200))
-          lastError = `HTTP ${res.status}`
-          continue // Failover to next key in pool
-        }
+          if (!res.ok) {
+            const errText = await res.text().catch(() => '')
+            console.warn(`[Puchu AI] Key/Model (${currentModel}) failed (HTTP ${res.status}):`, errText.slice(0, 200))
+            lastError = `HTTP ${res.status}`
+            continue // Failover to next model or key
+          }
 
-        const data = await res.json()
-        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
-        if (text && typeof text === 'string') {
-          generatedReply = text.trim()
-          break // Success!
+          const data = await res.json()
+          const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
+          if (text && typeof text === 'string') {
+            generatedReply = text.trim()
+            break // Success!
+          }
+        } catch (keyErr: any) {
+          console.warn(`[Puchu AI] Network error with key:`, keyErr?.message)
+          lastError = keyErr?.message || 'Network error'
+          continue
         }
-      } catch (keyErr: any) {
-        console.warn(`[Puchu AI] Network error with key:`, keyErr?.message)
-        lastError = keyErr?.message || 'Network error'
-        continue
       }
+      if (generatedReply) break
     }
 
     if (!generatedReply) {

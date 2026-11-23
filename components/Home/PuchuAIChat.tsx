@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from "react"
+import Link from "next/link"
 import {
   Cat,
   Send,
@@ -14,7 +15,69 @@ import {
   HelpCircle,
   RefreshCw,
   ExternalLink,
+  GraduationCap,
+  BookOpen,
 } from "lucide-react"
+
+interface CourseCardItem {
+  title: string
+  slug: string
+  image?: string
+  price?: string | number
+}
+
+function parseCourseCardsAndText(rawText: string): { cleanText: string; cards: CourseCardItem[] } {
+  const cards: CourseCardItem[] = []
+  const cardRegex = /\[COURSE_CARD:\s*(\{.*?\})\s*\]/gi
+
+  let match: RegExpExecArray | null
+  while ((match = cardRegex.exec(rawText)) !== null) {
+    try {
+      const parsed = JSON.parse(match[1])
+      if (parsed && (parsed.slug || parsed.title)) {
+        cards.push({
+          title: parsed.title || "কোর্স",
+          slug: parsed.slug || "",
+          image: parsed.image || "",
+          price: parsed.price || "",
+        })
+      }
+    } catch {
+      // Ignore JSON parsing errors
+    }
+  }
+
+  const cleanText = rawText.replace(cardRegex, "").trim()
+  return { cleanText, cards }
+}
+
+function renderFormattedMessageText(text: string) {
+  // Support bold **text** and markdown links [text](url)
+  const segments = text.split(/(\[.*?\]\(.*?\)|\*\*.*?\*\*)/g)
+  return segments.map((seg, idx) => {
+    if (seg.startsWith("**") && seg.endsWith("**") && seg.length > 4) {
+      return (
+        <strong key={idx} className="font-semibold text-white">
+          {seg.slice(2, -2)}
+        </strong>
+      )
+    }
+    const linkMatch = seg.match(/^\[(.*?)\]\((.*?)\)$/)
+    if (linkMatch) {
+      const [, label, href] = linkMatch
+      return (
+        <Link
+          key={idx}
+          href={href}
+          className="text-red-400 underline hover:text-red-300 font-medium transition"
+        >
+          {label}
+        </Link>
+      )
+    }
+    return <span key={idx}>{seg}</span>
+  })
+}
 
 interface Message {
   id: string
@@ -131,7 +194,7 @@ export default function PuchuAIChat() {
               {
                 id: "initial-greeting",
                 sender: "bot",
-                text: `আসসালামু আলাইকুম! 🐱🐾 আমি ${data.botName || "পুচু AI"}, দেলোয়ার স্যারের কিউট ক্যাট অ্যাসিস্ট্যান্ট! কোর্স বা যেকোনো প্রশ্ন থাকলে আমাকে জিজ্ঞেস করো, মিউ~!`,
+                text: `স্বাগতম! 🐾 আমি ${data.botName || "পুচু AI"}, দেলোয়ার স্যারের ইউনিক টিচিং মেথডের ডিজিটাল অ্যাসিস্ট্যান্ট। কোর্স, সিলেবাস বা যেকোনো তথ্যের জন্য আমাকে জিজ্ঞেস করতে পারেন।`,
                 time: new Date().toLocaleTimeString("bn-BD", {
                   hour: "2-digit",
                   minute: "2-digit",
@@ -450,19 +513,71 @@ export default function PuchuAIChat() {
           <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-neutral-800">
             {messages.map((m) => {
               const isUser = m.sender === "user"
+              const { cleanText, cards } = isUser
+                ? { cleanText: m.text, cards: [] }
+                : parseCourseCardsAndText(m.text)
+
               return (
                 <div
                   key={m.id}
                   className={`flex flex-col ${isUser ? "items-end" : "items-start"} max-w-full`}
                 >
                   <div
-                    className={`rounded-2xl px-3.5 py-2.5 text-xs sm:text-[13px] leading-relaxed max-w-[85%] whitespace-pre-wrap break-words ${
+                    className={`rounded-2xl px-3.5 py-2.5 text-xs sm:text-[13px] leading-relaxed max-w-[88%] whitespace-pre-wrap break-words ${
                       isUser
                         ? "bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-br-none shadow-md shadow-red-950/40"
                         : "bg-neutral-900/90 text-zinc-200 border border-neutral-800/80 rounded-bl-none shadow-sm"
                     }`}
                   >
-                    {m.text}
+                    {isUser ? (
+                      cleanText
+                    ) : (
+                      <>
+                        <div>{renderFormattedMessageText(cleanText)}</div>
+                        {cards.length > 0 && (
+                          <div className="mt-2.5 space-y-2 w-full pt-1 border-t border-neutral-800/60">
+                            {cards.map((card, cIdx) => (
+                              <Link
+                                key={cIdx}
+                                href={card.slug ? `/courses/${card.slug}` : "/courses"}
+                                className="flex items-center gap-2.5 p-2 rounded-xl bg-neutral-950/90 hover:bg-neutral-900 border border-red-900/50 hover:border-red-500/70 transition-all group/card shadow-sm text-left block"
+                              >
+                                <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-neutral-900 flex-shrink-0 border border-neutral-800 flex items-center justify-center">
+                                  {card.image ? (
+                                    <img
+                                      src={card.image}
+                                      alt={card.title}
+                                      className="w-full h-full object-cover group-hover/card:scale-105 transition-transform"
+                                      onError={(e) => {
+                                        ;(e.currentTarget as HTMLElement).style.display = "none"
+                                      }}
+                                    />
+                                  ) : null}
+                                  <div className="absolute inset-0 flex items-center justify-center text-zinc-600 -z-0">
+                                    <GraduationCap className="w-5 h-5 text-red-400/80" />
+                                  </div>
+                                </div>
+                                <div className="flex-1 min-w-0 pr-1">
+                                  <p className="text-xs font-semibold text-white group-hover/card:text-red-300 line-clamp-1 transition-colors leading-tight">
+                                    {card.title}
+                                  </p>
+                                  <div className="flex items-center justify-between mt-1 text-[10px]">
+                                    {card.price ? (
+                                      <span className="font-bold text-emerald-400">৳{card.price}</span>
+                                    ) : (
+                                      <span className="text-zinc-400">কোর্সের বিবরণ</span>
+                                    )}
+                                    <span className="text-red-400 font-medium group-hover/card:translate-x-0.5 transition-transform flex items-center gap-0.5">
+                                      কোর্স দেখুন →
+                                    </span>
+                                  </div>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
                   </div>
                   <span className="text-[9px] text-zinc-500 mt-1 px-1">{m.time}</span>
                 </div>

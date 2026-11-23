@@ -80,7 +80,7 @@ export function Teacher() {
                 {/* Role Badges */}
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge className="rounded-full bg-emerald-600 px-3 py-0.5 text-xs font-bold text-white shadow-2xs hover:bg-emerald-500">
-                    ফাউন্ডার ও প্রধান শিক্ষক
+                    ফাউন্ডার ও পরিচালক
                   </Badge>
 
                   <Badge
@@ -104,7 +104,7 @@ export function Teacher() {
                     <span className="font-semibold text-foreground">
                       দেলোয়ার স্যার
                     </span>
-                    , ফাউন্ডার ও প্রধান শিক্ষক{" "}
+                    , ফাউন্ডার ও পরিচালক{" "}
                     <span className="font-semibold text-emerald-600 dark:text-emerald-400">
                       ইউনিক টিচিং মেথড
                     </span>

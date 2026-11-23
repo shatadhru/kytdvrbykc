@@ -103,7 +103,11 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: mongooseAdapter({
-    url: process.env.DATABASE_URL || process.env.DATABASE_URI || process.env.MONGODB_URI || '',
+    url:
+      process.env.DATABASE_URL ||
+      process.env.DATABASE_URI ||
+      process.env.MONGODB_URI ||
+      'mongodb://127.0.0.1:27017/nextload',
   }),
   sharp,
   plugins: payloadPlugins,

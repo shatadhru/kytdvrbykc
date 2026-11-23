@@ -315,7 +315,7 @@ export default async function TeachersPage() {
                     </div>
                     <div className="flex flex-col justify-center p-6 sm:p-8">
                       <Badge className="w-fit rounded-full bg-primary text-xs">
-                        ফাউন্ডার ও প্রধান শিক্ষক
+                        ফাউন্ডার ও পরিচালক
                       </Badge>
                       <h3 className="mt-3 text-2xl font-bold text-card-foreground">
                         দেলোয়ার হোসেন

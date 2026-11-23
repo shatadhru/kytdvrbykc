@@ -8,6 +8,7 @@ import sharp from 'sharp'
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { SiteSettings } from './globals/SiteSettings'
+import { AISettings } from './globals/AISettings'
 import { payloadPlugins } from './plugins';
 import { payloadEmailAdapter } from '@/utils/sendEmail/payloadAdapter'
 import { customAdminViews, generateAdminGlobals } from '@/config/adminCustomComponents'
@@ -94,7 +95,7 @@ export default buildConfig({
     Resources,
     Faqs,
   ],
-  globals: [SiteSettings, CookieConsent, ...generateAdminGlobals()],
+  globals: [SiteSettings, AISettings, CookieConsent, ...generateAdminGlobals()],
   editor: lexicalEditor(),
   email: payloadEmailAdapter(),
   secret: process.env.PAYLOAD_SECRET || '',

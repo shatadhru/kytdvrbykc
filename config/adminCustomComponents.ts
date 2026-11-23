@@ -113,6 +113,7 @@ export function generateThemeNavIcons(): Record<string, string> {
     "hero-slides": "sliders",
     resources: "folder",
     faqs: "help-circle",
+    "ai-settings": "bot",
   }
 
   customAdminViews.forEach((view) => {

@@ -7,6 +7,7 @@ import Teacher from '@/components/Home/Teacher'
 import Learning from '@/components/Home/Learning'
 import FreeResourses from '@/components/Home/FreeResourses'
 import Faq from '@/components/Home/Faq'
+import PuchuAIChat from '@/components/Home/PuchuAIChat'
 
 export default function HomePage() {
   return (
@@ -19,6 +20,8 @@ export default function HomePage() {
         <Learning />
         <FreeResourses />
         <Faq />
+        {/* Floating Movable Puchu AI Chat - strictly on homepage */}
+        <PuchuAIChat />
       </main>
       <Footer />
     </div>

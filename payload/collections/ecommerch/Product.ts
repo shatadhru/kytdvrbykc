@@ -249,6 +249,10 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
       plural: 'Courses',
     },
 
+    // Disable drafts/versions so Payload admin reads directly from db.products
+    // where all courses are stored, preventing the empty table issue caused by queryDrafts
+    versions: false,
+
     admin: {
       ...defaultCollection?.admin,
       group: 'Ecommerce',
@@ -271,14 +275,10 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
       thumbnail: true,
       thumbnailUrl: true,
       introductoryVideo: true,
-      gallery: true,
       priceInBDT: true,
-      inventory: true,
-      meta: true,
+      _status: true,
       teachers: true,
-      coordinators: true,
-      lessons: true,
-      subjects: true,
+      categories: true,
     },
 
     hooks: {
@@ -625,6 +625,19 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
             ],
           },
         ],
+      },
+      {
+        name: '_status',
+        type: 'select',
+        options: [
+          { label: 'Published', value: 'published' },
+          { label: 'Draft', value: 'draft' },
+        ],
+        defaultValue: 'published',
+        admin: {
+          position: 'sidebar',
+          description: 'Visibility status of the course',
+        },
       },
       {
         name: 'categories',

@@ -75,6 +75,7 @@ uniform float uRotationSpeed;
 uniform float uLightMode;
 uniform vec3 uLineColor;
 uniform vec3 uGlowColor;
+uniform vec3 uBackdropColor;
 
 out vec4 fragColor;
 
@@ -108,7 +109,7 @@ void main() {
   vec2 resolution = max(uResolution, vec2(1.0));
   vec2 uv = (2.0 * gl_FragCoord.xy - resolution) / resolution.y;
   float time = uTime * uSpeed;
-  vec3 backdrop = mix(vec3(0.070588, 0.058824, 0.090196), vec3(1.0), step(0.5, uLightMode));
+  vec3 backdrop = mix(uBackdropColor, vec3(0.98, 0.98, 0.99), step(0.5, uLightMode));
   vec3 centerTone = max(uLineColor * 0.85567 - uGlowColor * 0.06186, vec3(0.0));
   vec3 cloudTone = uLineColor * 0.19588 + uGlowColor * 0.2268;
   vec2 p = uv;
@@ -180,6 +181,7 @@ type GhostFibersContext = {
 export interface GhostFibersProps {
   lineColor?: string;
   glowColor?: string;
+  backdropColor?: string;
   speed?: number;
   scale?: number;
   rotation?: number;
@@ -211,8 +213,9 @@ export interface GhostFibersProps {
 const contexts = new WeakMap<HTMLDivElement, GhostFibersContext>();
 
 const GhostFibers: FC<GhostFibersProps> = ({
-  lineColor = '#140E35',
-  glowColor = '#3437A0',
+  lineColor = '#ef4444',
+  glowColor = '#991b1b',
+  backdropColor = '#000000',
   speed = 0.2,
   scale = 2,
   rotation = 0,
@@ -231,7 +234,7 @@ const GhostFibers: FC<GhostFibersProps> = ({
   glowFalloff = 10,
   glowIntensity = 1.6,
   brightness = 2,
-  blueBoost = 1.25,
+  blueBoost = 0.0,
   vignette = 0.8,
   grain = 0.05,
   lightMode = false,
@@ -285,12 +288,13 @@ const GhostFibers: FC<GhostFibersProps> = ({
         uGlowFalloff: { value: 10 },
         uGlowIntensity: { value: 1.6 },
         uBrightness: { value: 2 },
-        uBlueBoost: { value: 1.25 },
+        uBlueBoost: { value: 0.0 },
         uVignette: { value: 0.8 },
         uGrain: { value: 0.05 },
         uLightMode: { value: 0 },
-        uLineColor: { value: new Float32Array(hexToRgb('#140E35')) },
-        uGlowColor: { value: new Float32Array(hexToRgb('#3437A0')) }
+        uLineColor: { value: new Float32Array(hexToRgb('#ef4444')) },
+        uGlowColor: { value: new Float32Array(hexToRgb('#991b1b')) },
+        uBackdropColor: { value: new Float32Array(hexToRgb('#000000')) }
       }
     });
     const mesh = new Mesh(gl, { geometry, program });
@@ -412,6 +416,7 @@ const GhostFibers: FC<GhostFibersProps> = ({
     const uniforms = context.program.uniforms;
     setColor(uniforms.uLineColor, lineColor);
     setColor(uniforms.uGlowColor, glowColor);
+    setColor(uniforms.uBackdropColor, backdropColor);
     uniforms.uSpeed.value = speed;
     uniforms.uScale.value = scale;
     uniforms.uRotation.value = rotation;
@@ -440,6 +445,7 @@ const GhostFibers: FC<GhostFibersProps> = ({
   }, [
     lineColor,
     glowColor,
+    backdropColor,
     speed,
     scale,
     rotation,

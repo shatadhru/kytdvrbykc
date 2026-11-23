@@ -28,6 +28,9 @@ import { Enrollments } from './collections/Enrollments'
 import { LessonComments } from './collections/LessonComments'
 import { ExamSubmissions } from './collections/ExamSubmissions'
 import { LessonReports } from './collections/LessonReports'
+import { HeroSlides } from './collections/HeroSlides'
+import { Resources } from './collections/Resources'
+import { Faqs } from './collections/Faqs'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -87,6 +90,9 @@ export default buildConfig({
     LessonComments,
     ExamSubmissions,
     LessonReports,
+    HeroSlides,
+    Resources,
+    Faqs,
   ],
   globals: [SiteSettings, CookieConsent, ...generateAdminGlobals()],
   editor: lexicalEditor(),

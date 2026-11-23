@@ -82,6 +82,14 @@ export const headerConfig: HeaderConfig = {
       badgeVariant: 'teal',
     },
     {
+      id: 'resources',
+      title: 'ফ্রি রিসোর্স',
+      href: '/resources',
+      icon: BookOpen,
+      badge: 'ফ্রি',
+      badgeVariant: 'teal',
+    },
+    {
       id: 'teachers',
       title: 'শিক্ষকবৃন্দ',
       href: '/teachers',

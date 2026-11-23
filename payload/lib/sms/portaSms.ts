@@ -323,7 +323,7 @@ export async function sendOrderPurchaseConfirmationSms(
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000')
       .replace(/^https?:\/\//, '')
       .replace(/\/+$/, '')
-    const smsText = `NextLoad: আপনার অর্ডার #${shortOrderId} সফল হয়েছে! মোট ৳${amount} পরিশোধিত। ইনভয়েস ও কোর্স অ্যাক্সেস পেতে লগইন করুন: ${appUrl}/dashboard`
+    const smsText = `আপনার অর্ডার #${shortOrderId} সফল হয়েছে! মোট ৳${amount} পরিশোধিত। ইনভয়েস ও কোর্স অ্যাক্সেস পেতে লগইন করুন: ${appUrl}/dashboard`
 
     // 5. Send via Gateway
     const sendRes = await sendGatewaySms({

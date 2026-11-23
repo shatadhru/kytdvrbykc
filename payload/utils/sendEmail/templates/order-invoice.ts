@@ -148,7 +148,7 @@ Start learning now: ${dashboardUrl}
 `
 
   return {
-    subject: `Invoice #${shortOrderId} - Course Purchase Confirmation | NextLoad`,
+    subject: `Invoice #${shortOrderId} - Course Purchase Confirmation | UTM`,
     html,
     text,
   }

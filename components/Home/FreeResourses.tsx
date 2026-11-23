@@ -1,44 +1,77 @@
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowUpRight, BookOpen, Gift } from "lucide-react";
+"use client"
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import React, { useEffect, useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { ArrowUpRight, BookOpen, Gift } from "lucide-react"
 
-const freeResources = [
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+
+interface ResourceItem {
+  id?: string
+  title: string
+  description?: string
+  url: string
+  imageUrl: string
+  badge?: string
+}
+
+const DEFAULT_RESOURCES: ResourceItem[] = [
   {
-    name: "এস এস সি - ২০২৭",
+    id: "default-1",
+    title: "এস এস সি - ২০২৭",
     description: "এস এস সি ২০২৭ ব্যাচের জন্য প্রয়োজনীয় বিনামূল্যের শিক্ষাসামগ্রী।",
     url: "/video",
-    image:
-      "https://res.cloudinary.com/doqcv0ywi/image/upload/v1789305933/ssc27_mamvtg.png",
+    imageUrl: "https://res.cloudinary.com/doqcv0ywi/image/upload/v1789305933/ssc27_mamvtg.png",
+    badge: "বিনামূল্যে",
   },
   {
-    name: "এস এস সি - ২০২৮",
+    id: "default-2",
+    title: "এস এস সি - ২০২৮",
     description: "এস এস সি ২০২৮ ব্যাচের প্রস্তুতির জন্য বিনামূল্যের রিসোর্স।",
     url: "/video",
-    image:
-      "https://res.cloudinary.com/doqcv0ywi/image/upload/v1789305933/%E0%A7%81%E0%A7%81%E0%A7%A8%E0%A7%87%E0%A7%AE_o3naui.png",
+    imageUrl: "https://res.cloudinary.com/doqcv0ywi/image/upload/v1789305933/%E0%A7%81%E0%A7%81%E0%A7%A8%E0%A7%87%E0%A7%AE_o3naui.png",
+    badge: "বিনামূল্যে",
   },
   {
-    name: "এইচ এস সি - ২০২৭",
+    id: "default-3",
+    title: "এইচ এস সি - ২০২৭",
     description: "এইচ এস সি ২০২৭ ব্যাচের জন্য সাজানো প্রয়োজনীয় শিক্ষাসামগ্রী।",
     url: "/video",
-    image:
-      "https://res.cloudinary.com/doqcv0ywi/image/upload/v1789305933/hsc27_academic_naapzc.png",
+    imageUrl: "https://res.cloudinary.com/doqcv0ywi/image/upload/v1789305933/hsc27_academic_naapzc.png",
+    badge: "বিনামূল্যে",
   },
   {
-    name: "এইচ এস সি - ২০২৮",
+    id: "default-4",
+    title: "এইচ এস সি - ২০২৮",
     description: "এইচ এস সি ২০২৮ ব্যাচের প্রস্তুতির জন্য বিনামূল্যের রিসোর্স।",
     url: "/video",
-    image:
-      "https://res.cloudinary.com/doqcv0ywi/image/upload/v1789306254/Untitled-1_dpemy8.png",
+    imageUrl: "https://res.cloudinary.com/doqcv0ywi/image/upload/v1789306254/Untitled-1_dpemy8.png",
+    badge: "বিনামূল্যে",
   },
-];
+]
 
 export function FreeResourses() {
+  const [resources, setResources] = useState<ResourceItem[]>(DEFAULT_RESOURCES)
+
+  useEffect(() => {
+    let isMounted = true
+    fetch("/api/resources?featured=true")
+      .then((res) => res.json())
+      .then((data) => {
+        if (isMounted && data?.resources && Array.isArray(data.resources) && data.resources.length > 0) {
+          setResources(data.resources)
+        }
+      })
+      .catch(() => {})
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   return (
     <section className="relative overflow-hidden py-10 sm:py-16 lg:py-24">
       {/* Background decoration */}
@@ -75,17 +108,17 @@ export function FreeResourses() {
 
         {/* Resource Cards */}
         <div className="mt-8 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4 sm:gap-5">
-          {freeResources.map((resource) => (
+          {resources.map((resource, index) => (
             <Card
-              key={resource.name}
+              key={resource.id || `${resource.title}-${index}`}
               className="group overflow-hidden rounded-2xl sm:rounded-3xl border-2 border-sky-500/20 border-b-4 border-b-sky-600 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-sky-500/40 hover:shadow-md"
             >
               <CardContent className="p-0">
                 {/* Image */}
                 <div className="relative aspect-[4/3] flex overflow-hidden items-center justify-center bg-muted/20">
                   <Image
-                    src={resource.image}
-                    alt={resource.name}
+                    src={resource.imageUrl}
+                    alt={resource.title}
                     width={250}
                     height={250}
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -98,7 +131,7 @@ export function FreeResourses() {
                       className="gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
                     >
                       <Gift className="size-3" />
-                      বিনামূল্যে
+                      {resource.badge || "বিনামূল্যে"}
                     </Badge>
                   </div>
                 </div>
@@ -110,7 +143,7 @@ export function FreeResourses() {
                   </div>
 
                   <h3 className="text-base font-bold tracking-tight text-card-foreground sm:text-lg">
-                    {resource.name}
+                    {resource.title}
                   </h3>
 
                   <p className="mt-1.5 min-h-[40px] text-xs leading-5 text-muted-foreground sm:mt-2 sm:min-h-[48px] sm:text-sm sm:leading-6">
@@ -121,7 +154,7 @@ export function FreeResourses() {
                     asChild
                     className="mt-4 h-10 w-full rounded-xl text-xs font-semibold sm:mt-5 sm:h-11 sm:text-sm"
                   >
-                    <Link href={resource.url}>
+                    <Link href={resource.url || "/video"}>
                       রিসোর্স দেখুন
                       <ArrowUpRight className="ml-1 size-3.5 sm:size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </Link>
@@ -151,8 +184,8 @@ export function FreeResourses() {
               size="lg"
               className="h-10 w-full rounded-xl text-xs font-semibold sm:h-11 sm:w-auto sm:text-sm"
             >
-              <Link href="/video">
-                সব ক্লাস দেখুন
+              <Link href="/resources">
+                সকল ফ্রি রিসোর্স দেখুন
                 <ArrowUpRight className="ml-1 size-3.5 sm:size-4" />
               </Link>
             </Button>
@@ -160,7 +193,7 @@ export function FreeResourses() {
         </div>
       </div>
     </section>
-  );
+  )
 }
 
-export default FreeResourses;
+export default FreeResourses

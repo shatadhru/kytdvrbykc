@@ -1,14 +1,23 @@
+"use client"
+
+import React, { useEffect, useState } from "react"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { CircleHelp, PlusIcon } from "lucide-react";
-import { cn } from "cn";
-import { AnimatedBadge } from "@/components/shadcn-space/badge/badge-08";
+} from "@/components/ui/accordion"
+import { CircleHelp, PlusIcon } from "lucide-react"
+import { cn } from "cn"
+import { AnimatedBadge } from "@/components/shadcn-space/badge/badge-08"
 
-const FAQ_DATA = [
+interface FaqItem {
+  id?: string
+  question: string
+  answer: string
+}
+
+const DEFAULT_FAQ_DATA: FaqItem[] = [
   {
     question: "আমি কীভাবে ইউনিক টিচিং মেথডের কোর্স কিনব এবং পড়াশোনা শুরু করব?",
     answer:
@@ -42,17 +51,34 @@ const FAQ_DATA = [
     question:
       "কোর্সে ভর্তি হওয়ার আগে আমি কি কোর্সের বিষয়বস্তু ও অন্যান্য তথ্য জানতে পারব?",
     answer:
-      "অবশ্যই। প্রতিটি কোর্সের পেজে কোর্সটি কাদের জন্য, কী কী বিষয় পড়ানো হবে, কোন কোন অধ্যায় বা লেসন থাকবে এবং কোর্স থেকে কী ধরনের সুবিধা পাওয়া যাবে—এসব গুরুত্বপূর্ণ তথ্য দেওয়া থাকবে। ভর্তি হওয়ার আগে কোর্সের বিস্তারিত তথ্য দেখে আপনার প্রয়োজনের সঙ্গে মিলিয়ে সিদ্ধান্ত নিতে পারবেন। এতে আপনি আপনার লক্ষ্য ও প্রস্তুতির জন্য সঠিক কোর্সটি বেছে নিতে আরও সহজে সিদ্ধান্ত নিতে পারবেন।",
+      "অবশ্যই। প্রতিটি কোর্সের পেজে কোর্সটি কাদের জন্য, কী কী বিষয় পড়ানো হবে, কোন কোন অধ্যায় বা লেসন থাকবে এবং কোর্স থেকে কী ধরনের সুবিধা পাওয়া যাবে—এসব গুরুত্বপূর্ণ তথ্য দেওয়া থাকবে। ভর্তি হওয়ার আগে কোর্সের বিস্তারিত তথ্য দেখে আপনার প্রয়োজনের সঙ্গে মিলিয়ে সিদ্ধান্ত নিতে পারবেন। এতে আপনি আপনার লক্ষ্য ও প্রস্ততির জন্য সঠিক কোর্সটি বেছে নিতে আরও সহজে সিদ্ধান্ত নিতে পারবেন।",
   },
   {
     question: "মোবাইল ফোন দিয়ে কি ইউনিক টিচিং মেথডের কোর্স করা যাবে?",
     answer:
       "হ্যাঁ। ইউনিক টিচিং মেথড এমনভাবে তৈরি করা হচ্ছে যাতে শিক্ষার্থীরা শুধু কম্পিউটার বা ল্যাপটপের ওপর নির্ভরশীল না হয়ে মোবাইল ফোন থেকেও সহজে তাদের পড়াশোনা চালিয়ে যেতে পারে। আপনার ডিভাইস ও ইন্টারনেট সংযোগ অনুযায়ী কোর্সের ভিডিও, লেসন এবং অন্যান্য শিক্ষাসামগ্রী ব্যবহার করতে পারবেন। তবে দীর্ঘ সময় পড়াশোনা বা বড় স্ক্রিনে কনটেন্ট দেখার ক্ষেত্রে ল্যাপটপ বা কম্পিউটার ব্যবহার করলে অনেকের জন্য আরও আরামদায়ক হতে পারে।",
   },
-];
+]
 
 export default function Faq() {
-  const Icon = CircleHelp;
+  const Icon = CircleHelp
+  const [faqs, setFaqs] = useState<FaqItem[]>(DEFAULT_FAQ_DATA)
+
+  useEffect(() => {
+    let isMounted = true
+    fetch("/api/faqs?home=true")
+      .then((res) => res.json())
+      .then((data) => {
+        if (isMounted && data?.faqs && Array.isArray(data.faqs) && data.faqs.length > 0) {
+          setFaqs(data.faqs)
+        }
+      })
+      .catch(() => {})
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   return (
     <section>
@@ -75,16 +101,16 @@ export default function Faq() {
           </p>
         </div>
 
-        {/* FAQ */}
+        {/* FAQ Accordion */}
         <div>
           <Accordion
             type="single"
             collapsible
             className="flex w-full flex-col gap-3 sm:gap-4"
           >
-            {FAQ_DATA.map((faq, index) => (
+            {faqs.map((faq, index) => (
               <AccordionItem
-                key={`item-${index}`}
+                key={faq.id || `item-${index}`}
                 value={`item-${index}`}
                 className={cn(
                   "group/item flex flex-col gap-2 rounded-xl border border-primary/20 p-4 transition-all sm:gap-3 sm:rounded-2xl sm:p-6 lg:p-7",
@@ -127,5 +153,5 @@ export default function Faq() {
         </div>
       </div>
     </section>
-  );
+  )
 }

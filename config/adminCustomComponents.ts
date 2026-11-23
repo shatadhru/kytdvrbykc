@@ -110,6 +110,9 @@ export function generateThemeNavIcons(): Record<string, string> {
     "site-settings": "settings",
     banners: "megaphone",
     "cookie-consent": "cookie",
+    "hero-slides": "sliders",
+    resources: "folder",
+    faqs: "help-circle",
   }
 
   customAdminViews.forEach((view) => {

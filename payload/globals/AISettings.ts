@@ -97,12 +97,13 @@ export const AISettings: GlobalConfig = {
       name: 'model',
       type: 'select',
       label: 'Gemini Model',
-      defaultValue: 'gemini-3.5-flash',
+      defaultValue: 'gemini-flash-lite-latest',
       options: [
-        { label: 'Gemini 3.5 Flash (Recommended - Fastest & Smartest)', value: 'gemini-3.5-flash' },
+        { label: 'Gemini Flash Lite Latest (Fastest & High Availability)', value: 'gemini-flash-lite-latest' },
         { label: 'Gemini 3.5 Flash Lite (Lightweight & Rapid)', value: 'gemini-3.5-flash-lite' },
+        { label: 'Gemini 3 Flash Preview', value: 'gemini-3-flash-preview' },
+        { label: 'Gemini 3.5 Flash', value: 'gemini-3.5-flash' },
         { label: 'Gemini 3.8 Flash', value: 'gemini-3.8-flash' },
-        { label: 'Gemini 2.5 Flash', value: 'gemini-2.5-flash' },
       ],
       admin: {
         description: 'Default LLM model for Puchu AI chat generation.',

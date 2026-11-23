@@ -320,10 +320,15 @@ ${catalogSummary}
       })
     }
 
-    const selectedModel = aiSettings?.model || 'gemini-3.5-flash-lite'
-    const modelsToTry = [selectedModel]
-    if (!modelsToTry.includes('gemini-3.5-flash-lite')) modelsToTry.unshift('gemini-3.5-flash-lite')
-    if (!modelsToTry.includes('gemini-3.5-flash')) modelsToTry.push('gemini-3.5-flash')
+    const selectedModel = aiSettings?.model || 'gemini-flash-lite-latest'
+    const candidateModels = [
+      selectedModel,
+      'gemini-flash-lite-latest',
+      'gemini-3.5-flash-lite',
+      'gemini-3-flash-preview',
+      'gemini-3.5-flash',
+    ].filter(Boolean)
+    const modelsToTry = Array.from(new Set(candidateModels))
 
     // Format chat contents for Gemini REST API
     const contents: any[] = []
